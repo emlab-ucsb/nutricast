@@ -15,7 +15,7 @@ set.seed(123)
 library(shiny) # interactive applications
 library(shinyjs) # javascript functionality for shiny
 library(shinydashboard) # layout
-library(shinymaterial) # extra features
+#library(shinymaterial) # extra features
 library(rsconnect) # needed to deploy app to shinyapps.io
 
 # Plotting
@@ -60,7 +60,17 @@ shinyUI(
         dashboardHeader(
             
             # Title
-            title = text$item_label[text$item_id == "title"],
+            title = "",
+            titleWidth = 0,
+            
+            # Title
+            tags$li(
+              id = "custom-header-container",
+              class = "dropdown",
+              tags$h3(text$item_label[text$item_id == "app-title"],
+                      style = "margin-top:10px;"
+              ) # /h3
+            ), # /tags$li
             
             # SFG logo
             tags$li(
@@ -100,22 +110,28 @@ shinyUI(
                 # Variable name for selected menuItem
                 id = "menu-items",
                 
-                ### Inventory ---
-                menuItem(text$item_label[text$item_id == "tab-1"], 
-                         tabName = "tab-1", 
-                         icon = NULL,
+                ### Overview ---
+                menuItem(text$item_label[text$item_id == "overview"], 
+                         tabName = "overview", 
+                         #icon = NULL,
                          selected = TRUE),
                 
-                ### Spawns ---
-                menuItem(text$item_label[text$item_id == "tab-2"], 
-                         tabName = "tab-2", 
-                         icon = icon(text$item_icon[text$item_id == "tab-2"]),
+                ### Aquaculture potential ---
+                menuItem(text$item_label[text$item_id == "aqua-potential"], 
+                         tabName = "aqua-potential", 
+                         #icon = icon(text$item_icon[text$item_id == "tab-2"]),
                          selected = FALSE),
                 
-                ### About methods and process ---
-                menuItem(text$item_label[text$item_id == "tab-3"],
-                         tabName = "tab-3",
-                         icon = icon(text$item_icon[text$item_id == "tab-3"]),
+                ### Aquaculture species ---
+                menuItem(text$item_label[text$item_id == "aqua-species"],
+                         tabName = "aqua-species",
+                         #icon = icon(text$item_icon[text$item_id == "tab-3"]),
+                         selected = FALSE),
+                
+                ### Aquaculture site explorer ---
+                menuItem(text$item_label[text$item_id == "aqua-explorer"],
+                         tabName = "aqua-explorer",
+                         #icon = icon(text$item_icon[text$item_id == "tab-3"]),
                          selected = FALSE)
                 
             ) # /sidebarMenu
@@ -123,23 +139,31 @@ shinyUI(
         
         ### Main panel content ----------------------
         dashboardBody(
+          
+          # Custom stylesheet
+          tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "app_css.css")),
             
             # Tabs
             tabItems(
                 
-                ### Introduction ---
-                tabItem(tabName = "tab-1",
-                        Tab1()
+                ### Overview ---
+                tabItem(tabName = "overview",
+                        Overview()
                 ),
                 
-                ### Introduction ---
-                tabItem(tabName = "tab-2",
-                        Tab2()
+                ### Aquaculture potential ---
+                tabItem(tabName = "aqua-potential",
+                        AquaPotential()
                 ),
                 
-                ### About methods and process ---
-                tabItem(tabName = "tab-3",
-                        Tab3()
+                ### Aquaculture species ---
+                tabItem(tabName = "aqua-species",
+                        AquaSpecies()
+                ),
+                
+                ### Aquaculture site explorer ---
+                tabItem(tabName = "aqua-explorer",
+                        AquaExplorer()
                 )
                 
             ) # /tabItems

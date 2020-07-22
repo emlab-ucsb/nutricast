@@ -1,5 +1,5 @@
 ﻿tab_id,item_id,item_label,item_icon,description
-header,title,Title,,
+header,app-title,Climate change and aquaculture web explorer ,,
 header,sfg_logo,The Sustainable Fisheries Group,,
 header,emlab_logo,The Environmental Market Solutions Lab,,
 tab-1,tab-1,Tab 1,,
@@ -9,3 +9,7 @@ tab-1,w_dropdown_fancy,Fancy dropdown menu,,
 tab-1,plot_1_section,This is a plot in a box,,
 tab-2,tab-2,Tab 2,microscope,
 tab-3,tab-3,Tab 3,chart-bar,
+overview,overview,Overview,,title of overview tab
+aqua-potential,aqua-potential,Aquaculture potential,,title of aqua-potential tab
+aqua-species,aqua-species,Aquaculture species,,title of aqua-species tab
+aqua-explorer,aqua-explorer,Aquaculture site explorer,,title of aqua-explorer tab

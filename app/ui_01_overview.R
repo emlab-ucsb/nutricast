@@ -1,17 +1,17 @@
 ### ----------------------------------------------
 ### ----------------------------------------------
-### This script contains the UI for tab 3
+### This script contains the UI for the overview tab
 ### ----------------------------------------------
 ### ----------------------------------------------
 
-Tab3 <- function(){
+Overview <- function(){
   
   fluidPage(
     
     # page style
     style = "padding-bottom: 40px;",
     
-    h3(text$item_label[text$item_id == "tab-3"])
+    h3(text$item_label[text$item_id == "overview"])
     
   )
   
