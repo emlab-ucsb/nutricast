@@ -1,0 +1,11 @@
+﻿tab_id,item_id,item_label,item_icon,description
+header,title,Title,,
+header,sfg_logo,The Sustainable Fisheries Group,,
+header,emlab_logo,The Environmental Market Solutions Lab,,
+tab-1,tab-1,Tab 1,,
+tab-1,value_box_1,Date last updated,calendar,
+tab-1,value_box_2,Sample value box,fish,
+tab-1,w_dropdown_fancy,Fancy dropdown menu,,
+tab-1,plot_1_section,This is a plot in a box,,
+tab-2,tab-2,Tab 2,microscope,
+tab-3,tab-3,Tab 3,chart-bar,
