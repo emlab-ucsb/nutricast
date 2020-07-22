@@ -11,7 +11,16 @@ AquaPotential <- function(){
     # page style
     style = "padding-bottom: 40px;",
     
-    h3(text$item_label[text$item_id == "aqua-potential"])
+    # Introduction
+    column(12,
+           
+           # Header
+           h3(text$item_label[text$item_id == "aqua-potential"])
+           
+    )
+           
+           # Introductory text
+          
     
   )
   

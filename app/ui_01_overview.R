@@ -9,9 +9,17 @@ Overview <- function(){
   fluidPage(
     
     # page style
-    style = "padding-bottom: 40px;",
+    style = "padding-bottom: 40px; background-color: #ecf0f5;",
     
-    h3(text$item_label[text$item_id == "overview"])
+    # Introduction
+    column(12,
+           
+           # Header
+           h3(text$item_label[text$item_id == "overview"]),
+           
+           # Page text
+           includeHTML("./text/overview_text.html")
+    )
     
   )
   
