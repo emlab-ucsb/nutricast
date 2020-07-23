@@ -21,6 +21,29 @@ shinyServer(function(input, output, session) {
     # 
     # })
     # 
+  
+    ### ----------------------------------
+    ### aqua-potential Tab ---------------
+    ### ----------------------------------
+  
+    output$historical_production_plot <- renderPlot({
+      
+      req(input$aqua_potential_select_country)
+      
+      # filter data 
+      plot_dat <- production_current_group_dat %>%
+        dplyr::filter(country_orig == input$aqua_potential_select_country)
+      
+      # plot
+      plot <- ggplot(plot_dat, aes(x = year, y = quantity_mt, fill = isscaap))+
+        geom_area()+
+        theme_bw()+
+        labs(x = "Year", y = "Production (mt)", fill = "Commercial group")
+      
+      plot
+      
+    })
+  
     ### ----------------------------------
     ### Tab 1 ----------------------------
     ### ----------------------------------
