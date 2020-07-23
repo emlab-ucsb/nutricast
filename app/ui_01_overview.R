@@ -9,7 +9,7 @@ Overview <- function(){
   fluidPage(
     
     # page style
-    style = "padding-bottom: 40px; background-color: #ecf0f5;",
+    style = "padding-bottom: 40px;",
     
     # Introduction
     column(12,

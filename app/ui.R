@@ -19,6 +19,7 @@ library(shinydashboard) # layout
 library(rsconnect) # needed to deploy app to shinyapps.io
 
 # Plotting
+library(tiff) # deal with TIFF raster
 library(leaflet) # interactive maps 
 library(plotly) # interactive charts
 library(viridis) # colorblind color scales
