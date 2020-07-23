@@ -74,7 +74,7 @@ production_current_sovereign_dat <- production_current_dat %>%
   summarize(quantity_mt = sum(quantity_mt, na.rm = T),
             profits_usd = sum(value_usd_t, na.rm = T)*1000) %>%
   mutate(rcp = "Historical",
-         feed_scen = "Historical",
+         feed_scen = NA,
          dev_pattern = "Historical")
 
 # Add them together

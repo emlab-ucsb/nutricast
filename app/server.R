@@ -26,19 +26,41 @@ shinyServer(function(input, output, session) {
     ### aqua-potential Tab ---------------
     ### ----------------------------------
   
+    ### Historical production plot ---------
     output$historical_production_plot <- renderPlot({
       
       req(input$aqua_potential_select_country)
       
       # filter data 
       plot_dat <- production_current_group_dat %>%
-        dplyr::filter(country_orig == input$aqua_potential_select_country)
+        dplyr::filter(sov1_name == input$aqua_potential_select_country)
       
       # plot
-      plot <- ggplot(plot_dat, aes(x = year, y = quantity_mt, fill = isscaap))+
+      plot <- ggplot(plot_dat, aes(x = year, y = quantity_mt/1e6, fill = isscaap))+
         geom_area()+
         theme_bw()+
-        labs(x = "Year", y = "Production (mt)", fill = "Commercial group")
+        labs(x = "Year", y = "Production (million mt)", fill = "Commercial group")
+      
+      plot
+      
+    })
+    
+    ### Historical production plot ---------
+    output$future_production_plot <- renderPlot({
+      
+      req(input$aqua_potential_select_country)
+      
+      # filter data 
+      plot_dat <- production_all_sovereign_dat %>%
+        dplyr::filter(sov1_name == input$aqua_potential_select_country)
+      
+      # plot
+      plot <- ggplot(plot_dat, aes(x = year, y = quantity_mt/1e6, color = interaction(feed_scen,dev_pattern, sep=" - ")))+
+        geom_line()+
+        theme_bw()+
+        labs(x = "Year", y = "Production (million mt)", color = "Scenario (Feed - Development)")+
+        facet_grid(group ~ rcp, scales = "free")+
+        theme(legend.position = "right")
       
       plot
       

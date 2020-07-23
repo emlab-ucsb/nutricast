@@ -47,19 +47,18 @@ AquaPotential <- function(){
         
     ),
     
-    
-    # Future production under climate change
-    box(width = 12,
-        #height = 100,
-        #solidHeader = T,
-        collapsible = T,
-        title = "Projected production under climate change"
-        
-        # Intro
-        
-        # Plot
-        #plotOutput("current_production_plot")
-        
+    # Future production
+    column(12,
+           
+           # Header
+           tags$h4("Projected production under climate change"),
+           
+           # Intro
+           includeHTML("./text/aqua_potential_historical.html"),
+           
+           # Plot
+           plotOutput("future_production_plot")
+           
     )
            
   )
