@@ -27,7 +27,7 @@ AquaPotential <- function(){
            
            # Widget
            selectizeInput("aqua_potential_select_country",
-                          label = "Select a Country",
+                          label = text$item_label[text$item_id == "aqua_potential_select_country"],
                           choices = country_choices,
                           width = "50%")
            
@@ -37,7 +37,7 @@ AquaPotential <- function(){
     column(12,
            
            # Header
-           tags$h4("Historical aquaculture production"),
+           tags$h4(text$item_label[text$item_id == "aqua-potential-historical"]),
            
            # Intro
            includeHTML("./text/aqua_potential_historical.html"),
@@ -51,7 +51,7 @@ AquaPotential <- function(){
     column(12,
            
            # Header
-           tags$h4("Projected production under climate change"),
+           tags$h4(text$item_label[text$item_id == "aqua-potential-future"]),
            
            # Intro
            includeHTML("./text/aqua_potential_historical.html"),

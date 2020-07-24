@@ -1,5 +1,5 @@
 ﻿tab_id,item_id,item_label,item_icon,description
-header,app-title,AQUACAST: Aquaculture and climate change web explorer,,
+header,app-title,Aquaculture and climate change web explorer,,
 header,sfg_logo,The Sustainable Fisheries Group,,
 header,emlab_logo,The Environmental Market Solutions Lab,,
 tab-1,tab-1,Tab 1,,
@@ -10,6 +10,9 @@ tab-1,plot_1_section,This is a plot in a box,,
 tab-2,tab-2,Tab 2,microscope,
 tab-3,tab-3,Tab 3,chart-bar,
 overview,overview,Overview,,title of overview tab
-aqua-potential,aqua-potential,Aquaculture potential,,title of aqua-potential tab
+aqua-potential,aqua-potential,Total production potential,,title of aqua-potential tab
+aqua-potential,aqua_potential_select_country,Select a country,,select country widget
+aqua-potential,aqua-potential-historical,Historical aquaculture production,,first section header
+aqua-potential,aqua-potential-future,Projected production under climate change,,second section header
 aqua-species,aqua-species,Aquaculture species,,title of aqua-species tab
 aqua-explorer,aqua-explorer,Aquaculture site explorer,,title of aqua-explorer tab
