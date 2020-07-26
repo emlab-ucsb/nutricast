@@ -64,7 +64,24 @@ AquaSpecies <- function(){
            tags$h4(text$item_label[text$item_id == "aqua-species-nutrition"]),
            
            # Intro
-           includeHTML("./text/aqua_potential_historical.html"),
+           includeHTML("./text/aqua_potential_historical.html")
+           
+    ),
+    
+    # Select species
+    column(12,
+           
+           # Country Widget
+           selectizeInput("aqua_species_select_species",
+                          label = text$item_label[text$item_id == "aqua_species_select_species"],
+                          choices = unique(nutrient_dat_pmax$species),
+                          width = "100%",
+                          multiple = T)
+           
+    ),
+    
+    # Nutrition plot
+    column(12,
            
            # Plot
            plotOutput("future_species_nutrition")

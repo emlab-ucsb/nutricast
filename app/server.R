@@ -70,29 +70,69 @@ shinyServer(function(input, output, session) {
     ### aqua-species Tab ---------------
     ### ----------------------------------
     
+    ### Reactive data set based on selected country and climate scenario
+    eez_species_dat <- eventReactive(c(input$aqua_species_select_country,
+                                       input$aqua_species_select_scenario), {
+                                         
+                                         plot_dat <- rcp_projections %>%
+                                           dplyr::filter(sov1_name == input$aqua_species_select_country & scenario == input$aqua_species_select_scenario) %>%
+                                           dplyr::filter(year == 2100) %>%
+                                           mutate(rank = dense_rank(desc(prod_mt_yr))) %>%
+                                           mutate(species = fct_reorder(species, desc(rank)))                               
+                                       })
+    
     ### Future production plot ---------
     output$future_species_production_plot <- renderPlot({
       
-      req(input$aqua_species_select_country,
-          input$aqua_species_select_scenario)
-    
-      # filter data
-      plot_dat <- rcp_projections %>%
-        dplyr::filter(sov1_name == input$aqua_species_select_country & scenario == input$aqua_species_select_scenario) %>%
-        dplyr::filter(year == 2100) %>%
-        mutate(rank = dense_rank(desc(prod_mt_yr))) %>%
-        mutate(species = fct_reorder(species, desc(rank)))
+      req(nrow(eez_species_dat()) > 0)
       
       # plot
-      plot <- ggplot(plot_dat, aes(x = species, y = prod_mt_yr/1e6, fill = group))+
+      plot <- ggplot(eez_species_dat(), aes(x = species, y = prod_mt_yr/1e6, fill = group))+
         geom_bar(stat = "identity")+
         theme_bw()+
         labs(x = "", y = "Production (million mt)", fill = "Species Type")+
         coord_flip()+
-        facet_wrap(~ group, scales = "free", ncol = 1)+
+        facet_wrap(~ group, scales = "free", ncol = 2)+
         theme(legend.position = "none")
 
       plot
+      
+    })
+    
+    ### Update species select input based on country and RCP selected above ---------
+    observe({
+      
+      # Viable Species ordered 
+      viable_species_ordered <- eez_species_dat() %>%
+        dplyr::select(species, rank)
+      
+      # Only allow species that are viable in 2100 to be selected
+      viable_species <- nutrient_dat_pmax %>%
+        inner_join(viable_species_ordered, by = "species") %>%
+        mutate(species = fct_reorder(species, rank))
+      
+      # Update input
+      updateSelectizeInput(session, 
+                           "aqua_species_select_species",
+                           choices = levels(viable_species$species))
+    })
+    
+    ### Nutrition radar plot for selected species (no more than 5) ---------
+    output$future_species_nutrition <- renderPlot({
+      
+      req(nrow(eez_species_dat()) > 0,
+          length(input$aqua_species_select_species) > 0)
+      
+      # Subset data
+      plot_data <- nutrient_dat_pmax %>% 
+        filter(species %in% input$aqua_species_select_species)
+      
+      req(nrow(plot_data) > 0)
+      
+      # Plot data
+      g <- ggradar(plot_data) + 
+        theme(legend.position = "right")
+      g
       
     })
     

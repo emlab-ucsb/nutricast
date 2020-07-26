@@ -100,3 +100,23 @@ rcp_projections <- rcp_26_projections %>%
   bind_rows(rcp_60_projections) %>%
   bind_rows(rcp_85_projections) %>%
   left_join(ter_sov_lookup, by = c("eez_id" = "eez_code"))
+
+### 5) Nutrition information
+load("./data/Vaitla_etal_2018_nutrient_data.Rdata")
+
+nutrient_dat_max <- nutrient_preds_long %>% 
+  group_by(nutrient) %>%
+  summarize(value_md_max = max(value_md, na.rm = T))
+  
+nutrient_dat_pmax <- nutrient_preds_long %>%
+  left_join(nutrient_dat_max, by = "nutrient") %>%
+  mutate(pmax_fill = (value_md/value_md_max)) %>%
+  dplyr::filter(!is.na(pmax_fill)) %>%
+  dplyr::select(species, nutrient, pmax_fill) %>% 
+  mutate(nutrient=recode(nutrient, 
+                         "Omega-3 fatty acids"="Omega-3\nfatty acids",
+                         "Omega-6 fatty acids"="Omega-6\nfatty acids")) %>% 
+  group_by(species, nutrient) %>%
+  summarize(pmax_fill = median(pmax_fill)) %>%
+  ungroup() %>%
+  spread(key="nutrient", value="pmax_fill")

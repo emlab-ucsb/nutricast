@@ -15,18 +15,17 @@ set.seed(123)
 library(shiny) # interactive applications
 library(shinyjs) # javascript functionality for shiny
 library(shinydashboard) # layout
-#library(shinymaterial) # extra features
 library(rsconnect) # needed to deploy app to shinyapps.io
 
 # Plotting
-library(tiff) # deal with TIFF raster
 library(leaflet) # interactive maps 
 library(plotly) # interactive charts
 library(viridis) # colorblind color scales
 library(RColorBrewer) # other color scales
+library(ggradar)
 
 # Other functions
-library(lubridate)
+#library(lubridate)
 library(tidyverse)
 
 # Source file that loads/wrangles data and text
