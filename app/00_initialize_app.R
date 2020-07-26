@@ -15,7 +15,8 @@ text <- read_csv("./text/app_text.csv")
 ### ----------------------------------
 
 ### 1) EEZ raster
-eez_raster_10km <- raster::brick("./data/eezs_v10_raster_10km.tif")
+# eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
+# browser()
 
 ### 2) Future bivalve/finfish aquaculture production projections by country (Chris Free)
 production_future_bivalve_dat <- read.csv("./data/bivalve_mariculture_potential_by_eez_rcp.csv", stringsAsFactors = F) %>%
