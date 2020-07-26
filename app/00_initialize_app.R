@@ -34,7 +34,7 @@ production_future_dat <- production_future_bivalve_dat %>%
 
 # Create lookup table of territory names/codes and sovereign names/codes
 ter_sov_lookup <- production_future_dat %>%
-  distinct(ter1_name, ter1_iso, sov1_name, sov1_iso)
+  distinct(ter1_name, ter1_iso, sov1_name, sov1_iso, eez_code)
 
 # [ADD MANUAL CORRECTIONS LATER]
 # ter_sov_manual <- data.frame(
@@ -82,5 +82,21 @@ production_all_sovereign_dat <- production_current_sovereign_dat %>%
   bind_rows(production_future_sovereign_dat) %>%
   arrange(sov1_name, year)
 
+### 4) Future aquaculture production by EEZ
+rcp_26_projections <- read_csv("./data/rcp_26_species_dat_by_eez.csv") %>%
+  mutate(scenario = "RCP 2.6")
 
+rcp_45_projections <- read_csv("./data/rcp_45_species_dat_by_eez.csv") %>%
+  mutate(scenario = "RCP 4.5")
 
+rcp_60_projections <- read_csv("./data/rcp_60_species_dat_by_eez.csv") %>%
+  mutate(scenario = "RCP 6.0")
+
+rcp_85_projections <- read_csv("./data/rcp_85_species_dat_by_eez.csv") %>%
+  mutate(scenario = "RCP 8.5")
+
+rcp_projections <- rcp_26_projections %>%
+  bind_rows(rcp_45_projections) %>%
+  bind_rows(rcp_60_projections) %>%
+  bind_rows(rcp_85_projections) %>%
+  left_join(ter_sov_lookup, by = c("eez_id" = "eez_code"))

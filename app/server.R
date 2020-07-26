@@ -45,7 +45,7 @@ shinyServer(function(input, output, session) {
       
     })
     
-    ### Historical production plot ---------
+    ### Future production plot ---------
     output$future_production_plot <- renderPlot({
       
       req(input$aqua_potential_select_country)
@@ -65,6 +65,37 @@ shinyServer(function(input, output, session) {
       plot
       
     })
+    
+    ### ----------------------------------
+    ### aqua-species Tab ---------------
+    ### ----------------------------------
+    
+    ### Future production plot ---------
+    output$future_species_production_plot <- renderPlot({
+      
+      req(input$aqua_species_select_country,
+          input$aqua_species_select_scenario)
+    
+      # filter data
+      plot_dat <- rcp_projections %>%
+        dplyr::filter(sov1_name == input$aqua_species_select_country & scenario == input$aqua_species_select_scenario) %>%
+        dplyr::filter(year == 2100) %>%
+        mutate(rank = dense_rank(desc(prod_mt_yr))) %>%
+        mutate(species = fct_reorder(species, desc(rank)))
+      
+      # plot
+      plot <- ggplot(plot_dat, aes(x = species, y = prod_mt_yr/1e6, fill = group))+
+        geom_bar(stat = "identity")+
+        theme_bw()+
+        labs(x = "", y = "Production (million mt)", fill = "Species Type")+
+        coord_flip()+
+        facet_wrap(~ group, scales = "free", ncol = 1)+
+        theme(legend.position = "none")
+
+      plot
+      
+    })
+    
   
     ### ----------------------------------
     ### Tab 1 ----------------------------
