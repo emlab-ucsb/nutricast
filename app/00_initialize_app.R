@@ -15,10 +15,8 @@ text <- read_csv("./text/app_text.csv")
 ### ----------------------------------
 
 ### 1) EEZ raster
-eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
-eez_10km_df <- raster::as.data.frame(eez_raster_10km, xy = T)
-
-#browser()
+# eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
+# eez_10km_df <- raster::as.data.frame(eez_raster_10km, xy = T)
 
 worldmap <- ne_countries(scale = 'small', 
                          type = 'map_units',
