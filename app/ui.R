@@ -23,6 +23,9 @@ library(plotly) # interactive charts
 library(viridis) # colorblind color scales
 library(RColorBrewer) # other color scales
 library(ggradar)
+library(raster)
+library(sf)
+library(rnaturalearth)
 
 # Other functions
 #library(lubridate)

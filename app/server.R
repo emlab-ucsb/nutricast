@@ -126,44 +126,84 @@ shinyServer(function(input, output, session) {
     
     ### Reactive data set based on selected country and climate scenario ---
     aqua_explorer_dat <- eventReactive(c(input$aqua_explorer_select_species,
-                                       input$aqua_explorer_select_scenario,
-                                       input$aqua_explorer_select_year), {
+                                       input$aqua_explorer_select_scenario), {
+
                                          
-                                         plot_dat <- rcp_projections %>%
-                                           dplyr::filter(species == input$aqua_species_select_species & scenario == input$aqua_species_select_scenario & year == input$aqua_explorer_select_year)                  
-                                       })
+          # plot_dat <- rcp_projections %>%
+          #             dplyr::filter(species == input$aqua_explorer_select_species & 
+          #                             scenario == input$aqua_explorer_select_scenario)
+         # Load data
+         scenario <- str_replace(str_replace(input$aqua_explorer_select_scenario, " ", ""), "[.]", "")
+         category <- unique(rcp_projections$group[rcp_projections$species == input$aqua_explorer_select_species])
+         species <- str_replace(input$aqua_explorer_select_species, " ", "_")  
+         dat_file_name <- paste0(scenario, "_", category, "_", species, ".Rds")
+         
+         data <- readRDS(paste0("./data/raw/", dat_file_name))
+         
+         })
     
-    ### Update species select input based on year and RCP selected  ---------
+    ### Update scenario select input based species selected  ---------
+    observe({
+
+      # Viable Species ordered
+      possible_scenarios_years <- rcp_projections %>%
+        dplyr::filter(species == input$aqua_explorer_select_species) %>%
+        distinct(species, scenario, year)
+
+      scenarios <- unique(possible_scenarios_years$scenario)
+      
+      # Update input
+      updateSelectizeInput(session,
+                           "aqua_explorer_select_scenario",
+                           choices = scenarios)
+      
+    })
+    
+    ### Update species select input based on scenario selected  ---------
     # observe({
     #   
-    #   # Viable Species ordered 
-    #   possible_species <- eez_species_dat() %>%
-    #     dplyr::select(species, rank)
+    #   # Viable Species ordered
+    #   possible_species_years <- rcp_projections %>%
+    #     dplyr::filter(scenario == input$aqua_explorer_select_scenario) %>%
+    #     distinct(species, scenario, year)
     #   
-    #   # Only allow species that are viable in 2100 to be selected
-    #   viable_species <- nutrient_dat_pmax %>%
-    #     inner_join(viable_species_ordered, by = "species") %>%
-    #     mutate(species = fct_reorder(species, rank))
+    #   scenarios <- unique(possible_scenarios_years$scenario)
     #   
     #   # Update input
-    #   updateSelectizeInput(session, 
-    #                        "aqua_species_select_species",
-    #                        choices = levels(viable_species$species))
+    #   updateSelectizeInput(session,
+    #                        "aqua_species_select_scenario",
+    #                        choices = scenarios)
+    #   
     # })
     
     ### Production map for selected species ---------
     output$future_species_production_map <- renderPlot({
+
+      req(nrow(aqua_explorer_dat()) > 0,
+          input$aqua_explorer_select_year)
+
+      # Filter for year, and plot 
+      plot_dat <- aqua_explorer_dat() %>%
+        dplyr::filter(year == input$aqua_explorer_select_year)
       
-      req(nrow(aqua_explorer_dat()) > 0)
-      
-      browser()
-      # Subset data
+      # data_raster <- raster::rasterFromXYZ(data,
+      #                                      crs = "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs")
+      #    
       
       # Plot data
-      # g <- ggradar(plot_data) + 
-      #   theme(legend.position = "right")
-      # g
+      g <- ggplot() +
+        geom_sf(data = worldmap) + 
+        coord_sf(crs = st_crs('+proj=moll'),
+                 expand = F) +
+        geom_raster(data = plot_dat, aes(x = x, y = y), fill = "red")+
+        labs(x = "", y = "")+
+        theme_bw()+
+        # scale_x_continuous(limits = c(-18086282, 18083718))+
+        # scale_y_continuous(limits = c(-9069952, 9070048))+
+        theme(axis.text = element_blank())
       
+      g
+
     })
     
 

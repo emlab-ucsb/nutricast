@@ -22,3 +22,6 @@ aqua-species,aqua-species-nutrition,Nutrition information by species,,second sec
 aqua-species,aqua_species_select_species,Select a species,,select species widget
 aqua-species,aqua_species_select_species_group,Filter by species type,,select finfish/bivalve widget
 aqua-explorer,aqua-explorer,Production potential by site,,title of aqua-explorer tab
+aqua-explorer,aqua_explorer_select_species,Select a species,,
+aqua-explorer,aqua_explorer_select_scenario,Select a climate scenario,,
+aqua-explorer,aqua_explorer_select_year,Year,,

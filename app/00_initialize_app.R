@@ -15,8 +15,14 @@ text <- read_csv("./text/app_text.csv")
 ### ----------------------------------
 
 ### 1) EEZ raster
-# eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
-# browser()
+eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
+eez_10km_df <- raster::as.data.frame(eez_raster_10km, xy = T)
+
+#browser()
+
+worldmap <- ne_countries(scale = 'small', 
+                         type = 'map_units',
+                         returnclass = 'sf')
 
 ### 2) Future bivalve/finfish aquaculture production projections by country (Chris Free)
 production_future_bivalve_dat <- read.csv("./data/bivalve_mariculture_potential_by_eez_rcp.csv", stringsAsFactors = F) %>%
@@ -100,8 +106,9 @@ rcp_projections <- rcp_26_projections %>%
   bind_rows(rcp_45_projections) %>%
   bind_rows(rcp_60_projections) %>%
   bind_rows(rcp_85_projections) %>%
-  left_join(ter_sov_lookup, by = c("eez_id" = "eez_code")) %>%
-  arrange(species, scenario)
+  left_join(ter_sov_lookup, by = c("eez_id" = "eez_code"))
+
+species_choices <- sort(unique(rcp_projections$species))
 
 ### 5) Nutrition information
 load("./data/Vaitla_etal_2018_nutrient_data.Rdata")
