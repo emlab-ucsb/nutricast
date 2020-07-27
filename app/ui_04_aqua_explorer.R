@@ -58,11 +58,11 @@ AquaExplorer <- function(){
     # Future production by species ranked
     column(12,
            
-           # Header
-           tags$h4(text$item_label[text$item_id == "aqua-species-ranked"]),
-           
-           # Intro
-           includeHTML("./text/aqua_species_bar_plot.html"),
+           # # Header
+           # tags$h4(text$item_label[text$item_id == "aqua-species-ranked"]),
+           # 
+           # # Intro
+           # includeHTML("./text/aqua_species_bar_plot.html"),
            
            # Plot
            plotOutput("future_species_production_map")

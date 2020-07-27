@@ -26,6 +26,7 @@ library(ggradar)
 library(raster)
 library(sf)
 library(rnaturalearth)
+library(rnaturalearthdata)
 
 # Other functions
 #library(lubridate)
