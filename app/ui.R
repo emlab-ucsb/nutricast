@@ -72,14 +72,14 @@ shinyUI(
               ) # /h3
             ), # /tags$li
             
-            # SFG logo
-            tags$li(
-                class = "dropdown",
-                a(href = 'http://sfg.msi.ucsb.edu/',
-                  img(src = 'sfg_logo_b.png', title = text$item_label[text$item_id == "sfg_logo"], height = "30px"), 
-                  style = "padding-top:10px; padding-bottom:10px;"
-                ) # /a
-            ), # /tags$li
+            # # SFG logo
+            # tags$li(
+            #     class = "dropdown",
+            #     a(href = 'http://sfg.msi.ucsb.edu/',
+            #       img(src = 'sfg_logo_b.png', title = text$item_label[text$item_id == "sfg_logo"], height = "30px"), 
+            #       style = "padding-top:10px; padding-bottom:10px;"
+            #     ) # /a
+            # ), # /tags$li
             
             # emLab logo
             tags$li(

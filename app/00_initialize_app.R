@@ -100,7 +100,8 @@ rcp_projections <- rcp_26_projections %>%
   bind_rows(rcp_45_projections) %>%
   bind_rows(rcp_60_projections) %>%
   bind_rows(rcp_85_projections) %>%
-  left_join(ter_sov_lookup, by = c("eez_id" = "eez_code"))
+  left_join(ter_sov_lookup, by = c("eez_id" = "eez_code")) %>%
+  arrange(species, scenario)
 
 ### 5) Nutrition information
 load("./data/Vaitla_etal_2018_nutrient_data.Rdata")

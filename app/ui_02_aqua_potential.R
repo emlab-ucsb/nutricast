@@ -40,7 +40,7 @@ AquaPotential <- function(){
            tags$h4(text$item_label[text$item_id == "aqua-potential-historical"]),
            
            # Intro
-           includeHTML("./text/aqua_potential_historical.html"),
+           includeHTML("./text/aqua_potential_historical_plot.html"),
         
            # Plot
            plotOutput("historical_production_plot")
@@ -54,7 +54,7 @@ AquaPotential <- function(){
            tags$h4(text$item_label[text$item_id == "aqua-potential-future"]),
            
            # Intro
-           includeHTML("./text/aqua_potential_historical.html"),
+           includeHTML("./text/aqua_potential_future_plot.html"),
            
            # Plot
            plotOutput("future_production_plot")

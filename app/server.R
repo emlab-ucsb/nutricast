@@ -5,22 +5,6 @@
 ### --------------------------------------
 
 shinyServer(function(input, output, session) {
-    
-    ### ----------------------------------
-    ### General/Nav ----------------------
-    ### ----------------------------------
-
-    # output$plotly_example <- renderPlot({
-    # 
-    #     # generate bins based on input$bins from ui.R
-    #     x  <- faithful[, 2]
-    #     bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    # 
-    #     # draw the histogram with the specified number of bins
-    #     hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    # 
-    # })
-    # 
   
     ### ----------------------------------
     ### aqua-potential Tab ---------------
@@ -117,7 +101,7 @@ shinyServer(function(input, output, session) {
                            choices = levels(viable_species$species))
     })
     
-    ### Nutrition radar plot for selected species (no more than 5) ---------
+    ### Nutrition radar plot for selected species (no more than 10) ---------
     output$future_species_nutrition <- renderPlot({
       
       req(nrow(eez_species_dat()) > 0,
@@ -136,59 +120,52 @@ shinyServer(function(input, output, session) {
       
     })
     
-  
     ### ----------------------------------
-    ### Tab 1 ----------------------------
+    ### aqua-explorer Tab ---------------
     ### ----------------------------------
     
-    ### Sample value box with date
-    output$value_box_1 <- renderValueBox({
-        
-        valueBox(
-            value = today(),
-            subtitle = text$item_label[text$item_id == "value_box_1"],
-            icon = icon(text$item_icon[text$item_id == "value_box_1"]),
-            color = "aqua"
-        )
+    ### Reactive data set based on selected country and climate scenario ---
+    aqua_explorer_dat <- eventReactive(c(input$aqua_explorer_select_species,
+                                       input$aqua_explorer_select_scenario,
+                                       input$aqua_explorer_select_year), {
+                                         
+                                         plot_dat <- rcp_projections %>%
+                                           dplyr::filter(species == input$aqua_species_select_species & scenario == input$aqua_species_select_scenario & year == input$aqua_explorer_select_year)                  
+                                       })
+    
+    ### Update species select input based on year and RCP selected  ---------
+    # observe({
+    #   
+    #   # Viable Species ordered 
+    #   possible_species <- eez_species_dat() %>%
+    #     dplyr::select(species, rank)
+    #   
+    #   # Only allow species that are viable in 2100 to be selected
+    #   viable_species <- nutrient_dat_pmax %>%
+    #     inner_join(viable_species_ordered, by = "species") %>%
+    #     mutate(species = fct_reorder(species, rank))
+    #   
+    #   # Update input
+    #   updateSelectizeInput(session, 
+    #                        "aqua_species_select_species",
+    #                        choices = levels(viable_species$species))
+    # })
+    
+    ### Production map for selected species ---------
+    output$future_species_production_map <- renderPlot({
+      
+      req(nrow(aqua_explorer_dat()) > 0)
+      
+      browser()
+      # Subset data
+      
+      # Plot data
+      # g <- ggradar(plot_data) + 
+      #   theme(legend.position = "right")
+      # g
+      
     })
     
-    ### Sample value box with value
-    output$value_box_2 <- renderValueBox({
-        
-        valueBox(
-            value = round(runif(1, min = 456, max = 1256)),
-            subtitle = text$item_label[text$item_id == "value_box_2"],
-            icon = icon(text$item_icon[text$item_id == "value_box_2"]),
-            color = "maroon"
-        )
-    })
-    
-    ### Sample plot 1 
-    output$plot_1 <- renderPlot({
-        
-        ggplot(dat, aes(x = mpg, color = cyl, fill = cyl, group = cyl))+
-            geom_density()+
-            theme_classic()
-        
-    })
-    
-    ### Sample plot 2 
-    output$plot_2 <- renderPlot({
-        
-        ggplot(dat, aes(x = hp, y = mpg, color = cyl, fill = cyl))+
-            geom_point()+
-            theme_classic()
-        
-    })
-    
-    ### ----------------------------------
-    ### Tab 2 ----------------------------
-    ### ----------------------------------
-    
-    
-    ### ----------------------------------
-    ### Tab 3 ----------------------------
-    ### ----------------------------------
 
 })
 
