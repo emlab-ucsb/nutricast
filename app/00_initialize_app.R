@@ -14,6 +14,19 @@ text <- read_csv("./text/app_text.csv")
 ### App data -------------------------
 ### ----------------------------------
 
+### 0) Let's see if we can figure out to set up an API to link to files stored on Google Drive (should speed up app hosting significantly)
+# Ultimately it would probably be good to make this more secure... 
+# google_app <- httr::oauth_app(
+#   "google-app",
+#   key = "458956698118-dif8ifchgf0ob0pij2n4gcsql6m14e75.apps.googleusercontent.com",
+#   secret = "gtCUX5snOXD4otTCJpz0lEzo"
+# )
+# drive_auth_configure(app = google_app)
+# 
+# # Set data file path (in google drive)
+# drive_file_path <- "~Shared"
+# drive_find("RCP26")
+
 ### 1) EEZ raster
 # eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
 # eez_10km_df <- raster::as.data.frame(eez_raster_10km, xy = T)

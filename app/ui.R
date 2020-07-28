@@ -30,6 +30,8 @@ library(rnaturalearthdata)
 
 # Other functions
 #library(lubridate)
+library(googledrive)
+library(gargle)
 library(tidyverse)
 
 # Source file that loads/wrangles data and text
