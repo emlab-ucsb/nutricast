@@ -1,15 +1,31 @@
 ﻿tab_id,item_id,item_label,item_icon,description
-header,app-title,Aquaculture and climate change web explorer,,
-header,sfg_logo,The Sustainable Fisheries Group,,
+header,app-title,NutriCast,,
+header,harvard_logo,Harvard School of Public Health,,
+header,edf_logo,The Environmental Defense Fund,,
 header,emlab_logo,The Environmental Market Solutions Lab,,
-tab-1,tab-1,Tab 1,,
-tab-1,value_box_1,Date last updated,calendar,
-tab-1,value_box_2,Sample value box,fish,
-tab-1,w_dropdown_fancy,Fancy dropdown menu,,
-tab-1,plot_1_section,This is a plot in a box,,
-tab-2,tab-2,Tab 2,microscope,
-tab-3,tab-3,Tab 3,chart-bar,
+,,,,
 overview,overview,Overview,,title of overview tab
+overview,introduction,Introduction,,
+overview,marine_seafood_production_scenarios,Marine Seafood Production Scenarios,,
+overview,references_contact,References & Contact,,
+,,,,
+global-national-outlook,global-national-outlook,Global & National Outlook,,
+global-national-outlook,population_growth,Population Growth,,
+global-national-outlook,nutrient_demand,Nutrient Demand,,
+global-national-outlook,marine_seafood_as_source_nutrients,Marine Seafood as a Source of Nutrients,,
+global-national-outlook,future_seafood_supply,Future Seafood Supply & Nutrient Contributions,,
+,,,,
+national-nutrition-data,national-nutrition-data,National Nutrition Data,,
+national-nutrition-data,seafood_consumption,Seafood Consumption & Nutrient Contributions,,
+national-nutrition-data,nutritional_health,Nutritional Health,,
+national-nutrition-data,nutrient_consumption_profiles,Nutrient Consumption Profiles,,
+,,,,
+seafood-reforms,seafood-reforms,Nutrition-Sensitive Seafood Reforms,,
+seafood-reforms,seafood_nutrition_content,Seafood Nutrition Content,,
+seafood-reforms,fisheries_reforms,Fisheries Reforms,,
+seafood-reforms,aquaculture_reforms,Aquaculture Reforms,,
+seafood-reforms,mariculture_site_explorer,Mariculture Site Explorer,,
+,,,,
 aqua-potential,aqua-potential,Aquaculture production potential,,title of aqua-potential tab
 aqua-potential,aqua_potential_select_country,Select a country,,select country widget
 aqua-potential,aqua-potential-historical,Historical aquaculture production,,first section header
@@ -17,7 +33,7 @@ aqua-potential,aqua-potential-future,Projected production under climate change,,
 aqua-species,aqua-species,Potential aquaculture species,,title of aqua-species tab
 aqua-species,aqua_species_select_country,Select a country,,select country widget
 aqua-species,aqua_species_select_scenario,Select a climate scenario,,select scenario widget
-aqua-species,aqua-species-ranked,Projected production by species,,first section header
+aqua-species,aqua-species-ranked,Projected production by species,,harvard_logo
 aqua-species,aqua-species-nutrition,Nutrition information by species,,second section header
 aqua-species,aqua_species_select_species,Select a species,,select species widget
 aqua-species,aqua_species_select_species_group,Filter by species type,,select finfish/bivalve widget

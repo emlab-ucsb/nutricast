@@ -78,14 +78,23 @@ shinyUI(
               ) # /h3
             ), # /tags$li
             
-            # # SFG logo
-            # tags$li(
-            #     class = "dropdown",
-            #     a(href = 'http://sfg.msi.ucsb.edu/',
-            #       img(src = 'sfg_logo_b.png', title = text$item_label[text$item_id == "sfg_logo"], height = "30px"), 
-            #       style = "padding-top:10px; padding-bottom:10px;"
-            #     ) # /a
-            # ), # /tags$li
+            # Harvard logo
+            tags$li(
+                class = "dropdown",
+                a(href = 'https://www.hsph.harvard.edu/',
+                  img(src = 'harvard_logo.jpg', title = text$item_label[text$item_id == "harvard_logo"], height = "30px"), 
+                  style = "padding-top:10px; padding-bottom:10px;"
+                ) # /a
+            ), # /tags$li
+            
+            # EDF logo
+            tags$li(
+                class = "dropdown",
+                a(href = 'https://www.edf.org/',
+                  img(src = 'edf_logo.jpg', title = text$item_label[text$item_id == "edf_logo"], height = "30px"), 
+                  style = "padding-top:10px; padding-bottom:10px;"
+                ) # /a
+            ), # /tags$li
             
             # emLab logo
             tags$li(
@@ -102,7 +111,7 @@ shinyUI(
         dashboardSidebar(
             
             # Width of sidebar menu
-            width = "250px",
+            width = "350px",
             
             # Want it collapsed by default
             collapsed = F,
@@ -117,29 +126,119 @@ shinyUI(
                 id = "menu-items",
                 
                 ### Overview ---
-                menuItem(text$item_label[text$item_id == "overview"], 
-                         tabName = "overview", 
-                         #icon = NULL,
-                         selected = TRUE),
+                menuItem(text$item_label[text$item_id == "overview"],
+                         icon = NULL,
+                         
+                         # Blank placeholder
+                         menuSubItem("",
+                                     tabName = "overview",
+                                     icon = NULL),
+                         
+                         # Introduction
+                         menuSubItem(actionLink("al_introduction", text$item_label[text$item_id == "introduction"]),
+                                     tabName = "overview_01",
+                                     icon = NULL),
+                         
+                         # Marine Seafood Production Scenarios
+                         menuSubItem(actionLink("al_marine_seafood_production_scenarios", text$item_label[text$item_id == "marine_seafood_production_scenarios"]),
+                                  tabName = "overview_02",
+                                  icon = NULL),
+                         
+                         # References & Contact
+                         menuSubItem(actionLink("al_references_contact", text$item_label[text$item_id == "references_contact"]),
+                                  tabName = "overview_03",
+                                  icon = NULL)
+                         
+                ),
                 
-                ### Aquaculture potential ---
-                menuItem(text$item_label[text$item_id == "aqua-potential"], 
-                         tabName = "aqua-potential", 
-                         #icon = icon(text$item_icon[text$item_id == "tab-2"]),
-                         selected = FALSE),
+                ### Global & National Outlook ---
+                menuItem(text$item_label[text$item_id == "global-national-outlook"],
+                         icon = NULL,
+                         
+                         # Blank placeholder
+                         menuSubItem("",
+                                     tabName = "global-national-outlook",
+                                     icon = NULL),
+                         
+                         # Population Growth
+                         menuSubItem(actionLink("al_population_growth", text$item_label[text$item_id == "population_growth"]),
+                                     tabName = "global-national-outlook-01",
+                                     icon = NULL),
+                         
+                         # Nutrient Demand
+                         menuSubItem(actionLink("al_nutrient_demand", text$item_label[text$item_id == "nutrient_demand"]),
+                                     tabName = "global-national-outlook-02",
+                                     icon = NULL),
+                         
+                         # Marine Seafood as a Source of Nutrients
+                         menuSubItem(actionLink("al_marine_seafood_as_source_nutrients", text$item_label[text$item_id == "marine_seafood_as_source_nutrients"]),
+                                     tabName = "global-national-outlook-03",
+                                     icon = NULL),
+                         
+                         # Future Seafood Supply & Nutrient Contributions
+                         menuSubItem(actionLink("al_future_seafood_supply", text$item_label[text$item_id == "future_seafood_supply"]),
+                                     tabName = "global-national-outlook-04",
+                                     icon = NULL)
+                         
+                ),
                 
-                ### Aquaculture species ---
-                menuItem(text$item_label[text$item_id == "aqua-species"],
-                         tabName = "aqua-species",
-                         #icon = icon(text$item_icon[text$item_id == "tab-3"]),
-                         selected = FALSE),
+                ### National Nutrition Data ---
+                menuItem(text$item_label[text$item_id == "national-nutrition-data"],
+                         icon = NULL,
+                         
+                         # Blank placeholder
+                         menuSubItem("",
+                                     tabName = "national-nutrition-data",
+                                     icon = NULL),
+                         
+                         # Seafood Consumption & Nutrient Contributions
+                         menuSubItem(actionLink("al_seafood_consumption", text$item_label[text$item_id == "seafood_consumption"]),
+                                     tabName = "national-nutrition-data-01",
+                                     icon = NULL),
+                         
+                         # Nutritional Health
+                         menuSubItem(actionLink("al_nutritional_health", text$item_label[text$item_id == "nutritional_health"]),
+                                     tabName = "national-nutrition-data-02",
+                                     icon = NULL),
+                         
+                         # Nutrient Consumption Profiles
+                         menuSubItem(actionLink("al_nutrient_consumption_profiles", text$item_label[text$item_id == "nutrient_consumption_profiles"]),
+                                     tabName = "national-nutrition-data-03",
+                                     icon = NULL)
+                         
+                ),
                 
-                ### Aquaculture site explorer ---
-                menuItem(text$item_label[text$item_id == "aqua-explorer"],
-                         tabName = "aqua-explorer",
-                         #icon = icon(text$item_icon[text$item_id == "tab-3"]),
-                         selected = FALSE)
-                
+                ### Nutrition-Sensitive Seafood Reforms ---
+                menuItem(text$item_label[text$item_id == "seafood-reforms"],
+                         icon = NULL,
+                         
+                         # Blank placeholder
+                         menuSubItem("",
+                                     tabName = "seafood-reforms",
+                                     icon = NULL),
+                         
+                         # Seafood Nutrition Content
+                         menuSubItem(actionLink("al_seafood_nutrition_content", text$item_label[text$item_id == "seafood_nutrition_content"]),
+                                     tabName = "seafood-reforms-01",
+                                     icon = NULL),
+                         
+                         # Fisheries Reforms
+                         menuSubItem(actionLink("al_fisheries_reforms", text$item_label[text$item_id == "fisheries_reforms"]),
+                                     tabName = "seafood-reforms-02",
+                                     icon = NULL),
+                         
+                         # Nutrient Consumption Profiles
+                         menuSubItem(actionLink("al_aquaculture_reforms", text$item_label[text$item_id == "aquaculture_reforms"]),
+                                     tabName = "seafood-reforms-03",
+                                     icon = NULL),
+                         
+                         # Nutrient Consumption Profiles
+                         menuSubItem(actionLink("al_mariculture_site_explorer", text$item_label[text$item_id == "mariculture_site_explorer"]),
+                                     tabName = "seafood-reforms-04",
+                                     icon = NULL)
+                         
+                )
+
             ) # /sidebarMenu
         ), #/dashboardSidebar
         
@@ -147,31 +246,42 @@ shinyUI(
         dashboardBody(
           
           # Custom stylesheet
-          tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "app_css.css")),
+          tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "NutriCast.css")),
             
             # Tabs
             tabItems(
                 
-                ### Overview ---
+                ### Overview --- 
                 tabItem(tabName = "overview",
+                        
                         Overview()
+                        
                 ),
                 
-                ### Aquaculture potential ---
-                tabItem(tabName = "aqua-potential",
-                        AquaPotential()
+                ### Global & National Outlook --- 
+                tabItem(tabName = "global-national-outlook",
+                        
+                        fluidPage()
+                        #GlobalNationalOutlook()
+                        
                 ),
                 
-                ### Aquaculture species ---
-                tabItem(tabName = "aqua-species",
-                        AquaSpecies()
+                ### National Nutrition Data ---
+                tabItem(tabName = "national-nutrition-data",
+                        
+                        fluidPage()
+                        #GlobalNationalOutlook()
+                        
                 ),
                 
-                ### Aquaculture site explorer ---
-                tabItem(tabName = "aqua-explorer",
-                        AquaExplorer()
+                ### Nutrition-Sensitive Seafood Reforms ---
+                tabItem(tabName = "seafood-reforms",
+                        
+                        fluidPage()
+                        #GlobalNationalOutlook()
+                        
                 )
-                
+
             ) # /tabItems
             
         ) # /dashboardBody

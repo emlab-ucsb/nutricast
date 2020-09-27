@@ -1,0 +1,125 @@
+/*-------*/
+/* Setup */
+/*-------*/
+
+:root {
+    --main-color: #1a2d3f;
+    --secondary-color: #4c5d6c;
+    --accent-color: #0d5ba2;
+    --accent-color-2: #23A085;
+    --grey-dark: #6f6f6f;
+    --grey-text: #404040;
+    --grey-light: #f7f8f9;
+}
+
+@font-face {
+    font-family: Avenir-Book;
+    src: url(Avenir-Book.ttf) format('truetype');
+}
+
+
+/*--------------------------------------------*/
+/* Shiny Dashboard Header - dashboardHeader() */
+/*--------------------------------------------*/
+  
+/* navigation bar */
+.skin-black .main-header .navbar {
+  box-shadow: 0 0 1px 0 var(--grey-dark);
+}
+
+/* logo (title container) - hidden for this app */
+.skin-black .main-header .logo {
+   padding: 0;
+   margin: 0;
+}
+
+/* logo (title container) when hovered - hidden for this app */
+/*.skin-black .main-header .logo:hover {
+  background-color: #ecf0f5;
+}*/
+
+/* sidebar menu toggle button */
+.skin-black .main-header .navbar .sidebar-toggle {
+  text-decoration: none;
+}
+
+/*----------------------------------------------*/
+/* Shiny Dashboard Sidebar - dashboardSidebar() */
+/*----------------------------------------------*/
+  
+/* sidebar container */
+.skin-black .main-sidebar {
+  padding-top: 60px; /* spacing to allow for top nav bar */
+  background-color: var(--main-color); /* background color for sidebar */
+  padding-bottom: 60px;
+}
+
+/* menu item text */
+.skin-black .sidebar-menu>li>a {
+  color: #ffffff;
+  text-decoration: none!important;
+}
+
+.skin-black .sidebar-menu>li>a:link {
+  text-decoration: none!important;
+}
+
+/* active selected tab in the sidebar */
+.skin-black .sidebar-menu>li.active>a {
+  background-color: var(--accent-color);
+  border-left-color: var(--accent-color);
+}
+
+/* hover over a tab in the sidebar */
+.skin-black .sidebar-menu>li:hover>a {
+  background-color: var(--accent-color);
+  border-left-color: var(--accent-color);
+}
+
+/* Submenu container */
+.skin-black .sidebar-menu>li>.treeview-menu {
+  margin: 0;
+  padding: 0;
+  background: var(--secondary-color);
+  border-left: 3px solid transparent;
+}
+  
+/* Submenu container - expanded */
+.skin-black .sidebar-menu>li>.menu-expanded {
+}
+
+/*----------------------------------------------*/
+/* Shiny Dashboard Body - dashboardBody() */
+/*----------------------------------------------*/
+  
+/* Content wrapper - includes both sidebar and content */
+.skin-black .wrapper {
+  background-color: #ffffff;
+}
+
+/* Content wrapper - includes only content */
+.skin-black div.content-wrapper{
+  background: #ffffff;
+  height: auto;
+}
+
+/* --------------- */
+/* Nav Panel */
+/* --------------- */
+
+#al_introduction, #al_marine_seafood_production_scenarios, #al_references_contact, #al_population_growth, #al_nutrient_demand, #al_marine_seafood_as_source_nutrients, #al_future_seafood_supply, #al_seafood_consumption, #al_nutritional_health, #al_nutrient_consumption_profiles, #al_seafood_nutrition_content, #al_fisheries_reforms, #al_aquaculture_reforms, #al_mariculture_site_explorer {
+  margin: -10pt 0 0 0;
+  padding: 0 0 10pt 20pt;
+  text-decoration: none;
+}
+
+/* --------------- */
+/* Custom */
+/* --------------- */
+
+#custom-header-container {
+  position: absolute;
+  left: 75px;
+  text-align: center;
+}
+

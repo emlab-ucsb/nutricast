@@ -8,7 +8,8 @@
 ### App text -------------------------
 ### ----------------------------------
 
-text <- read_csv("./text/app_text.csv")
+text <- read_csv("./text/app_text.csv") %>%
+  dplyr::filter(!is.na(tab_id))
 
 ### ----------------------------------
 ### App data -------------------------
