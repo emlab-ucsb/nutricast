@@ -13,9 +13,10 @@
 }
 
 @font-face {
-    font-family: Avenir-Book;
-    src: url(Avenir-Book.ttf) format('truetype');
+    font-family: Helvetica;
 }
+
+* { font-family: Helvetica; }
 
 /* rows - fluidRow() */
 .row {
@@ -214,6 +215,55 @@
    text-align: center;
    padding: 5% 10% 5%;
    width: 100%;
+}
+
+/* Table structure for top header */
+#overview-table {
+  width: 100%;
+  vertical-align: middle;
+  table-layout: fixed;
+}
+
+#overview-table-row{
+  width: 100%;
+  padding: 0;
+}
+
+#overview-table-cell-1{
+  width: 33%;
+  text-align: right;
+}
+
+#overview-table-cell-2{
+  width: 33%;
+  text-align: center;
+}
+
+#overview-table-cell-3{
+  width: 33%;
+  text-align: left;
+}
+
+/* Button appearance */
+#ab_overview_to_global_national_outlook, #ab_overview_to_national_nutrition_data, #ab_overview_to_seafood_reforms {
+  background-color: var(--accent-color);
+  width: 80%;
+  color: #ffffff;
+  white-space: normal;
+  padding: 20px;
+}
+
+#ab_overview_to_global_national_outlook i, #ab_overview_to_national_nutrition_data i, #ab_overview_to_seafood_reforms i {
+  padding-left: 10px;
+  color: var(--accent-color-2);
+}
+
+#ab_overview_to_global_national_outlook:hover, #ab_overview_to_national_nutrition_data:hover, #ab_overview_to_seafood_reforms:hover {
+  background-color: var(--accent-color-2);
+}
+
+#ab_overview_to_global_national_outlook:hover i, #ab_overview_to_national_nutrition_data:hover i, #ab_overview_to_seafood_reforms:hover i {
+  color: #ffffff;
 }
 
 

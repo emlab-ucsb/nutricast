@@ -49,24 +49,52 @@ Overview <- function(){
            includeHTML("./text/01-overview/introduction.html")
     ),
     
-    # Marine Seafood Production Scenarios
+    # Section navigation buttons
     column(12, id = "spaced-div",
            
-           # Header
-           h3(text$item_label[text$item_id == "marine_seafood_production_scenarios"])
-           
-           # Page text
-           #includeHTML("./text/overview_text.html")
+           # table
+           tags$table(id = "overview-table",
+             tags$tr(id = "overview-table-row",
+               tags$td(id = "overview-table-cell-1",
+                 
+                 actionButton("ab_overview_to_global_national_outlook",
+                              tags$b(text$item_label[text$item_id == "ab_overview_to_global_national_outlook"], icon("caret-right")))
+                 
+               ),
+               tags$td(id = "overview-table-cell-2",
+                 
+                 actionButton("ab_overview_to_national_nutrition_data",
+                              tags$b(text$item_label[text$item_id == "ab_overview_to_national_nutrition_data"], icon("caret-right")))
+                 
+               ),
+               tags$td(id = "overview-table-cell-3",
+                 
+                 actionButton("ab_overview_to_seafood_reforms",
+                              tags$b(text$item_label[text$item_id == "ab_overview_to_seafood_reforms"], icon("caret-right")))
+                 
+               )
+             )
+           )
     ),
     
     # Marine Seafood Production Scenarios
     column(12, id = "spaced-div",
            
            # Header
-           h3(text$item_label[text$item_id == "references_contact"])
+           h3(text$item_label[text$item_id == "marine_seafood_production_scenarios"]),
            
            # Page text
-           #includeHTML("./text/overview_text.html")
+           includeHTML("./text/01-overview/marine_seafood_production_scenarios.html")
+    ),
+    
+    # Marine Seafood Production Scenarios
+    column(12, id = "spaced-div",
+           
+           # Header
+           h3(text$item_label[text$item_id == "references_contact"]),
+           
+           # Page text
+           includeHTML("./text/01-overview/references_contact.html")
     )
     
   )
