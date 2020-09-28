@@ -261,8 +261,7 @@ shinyUI(
                 ### Global & National Outlook --- 
                 tabItem(tabName = "global-national-outlook",
                         
-                        fluidPage()
-                        #GlobalNationalOutlook()
+                        GlobalNationalOutlook()
                         
                 ),
                 

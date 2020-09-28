@@ -9,7 +9,7 @@ Overview <- function(){
   fluidPage(
     
       # page style
-      style = "color: #ffffff; padding-bottom: 40px;",
+      style = "padding-bottom: 40px;",
       
       # open links in new window
       tags$head(tags$base(target = "_blank")),
@@ -17,82 +17,56 @@ Overview <- function(){
       ### Image with text -------------------
       
       # Parent container: landing page header (photo + overlay)
-      tags$div(class = "landing-wrapper",
+      tags$div(id = "overview_div",
                
                # Child element 1: background image
-               tags$div(class = "picture-wrapper",
+               tags$div(id = "overview_picture_div",
                         
-                        tags$img(src = "intro-background.jpg")
+                        tags$img(src = "overview_photo.jpg")
                ),
                
                # Child element 2: overlay
-               tags$div(class = "picture-overlay-black",
+               tags$div(id = "overview_picture_overlay",
                         
                         # Main Text
-                        tags$div(class = "picture-overlay-main-text",
+                        tags$div(id = "overview_picture_overlay_text",
                                  
-                                 includeHTML("./text/01-overview/background.html")
-                                 
-                        ),
-                        
-                        # Buttons
-                        
-                        tags$div(class = "picture-overlay-button-row",
-                                 
-                                 tags$div(class = "picture-overlay-button-wrapper-l",
-                                          
-                                          actionButton("ab_overview_to_global",
-                                                       tags$h4(text$item_label[text$item_id == "ab_introduction_to_selected_results"]))
-                                          
-                                 ),
-                                 
-                                 tags$div(class = "picture-overlay-button-wrapper-c",
-                                          
-                                          actionButton("ab_overview_to_national",
-                                                       tags$h4(text$item_label[text$item_id == "ab_introduction_to_methods_process"]))
-                                          
-                                 ),
-                                 
-                                 tags$div(class = "picture-overlay-button-wrapper-c",
-                                          
-                                          actionButton("ab_overview_to_reforms",
-                                                       tags$h4(text$item_label[text$item_id == "ab_introduction_to_methods_process"]))
-                                          
-                                 ),
-                                 
-                                 tags$div(class = "picture-overlay-button-wrapper-r",
-                                          
-                                          actionButton("ab_overview_to_nutrition",
-                                                       tags$h4(text$item_label[text$item_id == "ab_introduction_to_global_subsidies"]))
-                                          
-                                 )
-                                 
-                        ),
-                        
-                        # Footer
-                        tags$div(class = "picture-overlay-footer-row",
-                                 
-                                 tags$div(class = "picture-overlay-footer-wrapper",
-                                          
-                                          actionLink("al_introduction_to_need_help",
-                                                     tags$h4(text$item_label[text$item_id == "al_introduction_to_need_help"]))
-                                          
-                                 )
-                                 
-                        ) # /div picture-overlay-row
-                        
-               ) # /div picture-overlay-black
+                                 tags$h1(text$item_label[text$item_id == "app-title"]),
+                                 tags$h3(text$item_label[text$item_id == "overview_header"])
+                        )
+                     
+               ) # /div
                
-      ), # /div landing-wrapper
+      ), # /div 
     
     # Introduction
-    column(12,
+    column(12, id = "spaced-div",
+
+           # Header
+           h3(text$item_label[text$item_id == "introduction"]),
+
+           # Page text
+           includeHTML("./text/01-overview/introduction.html")
+    ),
+    
+    # Marine Seafood Production Scenarios
+    column(12, id = "spaced-div",
            
            # Header
-           h3(text$item_label[text$item_id == "overview"]),
+           h3(text$item_label[text$item_id == "marine_seafood_production_scenarios"])
            
            # Page text
-           includeHTML("./text/overview_text.html")
+           #includeHTML("./text/overview_text.html")
+    ),
+    
+    # Marine Seafood Production Scenarios
+    column(12, id = "spaced-div",
+           
+           # Header
+           h3(text$item_label[text$item_id == "references_contact"])
+           
+           # Page text
+           #includeHTML("./text/overview_text.html")
     )
     
   )
