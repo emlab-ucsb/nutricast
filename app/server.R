@@ -69,6 +69,11 @@ shinyServer(function(input, output, session) {
   ### -------------------------------------------
   
   # Navigation links to national-nutrition-data tab
+  observeEvent(input$al_protein_intake, {
+    updateTabItems(session, "menu-items", "national-nutrition-data")
+    ### Bring to top of page
+  })
+  
   observeEvent(input$al_seafood_consumption, {
     updateTabItems(session, "menu-items", "national-nutrition-data")
     ### Bring to top of page

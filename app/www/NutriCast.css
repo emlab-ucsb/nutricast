@@ -133,11 +133,16 @@
 /* Nav Panel */
 /* --------------- */
 
-#al_introduction, #al_marine_seafood_production_scenarios, #al_references_contact, #al_population_growth, #al_nutrient_demand, #al_marine_seafood_as_source_nutrients, #al_future_seafood_supply, #al_seafood_consumption, #al_nutritional_health, #al_nutrient_consumption_profiles, #al_seafood_nutrition_content, #al_fisheries_reforms, #al_aquaculture_reforms, #al_mariculture_site_explorer {
+#al_introduction, #al_marine_seafood_production_scenarios, #al_references_contact, #al_population_growth, #al_nutrient_demand, #al_marine_seafood_as_source_nutrients, #al_future_seafood_supply, #al_protein_intake, #al_seafood_consumption, #al_nutritional_health, #al_nutrient_consumption_profiles, #al_seafood_nutrition_content, #al_fisheries_reforms, #al_aquaculture_reforms, #al_mariculture_site_explorer {
   margin: -10pt 0 0 0;
   padding: 0 0 10pt 20pt;
   text-decoration: none;
   color: #ffffff;
+}
+
+#al_introduction:hover, #al_marine_seafood_production_scenarios:hover, #al_references_contact:hover, #al_population_growth:hover, #al_nutrient_demand:hover, #al_marine_seafood_as_source_nutrients:hover, #al_future_seafood_supply:hover, #al_protein_intake:hover, #al_seafood_consumption:hover, #al_nutritional_health:hover, #al_nutrient_consumption_profiles:hover, #al_seafood_nutrition_content:hover, #al_fisheries_reforms:hover, #al_aquaculture_reforms:hover, #al_mariculture_site_explorer:hover {
+  color: var(--accent-color-2);
+  font-weight: bold;
 }
 
 /* --------------- */

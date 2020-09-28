@@ -191,19 +191,24 @@ shinyUI(
                                      tabName = "national-nutrition-data",
                                      icon = NULL),
                          
+                         # Protein Intake
+                         menuSubItem(actionLink("al_protein_intake", text$item_label[text$item_id == "protein_intake"]),
+                                     tabName = "national-nutrition-data-01",
+                                     icon = NULL),
+                         
                          # Seafood Consumption & Nutrient Contributions
                          menuSubItem(actionLink("al_seafood_consumption", text$item_label[text$item_id == "seafood_consumption"]),
-                                     tabName = "national-nutrition-data-01",
+                                     tabName = "national-nutrition-data-02",
                                      icon = NULL),
                          
                          # Nutritional Health
                          menuSubItem(actionLink("al_nutritional_health", text$item_label[text$item_id == "nutritional_health"]),
-                                     tabName = "national-nutrition-data-02",
+                                     tabName = "national-nutrition-data-03",
                                      icon = NULL),
                          
                          # Nutrient Consumption Profiles
                          menuSubItem(actionLink("al_nutrient_consumption_profiles", text$item_label[text$item_id == "nutrient_consumption_profiles"]),
-                                     tabName = "national-nutrition-data-03",
+                                     tabName = "national-nutrition-data-04",
                                      icon = NULL)
                          
                 ),

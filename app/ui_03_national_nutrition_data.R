@@ -43,24 +43,37 @@ NationalNutritionData <- function(){
       column(12, id = "spaced-div",
              
              # Page text
-             includeHTML("./text/02-global-national-outlook/story_text_1.html")
+             includeHTML("./text/03-national-nutrition-data/story_text_1.html")
              
       ),
       
-      # Content box 1: Population Growth
+      # Content box 1: Protein Intake
       column(12, id = "shaded-div",
              
              column(3, id = "lr-spaced-div",
                     
-                    tags$h4(text$item_label[text$item_id == "population_growth"]),
+                    tags$h4(text$item_label[text$item_id == "protein_intake"]),
                     
-                    includeHTML("./text/02-global-national-outlook/population_growth.html")
+                    includeHTML("./text/03-national-nutrition-data/protein_intake_1.html") ### Make reactive
                     
              ),
              
              column(9, id = "lr-spaced-div",
                     
-                    ### PLOT PLACEHOLDER
+                    tabBox(id = "protein-intake-tabs", width = 12,
+                           
+                           tabPanel(value = "protein-intake-tabs-1",
+                                    text$item_label[text$item_id == "protein-intake-tabs-1"]
+                                    
+                                    ### PLOT PLACEHOLDER
+                           ),
+                           
+                           tabPanel(value = "protein-intake-tabs-2",
+                                    text$item_label[text$item_id == "protein-intake-tabs-2"]
+                                    
+                                    ### PLOT PLACEHOLDER
+                           )
+                    )
                     
              )
              
@@ -70,27 +83,33 @@ NationalNutritionData <- function(){
       column(12, id = "spaced-div",
              
              # Page text
-             includeHTML("./text/02-global-national-outlook/story_text_2.html")
+             includeHTML("./text/03-national-nutrition-data/story_text_2.html")
              
       ),
       
-      # Content box 2: Nutrient Demand
+      # Content box 2: Seafood Consumption & Nutrient Contributions
       column(12, id = "shaded-div",
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "nutrient-demand-tabs", width = 12,
+                    tabBox(id = "seafood-consumption-tabs", width = 12,
                            
-                           tabPanel(value = "nutrient-demand-tabs-1",
-                                   text$item_label[text$item_id == "nutrient-demand-tabs-1"]
+                           tabPanel(value = "seafood-consumption-tabs-1",
+                                   text$item_label[text$item_id == "seafood-consumption-tabs-1"]
                                    
                                    ### PLOT PLACEHOLDER
                            ),
                            
-                           tabPanel(value = "nutrient-demand-tabs-2",
-                                   text$item_label[text$item_id == "nutrient-demand-tabs-2"]
+                           tabPanel(value = "seafood-consumption-tabs-2",
+                                   text$item_label[text$item_id == "seafood-consumption-tabs-2"]
                                    
                                    ### PLOT PLACEHOLDER
+                           ),
+                           
+                           tabPanel(value = "seafood-consumption-tabs-3",
+                                    text$item_label[text$item_id == "seafood-consumption-tabs-3"]
+                                    
+                                    ### PLOT PLACEHOLDER
                            )
                     )
                     
@@ -98,9 +117,9 @@ NationalNutritionData <- function(){
              
              column(3, id = "lr-spaced-div",
                     
-                    tags$h4(text$item_label[text$item_id == "nutrient_demand"]),
+                    tags$h4(text$item_label[text$item_id == "seafood_consumption"]),
                     
-                    includeHTML("./text/02-global-national-outlook/nutrient_demand_1.html") #### MAKE REACTIVE
+                    includeHTML("./text/03-national-nutrition-data/seafood_consumption_1.html") #### MAKE REACTIVE
                     
              )
              
@@ -110,44 +129,24 @@ NationalNutritionData <- function(){
       column(12, id = "spaced-div",
              
              # Page text
-             includeHTML("./text/02-global-national-outlook/story_text_3.html")
+             includeHTML("./text/03-national-nutrition-data/story_text_3.html")
              
       ),
       
-      # Content box 3: Marine Seafood as a Source of Nutrients
+      # Content box 3: Nutritional Health
       column(12, id = "shaded-div",
              
              column(3, id = "lr-spaced-div",
                     
-                    tags$h4(text$item_label[text$item_id == "marine_seafood_as_source_nutrients"]),
+                    tags$h4(text$item_label[text$item_id == "nutritional_health"]),
                     
-                    includeHTML("./text/02-global-national-outlook/marine_seafood_as_source_1.html") #### MAKE REACTIVE
+                    includeHTML("./text/03-national-nutrition-data/nutritional_health.html")
                     
              ),
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "marine-seafood-as-source-tabs", width = 12,
-                           
-                           tabPanel(value = "marine-seafood-as-source-tabs-1",
-                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-1"]
-                                   
-                                   ### PLOT PLACEHOLDER
-                           ),
-                           
-                           tabPanel(value = "marine-seafood-as-source-tabs-2",
-                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-2"]
-                                   
-                                   ### PLOT PLACEHOLDER
-                           ),
-                           
-                           tabPanel(value = "marine-seafood-as-source-tabs-3",
-                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-3"]
-                                   
-                                   ### PLOT PLACEHOLDER
-                           )
-                           
-                    )
+                    ### Plot placeholder
                     
              )
              
@@ -157,37 +156,29 @@ NationalNutritionData <- function(){
       column(12, id = "spaced-div",
              
              # Page text
-             includeHTML("./text/02-global-national-outlook/story_text_4.html")
+             includeHTML("./text/03-national-nutrition-data/story_text_4.html")
              
       ),
       
-      # Content box 4: Future Seafood Supply & Nutrient Contributions
+      # Content box 4: Nutrient Consumption Profiles
       column(12, id = "shaded-div",
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "future-seafood-supply-tabs", width = 12,
-                           
-                           tabPanel(value = "future-seafood-supply-tabs-1",
-                                   text$item_label[text$item_id == "future-seafood-supply-tabs-1"]
-                                     
-                                   
-                                   ### PLOT PLACEHOLDER
-                           ),
-                           
-                           tabPanel(value = "future-seafood-supply-tabs-2",
-                                   text$item_label[text$item_id == "future-seafood-supply-tabs-2"]
-                                   
-                                   ### PLOT PLACEHOLDER
-                           )
-                    )
+                   ### Plot placeholder
+                   
              ),
              
              column(3, id = "lr-spaced-div",
                     
-                    tags$h4(text$item_label[text$item_id == "future_seafood_supply"]),
+                    tags$h4(text$item_label[text$item_id == "nutrient_consumption_profiles"]),
                     
-                    includeHTML("./text/02-global-national-outlook/future_seafood_supply_1.html") #### MAKE REACTIVE
+                    selectizeInput("w_national_nutrition_data_nutrient",
+                                   label = text$item_label[text$item_id == "w_national_nutrition_data_nutrient"],
+                                   choices = c("A", "B", "C"),
+                                   selected = "A"),
+                    
+                    includeHTML("./text/03-national-nutrition-data/nutrient_consumption_profiles.html")
                     
              )
              
