@@ -268,16 +268,14 @@ shinyUI(
                 ### National Nutrition Data ---
                 tabItem(tabName = "national-nutrition-data",
                         
-                        fluidPage()
-                        #GlobalNationalOutlook()
+                        NationalNutritionData()
                         
                 ),
                 
                 ### Nutrition-Sensitive Seafood Reforms ---
                 tabItem(tabName = "seafood-reforms",
                         
-                        fluidPage()
-                        #GlobalNationalOutlook()
+                        SeafoodReforms()
                         
                 )
 

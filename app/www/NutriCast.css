@@ -156,13 +156,8 @@
 }
 
 /* TB spaced divider */
-#t-spaced-div {
-  padding: 15px 0px 0px 0px;
-}
-
-/* TB spaced divider */
 #tb-spaced-div {
-  padding: 15px 0px 15px 0px;
+  padding: 1vw 2vw 1vw 2vw;
 }
 
 /* LR spaced divider */
@@ -177,15 +172,17 @@
 
 #header-div h3{
   padding-bottom: 5px;
-  border-bottom: 1px solid var(--secondary-color);
+  border-bottom: 2px solid var(--accent-color);
+  color: var(--accent-color);
 }
 
 /* Spaced divider with underline */
-#spaced-div-underline {
-  padding: 15px 25px 15px 25px;
-  border-bottom: 1px dashed var(--secondary-color);
+#tb-spaced-div-underline {
+  padding: 1vw 0 1vw 0;
+  border-bottom: 1px solid var(--secondary-color);
 }
 
+/* Shaded divider */
 #shaded-div {
   padding: 1vw 0 1vw 0;
   margin: 0 2vw 0 2vw;

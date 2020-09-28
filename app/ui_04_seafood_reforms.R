@@ -4,7 +4,7 @@
 ### ----------------------------------------------
 ### ----------------------------------------------
 
-GlobalNationalOutlook <- function(){
+SeafoodReforms <- function(){
   
   fluidPage(
     
@@ -14,7 +14,7 @@ GlobalNationalOutlook <- function(){
       # Header
       column(12, id = "header-div",
              
-             h3(text$item_label[text$item_id == "global-national-outlook"])
+             h3(text$item_label[text$item_id == "seafood-reforms"])
              
       ),
       
@@ -24,29 +24,19 @@ GlobalNationalOutlook <- function(){
              column(8, id = "lr-spaced-div",
                     
                     # Page text
-                    includeHTML("./text/02-global-national-outlook/instructions.html")
+                    includeHTML("./text/04-seafood-reforms/instructions.html")
                     
              ),
              
              column(4, id = "lr-spaced-div",
                     
-                    radioButtons("w_global_national_outlook_resolution",
-                                 label = text$item_label[text$item_id == "w_global_national_outlook_resolution"],
-                                 choices = c("Global", "National"),
-                                 selected = "Global",
-                                 inline = TRUE),
-                    
-                    conditionalPanel("input.w_global_national_outlook_resolution == 'National'",
-                    
-                                     
-                                     selectizeInput("w_global_national_outlook_country",
-                                                    label = text$item_label[text$item_id == "w_global_national_outlook_country"],
-                                                    choices = c("A", "B", "D"),
-                                                    selected = "A",
-                                                    width = "100%")
-                    )
+                    selectizeInput("w_seafood_reforms_country",
+                                   label = text$item_label[text$item_id == "w_seafood_reforms_country"],
+                                   choices = c("A", "B", "D"),
+                                   selected = "A",
+                                   width = "100%")
              )
-             
+      
       ),
       
       # Story text 1
