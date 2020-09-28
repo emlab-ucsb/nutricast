@@ -7,6 +7,7 @@
     --secondary-color: #4c5d6c;
     --accent-color: #0d5ba2;
     --accent-color-2: #23A085;
+    --light-blue: #e6eef6;
     --grey-dark: #6f6f6f;
     --grey-text: #404040;
     --grey-light: #f7f8f9;
@@ -151,7 +152,7 @@
 
 /* General spaced divider */
 #spaced-div {
-  padding: 15px 25px 7.5px 25px;
+  padding: 1vw 2vw 1vw 2vw;
 }
 
 /* TB spaced divider */
@@ -166,9 +167,37 @@
 
 /* LR spaced divider */
 #lr-spaced-div {
-  padding: 0px 25px 0px 25px;
+  padding: 0 2vw 0 2vw;
 }
 
+/* Header divider */
+#header-div {
+  padding: 1vw 2vw 1vw 2vw;
+}
+
+#header-div h3{
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--secondary-color);
+}
+
+/* Spaced divider with underline */
+#spaced-div-underline {
+  padding: 15px 25px 15px 25px;
+  border-bottom: 1px dashed var(--secondary-color);
+}
+
+#shaded-div {
+  padding: 15px 25px 15px 25px;
+  margin: 0 2vw 0 2vw;
+  background-color: var(--light-blue);
+  min-height: 500px;
+  width: -webkit-fill-available;
+}
+
+#shaded-div h4{
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--secondary-color);
+}
 /*--------------*/
 /* Overview */
 /*--------------*/

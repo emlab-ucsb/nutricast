@@ -14,6 +14,8 @@ overview,marine_seafood_production_scenarios,Marine Seafood Production Scenarios
 overview,references_contact,References & Contact,,
 ,,,,
 global-national-outlook,global-national-outlook,Global & National Outlook,,
+global-national-outlook,w_global_national_outlook_resolution,Select Resolution,,
+global-national-outlook,w_global_national_outlook_country,Select Country,,
 global-national-outlook,population_growth,Population Growth,,
 global-national-outlook,nutrient_demand,Nutrient Demand,,
 global-national-outlook,marine_seafood_as_source_nutrients,Marine Seafood as a Source of Nutrients,,

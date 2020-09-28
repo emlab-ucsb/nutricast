@@ -10,7 +10,7 @@ shinyServer(function(input, output, session) {
   ### overview Tab ---------------
   ### ----------------------------
   
-  # Navigation links to overview tab
+  # Navigation links within overview tab
   observeEvent(input$al_introduction, {
     updateTabItems(session, "menu-items", "overview")
     ### Bring to top of page
@@ -24,6 +24,19 @@ shinyServer(function(input, output, session) {
   observeEvent(input$al_references_contact, {
     updateTabItems(session, "menu-items", "overview")
     ### Bring to top of page
+  })
+  
+  # Navigation buttons to other sections
+  observeEvent(input$ab_overview_to_global_national_outlook, {
+    updateTabItems(session, "menu-items", "global-national-outlook")
+  })
+  
+  observeEvent(input$ab_overview_to_national_nutrition_data, {
+    updateTabItems(session, "menu-items", "national-nutrition-data")
+  })
+  
+  observeEvent(input$ab_overview_to_seafood_reforms, {
+    updateTabItems(session, "menu-items", "seafood-reforms")
   })
   
   ### -------------------------------------------
