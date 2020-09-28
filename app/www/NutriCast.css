@@ -187,7 +187,7 @@
 }
 
 #shaded-div {
-  padding: 15px 25px 15px 25px;
+  padding: 1vw 0 1vw 0;
   margin: 0 2vw 0 2vw;
   background-color: var(--light-blue);
   min-height: 500px;
@@ -295,4 +295,28 @@
   color: #ffffff;
 }
 
+/*----------------*/
+/* Navigation tabs */
+/*--------------*/
 
+/* Header row for navigation tabs */
+.nav-tabs-custom {
+    margin-bottom: 20px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+    border-radius: 3px;
+}
+
+/* Inner row for navigation tabs */
+.nav-tabs-custom>.nav-tabs {
+    margin: 0;
+    border-bottom-color: #f4f4f4;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.nav-tabs-custom>.nav-tabs>li {
+    border-top: 3px solid transparent;
+    margin-bottom: -2px;
+    margin-right: 5px;
+}

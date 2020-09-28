@@ -65,7 +65,7 @@ GlobalNationalOutlook <- function(){
       # Content box 1: Population Growth
       column(12, id = "shaded-div",
              
-             column(3,
+             column(3, id = "lr-spaced-div",
                     
                     tags$h4(text$item_label[text$item_id == "population_growth"]),
                     
@@ -73,7 +73,7 @@ GlobalNationalOutlook <- function(){
                     
              ),
              
-             column(9,
+             column(9, id = "lr-spaced-div",
                     
                     ### PLOT PLACEHOLDER
                     
@@ -92,13 +92,26 @@ GlobalNationalOutlook <- function(){
       # Content box 2: Nutrient Demand
       column(12, id = "shaded-div",
              
-             column(9,
+             column(9, id = "lr-spaced-div",
                     
-                    ### PLOT PLACEHOLDER
+                    tabBox(id = "nutrient-demand-tabs", width = 12,
+                           
+                           tabPanel(value = "nutrient-demand-tabs-1",
+                                   text$item_label[text$item_id == "nutrient-demand-tabs-1"]
+                                   
+                                   ### PLOT PLACEHOLDER
+                           ),
+                           
+                           tabPanel(value = "nutrient-demand-tabs-2",
+                                   text$item_label[text$item_id == "nutrient-demand-tabs-2"]
+                                   
+                                   ### PLOT PLACEHOLDER
+                           )
+                    )
                     
              ),
              
-             column(3,
+             column(3, id = "lr-spaced-div",
                     
                     tags$h4(text$item_label[text$item_id == "nutrient_demand"]),
                     
@@ -119,7 +132,7 @@ GlobalNationalOutlook <- function(){
       # Content box 3: Marine Seafood as a Source of Nutrients
       column(12, id = "shaded-div",
              
-             column(3,
+             column(3, id = "lr-spaced-div",
                     
                     tags$h4(text$item_label[text$item_id == "marine_seafood_as_source_nutrients"]),
                     
@@ -127,9 +140,29 @@ GlobalNationalOutlook <- function(){
                     
              ),
              
-             column(9,
+             column(9, id = "lr-spaced-div",
                     
-                    ### PLOT PLACEHOLDER
+                    tabBox(id = "marine-seafood-as-source-tabs", width = 12,
+                           
+                           tabPanel(value = "marine-seafood-as-source-tabs-1",
+                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-1"]
+                                   
+                                   ### PLOT PLACEHOLDER
+                           ),
+                           
+                           tabPanel(value = "marine-seafood-as-source-tabs-2",
+                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-2"]
+                                   
+                                   ### PLOT PLACEHOLDER
+                           ),
+                           
+                           tabPanel(value = "marine-seafood-as-source-tabs-3",
+                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-3"]
+                                   
+                                   ### PLOT PLACEHOLDER
+                           )
+                           
+                    )
                     
              )
              
@@ -146,13 +179,26 @@ GlobalNationalOutlook <- function(){
       # Content box 4: Future Seafood Supply & Nutrient Contributions
       column(12, id = "shaded-div",
              
-             column(9,
+             column(9, id = "lr-spaced-div",
                     
-                    ### PLOT PLACEHOLDER
-                    
+                    tabBox(id = "future-seafood-supply-tabs", width = 12,
+                           
+                           tabPanel(value = "future-seafood-supply-tabs-1",
+                                   text$item_label[text$item_id == "future-seafood-supply-tabs-1"]
+                                     
+                                   
+                                   ### PLOT PLACEHOLDER
+                           ),
+                           
+                           tabPanel(value = "future-seafood-supply-tabs-2",
+                                   text$item_label[text$item_id == "future-seafood-supply-tabs-2"]
+                                   
+                                   ### PLOT PLACEHOLDER
+                           )
+                    )
              ),
              
-             column(3,
+             column(3, id = "lr-spaced-div",
                     
                     tags$h4(text$item_label[text$item_id == "future_seafood_supply"]),
                     
