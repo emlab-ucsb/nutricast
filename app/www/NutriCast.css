@@ -30,6 +30,23 @@
   padding: 0;
 }
 
+/* hyperlinks */
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:visited {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-color-2);
+  text-decoration: none;
+  font-weight: bold;
+}
+
 /*--------------------------------------------*/
 /* Shiny Dashboard Header - dashboardHeader() */
 /*--------------------------------------------*/
@@ -200,6 +217,15 @@
   padding-bottom: 5px;
   border-bottom: 1px solid var(--secondary-color);
 }
+
+/* Shaded divider */
+#absolute-widget-panel-top-center {
+  position: absolute;
+  top: 60px;
+  left: 2vw;
+  width: 100%;
+}
+
 /*--------------*/
 /* Overview */
 /*--------------*/

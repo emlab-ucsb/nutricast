@@ -114,6 +114,83 @@ shinyServer(function(input, output, session) {
     ### Bring to top of page
   })
   
+  ### Seafood Nutrition Content -----------------
+  
+  # Plot output 
+  output$seafood_nutrition_content_plot <- renderPlot({
+    
+    req(input$w_seafood_reforms_country)
+    
+    ### NEED
+    
+  })
+  
+  ### Fisheries Reforms ---------------
+  
+  # Plot output: Tab 1
+  output$fisheries_reforms_plot_1 <- renderPlot({
+    
+    req(input$w_seafood_reforms_country)
+
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 2
+  output$fisheries_reforms_plot_2 <- renderPlot({
+    
+    req(input$w_seafood_reforms_country)
+
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 3
+  output$fisheries_reforms_plot_3 <- renderPlot({
+    
+    req(input$w_seafood_reforms_country)
+    
+    ### NEED
+    
+  })
+  
+  
+  ### Aquaculture Reforms ---------------
+  
+  # Plot output
+  output$aquaculture_reforms_plot_1 <- renderPlot({
+    
+    req(input$w_seafood_reforms_country)
+    req(input$w_seafood_reforms_radar_species)
+    
+    ### NEED
+    
+  })
+  
+  # Plot output
+  output$aquaculture_reforms_plot_2 <- renderPlot({
+    
+    req(input$w_seafood_reforms_country)
+    req(input$w_seafood_reforms_radar_species)
+    
+    ### NEED
+    
+  })
+  
+  
+  ### Mariculture Site Explorer ---------------
+  
+  # Plot output
+  output$mariculture_site_explorer_plot <- renderPlot({
+    
+    req(input$w_seafood_reforms_country)
+    req(input$w_seafood_reforms_site_explorer_species)
+    req(input$w_seafood_reforms_climate_scenario)
+    
+    ### NEED
+    
+  })
+  
     ### ----------------------------------
     ### aqua-potential Tab ---------------
     ### ----------------------------------
