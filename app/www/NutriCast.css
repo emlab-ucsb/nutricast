@@ -1,0 +1,350 @@
+/*-------*/
+/* Setup */
+/*-------*/
+
+:root {
+    --main-color: #1a2d3f;
+    --secondary-color: #4c5d6c;
+    --accent-color: #0d5ba2;
+    --accent-color-2: #23A085;
+    --light-blue: #e6eef6;
+    --grey-dark: #6f6f6f;
+    --grey-text: #404040;
+    --grey-light: #f7f8f9;
+}
+
+@font-face {
+    font-family: Helvetica;
+}
+
+* { font-family: Helvetica; }
+
+/* rows - fluidRow() */
+.row {
+  margin: 0;
+}
+
+/* dividers - column() */
+.col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+  min-height: 1px;
+  padding: 0;
+}
+
+/* hyperlinks */
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:visited {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-color-2);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/*--------------------------------------------*/
+/* Shiny Dashboard Header - dashboardHeader() */
+/*--------------------------------------------*/
+  
+/* navigation bar */
+.skin-black .main-header .navbar {
+  box-shadow: 0 0 1px 0 var(--grey-dark);
+}
+
+/* logo (title container) - hidden for this app */
+.skin-black .main-header .logo {
+   padding: 0;
+   margin: 0;
+}
+
+/* logo (title container) when hovered - hidden for this app */
+/*.skin-black .main-header .logo:hover {
+  background-color: #ecf0f5;
+}*/
+
+/* sidebar menu toggle button */
+.skin-black .main-header .navbar .sidebar-toggle {
+  text-decoration: none;
+}
+
+/*----------------------------------------------*/
+/* Shiny Dashboard Sidebar - dashboardSidebar() */
+/*----------------------------------------------*/
+  
+/* sidebar container */
+.skin-black .main-sidebar {
+  padding-top: 60px; /* spacing to allow for top nav bar */
+  background-color: var(--main-color); /* background color for sidebar */
+  padding-bottom: 60px;
+}
+
+/* menu item text */
+.skin-black .sidebar-menu>li>a {
+  color: #ffffff;
+  text-decoration: none!important;
+}
+
+.skin-black .sidebar-menu>li>a:link {
+  text-decoration: none!important;
+}
+
+/* active selected tab in the sidebar */
+.skin-black .sidebar-menu>li.active>a {
+  background-color: var(--accent-color);
+  border-left-color: var(--accent-color);
+}
+
+/* hover over a tab in the sidebar */
+.skin-black .sidebar-menu>li:hover>a {
+  background-color: var(--accent-color);
+  border-left-color: var(--accent-color);
+}
+
+/* Submenu container */
+.skin-black .sidebar-menu>li>.treeview-menu {
+  margin: 0;
+  padding: 0;
+  background: var(--secondary-color);
+  border-left: 3px solid transparent;
+}
+  
+/* Submenu container - expanded */
+.skin-black .sidebar-menu>li>.menu-expanded {
+}
+
+/*----------------------------------------------*/
+/* Shiny Dashboard Body - dashboardBody() */
+/*----------------------------------------------*/
+  
+/* Content wrapper - includes both sidebar and content */
+.skin-black .wrapper {
+  background-color: #ffffff;
+}
+
+/* Content wrapper - includes only content */
+.skin-black div.content-wrapper{
+  background: #ffffff;
+  height: auto;
+}
+
+/* Content (section) */
+.skin-black section.content{
+  min-height: 100%;
+  overflow: auto;
+  margin: 0 -15px;
+  padding: 0;
+}
+
+/* Tab content (div) */
+.skin-black div.tab-content{
+  margin: 0;
+  padding: 0;
+}
+
+/* --------------- */
+/* Nav Panel */
+/* --------------- */
+
+#al_introduction, #al_marine_seafood_production_scenarios, #al_references_contact, #al_population_growth, #al_nutrient_demand, #al_marine_seafood_as_source_nutrients, #al_future_seafood_supply, #al_protein_intake, #al_seafood_consumption, #al_nutritional_health, #al_nutrient_consumption_profiles, #al_seafood_nutrition_content, #al_fisheries_reforms, #al_aquaculture_reforms, #al_mariculture_site_explorer {
+  margin: -10pt 0 0 0;
+  padding: 0 0 10pt 20pt;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+#al_introduction:hover, #al_marine_seafood_production_scenarios:hover, #al_references_contact:hover, #al_population_growth:hover, #al_nutrient_demand:hover, #al_marine_seafood_as_source_nutrients:hover, #al_future_seafood_supply:hover, #al_protein_intake:hover, #al_seafood_consumption:hover, #al_nutritional_health:hover, #al_nutrient_consumption_profiles:hover, #al_seafood_nutrition_content:hover, #al_fisheries_reforms:hover, #al_aquaculture_reforms:hover, #al_mariculture_site_explorer:hover {
+  color: var(--accent-color-2);
+  font-weight: bold;
+}
+
+/* --------------- */
+/* Custom */
+/* --------------- */
+
+#custom-header-container {
+  position: absolute;
+  left: 75px;
+  text-align: center;
+}
+
+/* General spaced divider */
+#spaced-div {
+  padding: 1vw 2vw 1vw 2vw;
+}
+
+/* TB spaced divider */
+#tb-spaced-div {
+  padding: 1vw 2vw 1vw 2vw;
+}
+
+/* LR spaced divider */
+#lr-spaced-div {
+  padding: 0 2vw 0 2vw;
+}
+
+/* Header divider */
+#header-div {
+  padding: 1vw 2vw 1vw 2vw;
+}
+
+#header-div h3{
+  padding-bottom: 5px;
+  border-bottom: 2px solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+/* Spaced divider with underline */
+#tb-spaced-div-underline {
+  padding: 1vw 0 1vw 0;
+  border-bottom: 1px solid var(--secondary-color);
+}
+
+/* Shaded divider */
+#shaded-div {
+  padding: 1vw 0 1vw 0;
+  margin: 0 2vw 0 2vw;
+  background-color: var(--light-blue);
+  min-height: 500px;
+  width: -webkit-fill-available;
+}
+
+#shaded-div h4{
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--secondary-color);
+}
+
+/* Shaded divider */
+#absolute-widget-panel-top-center {
+  position: absolute;
+  top: 60px;
+  left: 2vw;
+  width: 100%;
+}
+
+/*--------------*/
+/* Overview */
+/*--------------*/
+
+#overview_div {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 35vh;
+  width: auto;
+}
+
+#overview_picture_div{
+  display: block;
+  height: 35vh;
+  width: auto;
+  overflow: hidden;
+}
+
+#overview_picture_div img{
+  object-fit: cover;
+  min-width: 100vw;
+  min-height: 35vh;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#overview_picture_overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.5);
+  border-bottom: 5px solid var(--accent-color);
+}
+
+#overview_picture_overlay_text{
+   color: white;
+   text-align: center;
+   padding: 5% 10% 5%;
+   width: 100%;
+}
+
+/* Table structure for top header */
+#overview-table {
+  width: 100%;
+  vertical-align: middle;
+  table-layout: fixed;
+}
+
+#overview-table-row{
+  width: 100%;
+  padding: 0;
+}
+
+#overview-table-cell-1{
+  width: 33%;
+  text-align: right;
+}
+
+#overview-table-cell-2{
+  width: 33%;
+  text-align: center;
+}
+
+#overview-table-cell-3{
+  width: 33%;
+  text-align: left;
+}
+
+/* Button appearance */
+#ab_overview_to_global_national_outlook, #ab_overview_to_national_nutrition_data, #ab_overview_to_seafood_reforms {
+  background-color: var(--accent-color);
+  width: 80%;
+  color: #ffffff;
+  white-space: normal;
+  padding: 20px;
+}
+
+#ab_overview_to_global_national_outlook i, #ab_overview_to_national_nutrition_data i, #ab_overview_to_seafood_reforms i {
+  padding-left: 10px;
+  color: var(--accent-color-2);
+}
+
+#ab_overview_to_global_national_outlook:hover, #ab_overview_to_national_nutrition_data:hover, #ab_overview_to_seafood_reforms:hover {
+  background-color: var(--accent-color-2);
+}
+
+#ab_overview_to_global_national_outlook:hover i, #ab_overview_to_national_nutrition_data:hover i, #ab_overview_to_seafood_reforms:hover i {
+  color: #ffffff;
+}
+
+/*----------------*/
+/* Navigation tabs */
+/*--------------*/
+
+/* Header row for navigation tabs */
+.nav-tabs-custom {
+    margin-bottom: 20px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+    border-radius: 3px;
+}
+
+/* Inner row for navigation tabs */
+.nav-tabs-custom>.nav-tabs {
+    margin: 0;
+    border-bottom-color: #f4f4f4;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.nav-tabs-custom>.nav-tabs>li {
+    border-top: 3px solid transparent;
+    margin-bottom: -2px;
+    margin-right: 5px;
+}
