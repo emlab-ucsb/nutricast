@@ -37,6 +37,10 @@ world <- ne_countries(scale = 'small',
                       type = 'map_units',
                       returnclass = 'sf')
 
+world_points <- world %>%
+  st_zm() %>%
+  st_point_on_surface()
+
 ### ----------------------------------
 ### App data -------------------------
 ### ----------------------------------
@@ -45,10 +49,6 @@ world <- ne_countries(scale = 'small',
 
 # 1) Population growth
 national_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_by_country.Rds")
-
-# Get selectable countries for which we have population data
-global_national_outlook_countries <- unique(national_pop_dat$country)
-global_national_outlook_countries <- sort(countries)
 
 global_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_global.Rds") %>%
   mutate(country = "Global",
@@ -140,9 +140,41 @@ production_plot_dat <- national_capture_production_dat %>%
   bind_rows(national_aquaculture_production_dat) %>%
   bind_rows(global_aquaculture_production_dat)
 
-# 3b) Protein from Seafood
-national_protein_from_seafood_dat <- readRDS("./data/genus_pnutrient_seafood_by_cntry_2011.Rds")
+# 3b/c) Protein and Nutrients from Seafood
+national_nutrient_from_seafood_dat <- readRDS("./data/genus_pnutrient_seafood_by_cntry_2011.Rds")
+national_diet_from_seafood_dat <- readRDS("./data/genus_pdiet_seafood_by_cntry_year.Rds")
   
+protein_dat <- national_nutrient_from_seafood_dat %>% 
+  filter(nutrient=="Protein") %>% 
+  mutate(prop_seafood_cap = pmin(prop_seafood, 0.1))
+
+# Get selectable countries for which we have nutrition data
+country_choices <- national_nutrient_from_seafood_dat %>%
+  ungroup() %>%
+  distinct(country, iso3) 
+
+widget_country_choices <- unique(country_choices$iso3)
+names(widget_country_choices) <- unique(country_choices$country)
+
+### National Nutrition Data -------------------
+
+# 3) Nutritional health
+national_nutritional_health_dat <- readRDS("./data/genus_nutrient_supplies_by_age_sex_2011_w_us_diet_req.Rds")
+
+nutritional_health_plot_dat <- national_nutritional_health_dat %>%
+  mutate(sex=recode_factor(sex, "Children"="Children", "Females"="Women", "Males"="Men"),
+         nutrient_type=recode(nutrient_type, 
+                              "Macronutrient"="Macro\nnutrient"))
+
+# 4) Nutrient consumption profiles
+national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds")
+
+widget_nutrient_choices_national_nutrition_data <- unique(national_nutrient_supplies_dat$nutrient)
+
+# DRIs data
+dri_dat <- readRDS("./data/DRIs_matched_to_genus_age_sex_groups.Rds") %>% 
+  filter(nutrient!="Protein")
+
 ### 0) Let's see if we can figure out to set up an API to link to files stored on Google Drive (should speed up app hosting significantly)
 # Ultimately it would probably be good to make this more secure... 
 # google_app <- httr::oauth_app(

@@ -42,7 +42,7 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                      selectizeInput("w_global_national_outlook_country",
                                                     label = text$item_label[text$item_id == "w_global_national_outlook_country"],
                                                     choices = country_choices,
-                                                    selected = "United States",
+                                                    selected = "USA",
                                                     width = "100%")
                     )
              )

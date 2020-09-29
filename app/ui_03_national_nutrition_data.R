@@ -4,7 +4,8 @@
 ### ----------------------------------------------
 ### ----------------------------------------------
 
-NationalNutritionData <- function(){
+NationalNutritionData <- function(country_choices,
+                                  nutrient_choices){
   
   fluidPage(
     
@@ -32,8 +33,8 @@ NationalNutritionData <- function(){
                     
                     selectizeInput("w_national_nutrition_data_country",
                                    label = text$item_label[text$item_id == "w_national_nutrition_data_country"],
-                                   choices = c("A", "B", "D"),
-                                   selected = "A",
+                                   choices = country_choices,
+                                   selected = "USA",
                                    width = "100%")
              )
       
@@ -198,9 +199,9 @@ NationalNutritionData <- function(){
              
              column(9, id = "lr-spaced-div",
                     
+                    ### Plot
                     plotOutput("nutrient_consumption_profiles_plot", height = "500px", width = "auto")
-                   ### Plot placeholder
-                   
+
              ),
              
              column(3, id = "lr-spaced-div",
@@ -209,8 +210,8 @@ NationalNutritionData <- function(){
                     
                     selectizeInput("w_national_nutrition_data_nutrient",
                                    label = text$item_label[text$item_id == "w_national_nutrition_data_nutrient"],
-                                   choices = c("A", "B", "C"),
-                                   selected = "A"),
+                                   choices = nutrient_choices,
+                                   selected = nutrient_choices[1]),
                     
                     includeHTML("./text/03-national-nutrition-data/nutrient_consumption_profiles.html")
                     

@@ -275,7 +275,7 @@ shinyUI(
                 ### Global & National Outlook --- 
                 tabItem(tabName = "global-national-outlook",
                         
-                        GlobalNationalOutlook(country_choices = global_national_outlook_countries,
+                        GlobalNationalOutlook(country_choices = widget_country_choices,
                                               nutrient_choices = nutrient_choices)
                         
                 ),
@@ -283,7 +283,8 @@ shinyUI(
                 ### National Nutrition Data ---
                 tabItem(tabName = "national-nutrition-data",
                         
-                        NationalNutritionData()
+                        NationalNutritionData(country_choices = widget_country_choices,
+                                              nutrient_choices = widget_nutrient_choices_national_nutrition_data)
                         
                 ),
                 
