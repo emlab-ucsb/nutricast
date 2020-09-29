@@ -291,7 +291,8 @@ shinyUI(
                 ### Nutrition-Sensitive Seafood Reforms ---
                 tabItem(tabName = "seafood-reforms",
                         
-                        SeafoodReforms()
+                        SeafoodReforms(country_choices = widget_country_choices,
+                                       climate_scenario_choices = climate_scenario_choices)
                         
                 )
 

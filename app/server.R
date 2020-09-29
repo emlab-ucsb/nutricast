@@ -714,8 +714,25 @@ shinyServer(function(input, output, session) {
     
     req(input$w_seafood_reforms_country)
     
-    ### NEED
+    # # Subset species data
+    # plot_data <- vaitla_nutr_preds_long %>% 
+    #   filter(species_label %in% spp)
     
+    # Plot
+    g <- ggplot(vaitla_nutr_preds_long, aes(x=value_md)) +
+      geom_histogram(fill="grey70") +
+      facet_wrap(~nutrient_label, ncol=3, scales="free") +
+      # Add species lines
+      #geom_vline(data=sdata, aes(xintercept=value_md, color=species_label), lwd=1.5) +
+      # Labels
+      scale_color_discrete(name="") +
+      labs(x="Nutrient Concentration", y="Number of Species") +
+      # Theme
+      plot_theme+
+      scale_y_continuous(expand = c(0,0))
+    
+    g
+
   })
   
   ### Fisheries Reforms ---------------
@@ -754,9 +771,27 @@ shinyServer(function(input, output, session) {
   output$aquaculture_reforms_plot_1 <- renderPlot({
     
     req(input$w_seafood_reforms_country)
-    req(input$w_seafood_reforms_radar_species)
+    req(input$w_seafood_reforms_aquaculture_climate_scenario)
     
-    ### NEED
+    # Filter data
+    plot_dat <- rcp_projections %>%
+      dplyr::filter(sov1_iso == input$w_seafood_reforms_country & scenario == input$w_seafood_reforms_aquaculture_climate_scenario) %>%
+      dplyr::filter(year == 2100) %>%
+      mutate(rank = dense_rank(desc(prod_mt_yr))) %>%
+      mutate(species = fct_reorder(species, desc(rank)))
+    
+    req(nrow(plot_dat) > 0)
+    
+    g <-ggplot(plot_dat)+
+      aes(x = species, y = prod_mt_yr / 1e6, fill = group) +
+      geom_bar(stat = "identity") +
+      theme_bw() +
+      labs(x = "", y = "Production (million mt)", fill = "Species Type") +
+      coord_flip() +
+      facet_wrap( ~ group, scales = "free", ncol = 2) +
+      theme(legend.position = "none")
+
+    g
     
   })
   

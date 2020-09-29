@@ -4,7 +4,8 @@
 ### ----------------------------------------------
 ### ----------------------------------------------
 
-SeafoodReforms <- function(){
+SeafoodReforms <- function(country_choices,
+                           climate_scenario_choices){
   
   fluidPage(
     
@@ -32,8 +33,8 @@ SeafoodReforms <- function(){
                     
                     selectizeInput("w_seafood_reforms_country",
                                    label = text$item_label[text$item_id == "w_seafood_reforms_country"],
-                                   choices = c("A", "B", "D"),
-                                   selected = "A",
+                                   choices = country_choices,
+                                   selected = "USA",
                                    width = "100%")
              )
       
@@ -59,7 +60,7 @@ SeafoodReforms <- function(){
                     
                     tags$h4(text$item_label[text$item_id == "seafood_nutrition_content"]),
                     
-                    includeHTML("./text/02-global-national-outlook/population_growth.html")
+                    includeHTML("./text/04-seafood-reforms/seafood_nutrition_content.html")
                     
              ),
              
@@ -146,7 +147,12 @@ SeafoodReforms <- function(){
                     
                     tags$h4(text$item_label[text$item_id == "aquaculture_reforms"]),
                     
-                    includeHTML("./text/02-global-national-outlook/marine_seafood_as_source_1.html") #### MAKE REACTIVE
+                    selectizeInput("w_seafood_reforms_aquaculture_climate_scenario",
+                                   label = text$item_label[text$item_id == "w_seafood_reforms_aquaculture_climate_scenario"],
+                                   choices = climate_scenario_choices,
+                                   width = "100%"),
+                    
+                    includeHTML("./text/04-seafood-reforms/marine_seafood_as_source_1.html") #### MAKE REACTIVE
                     
              ),
              
