@@ -78,24 +78,34 @@ Overview <- function(){
            )
     ),
     
-    # Marine Seafood Production Scenarios
-    column(12, id = "spaced-div",
-           
-           # Header
-           h3(text$item_label[text$item_id == "marine_seafood_production_scenarios"]),
-           
-           # Page text
-           includeHTML("./text/01-overview/marine_seafood_production_scenarios.html")
+    # Placeholder to scroll to for references and contact
+    column(12, id = "marine_seafood_production_scenarios",
+           ""
     ),
     
     # Marine Seafood Production Scenarios
     column(12, id = "spaced-div",
            
-           # Header
-           h3(text$item_label[text$item_id == "references_contact"]),
+                    # Header
+                    h3(text$item_label[text$item_id == "marine_seafood_production_scenarios"]),
+                    
+                    # Page text
+                    includeHTML("./text/01-overview/marine_seafood_production_scenarios.html")
+    ),
+    
+    # Placeholder to scroll to for references and contact
+    column(12, id = "references_contact",
+           ""
+    ),
+    
+    # Marine Seafood Production Scenarios
+    column(12, id = "spaced-div",
            
-           # Page text
-           includeHTML("./text/01-overview/references_contact.html")
+                    # Header
+                    h3(text$item_label[text$item_id == "references_contact"]),
+                    
+                    # Page text
+                    includeHTML("./text/01-overview/references_contact.html")
     )
     
   )

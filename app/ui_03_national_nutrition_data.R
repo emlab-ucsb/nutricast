@@ -52,26 +52,32 @@ NationalNutritionData <- function(){
              
              column(3, id = "lr-spaced-div",
                     
+                    # Section title
                     tags$h4(text$item_label[text$item_id == "protein_intake"]),
                     
-                    includeHTML("./text/03-national-nutrition-data/protein_intake_1.html") ### Make reactive
+                    # Reactive description text
+                    uiOutput("protein_intake_text")
+                    
+                    # includeHTML("./text/03-national-nutrition-data/protein_intake_1.html") ### Make reactive
                     
              ),
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "protein-intake-tabs", width = 12,
+                    tabBox(id = "protein_intake_tabs", width = 12,
                            
                            tabPanel(value = "protein-intake-tabs-1",
-                                    text$item_label[text$item_id == "protein-intake-tabs-1"]
+                                    text$item_label[text$item_id == "protein-intake-tabs-1"],
                                     
                                     ### PLOT PLACEHOLDER
+                                    plotOutput("protein_intake_plot_1", height = "500px", width = "auto")
                            ),
                            
                            tabPanel(value = "protein-intake-tabs-2",
-                                    text$item_label[text$item_id == "protein-intake-tabs-2"]
+                                    text$item_label[text$item_id == "protein-intake-tabs-2"],
                                     
                                     ### PLOT PLACEHOLDER
+                                    plotOutput("protein_intake_plot_2", height = "500px", width = "auto")
                            )
                     )
                     
@@ -92,24 +98,27 @@ NationalNutritionData <- function(){
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "seafood-consumption-tabs", width = 12,
+                    tabBox(id = "seafood_consumption_tabs", width = 12,
                            
                            tabPanel(value = "seafood-consumption-tabs-1",
-                                   text$item_label[text$item_id == "seafood-consumption-tabs-1"]
+                                   text$item_label[text$item_id == "seafood-consumption-tabs-1"],
                                    
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("seafood_consumption_plot_1", height = "500px", width = "auto")
                            ),
                            
                            tabPanel(value = "seafood-consumption-tabs-2",
-                                   text$item_label[text$item_id == "seafood-consumption-tabs-2"]
+                                   text$item_label[text$item_id == "seafood-consumption-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("seafood_consumption_plot_2", height = "500px", width = "auto")
                            ),
                            
                            tabPanel(value = "seafood-consumption-tabs-3",
-                                    text$item_label[text$item_id == "seafood-consumption-tabs-3"]
+                                    text$item_label[text$item_id == "seafood-consumption-tabs-3"],
                                     
                                     ### PLOT PLACEHOLDER
+                                    plotOutput("seafood_consumption_plot_3", height = "500px", width = "auto")
                            )
                     )
                     
@@ -117,9 +126,12 @@ NationalNutritionData <- function(){
              
              column(3, id = "lr-spaced-div",
                     
+                    # Section title
                     tags$h4(text$item_label[text$item_id == "seafood_consumption"]),
                     
-                    includeHTML("./text/03-national-nutrition-data/seafood_consumption_1.html") #### MAKE REACTIVE
+                    # Reactive description text
+                    uiOutput("seafood_consumption_text")
+                    # includeHTML("./text/03-national-nutrition-data/seafood_consumption_1.html") #### MAKE REACTIVE
                     
              )
              
@@ -146,7 +158,8 @@ NationalNutritionData <- function(){
              
              column(9, id = "lr-spaced-div",
                     
-                    ### Plot placeholder
+                    ### PLOT PLACEHOLDER
+                    plotOutput("nutritional_health_plot", height = "500px", width = "auto")
                     
              )
              
@@ -165,6 +178,7 @@ NationalNutritionData <- function(){
              
              column(9, id = "lr-spaced-div",
                     
+                    plotOutput("nutrient_consumption_profiles_plot", height = "500px", width = "auto")
                    ### Plot placeholder
                    
              ),

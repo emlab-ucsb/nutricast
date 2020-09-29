@@ -6,25 +6,31 @@
 
 shinyServer(function(input, output, session) {
   
+  # Treat menuItems with children as a link for navigation purposes
+  observeEvent(input$sidebarItemExpanded, {
+    
+    if(!is.null(input$sidebarItemExpanded)){
+      updateTabItems(session, "menu-items", input$sidebarItemExpanded)
+    }
+  })
+  
   ### ----------------------------
   ### overview Tab ---------------
   ### ----------------------------
   
   # Navigation links within overview tab
-  observeEvent(input$al_introduction, {
-    updateTabItems(session, "menu-items", "overview")
-    ### Bring to top of page
-  })
+  # observeEvent(input$al_introduction, {
+  #   updateTabItems(session, "menu-items", "overview")
+  # })
   
-  observeEvent(input$al_marine_seafood_production_scenarios, {
-    updateTabItems(session, "menu-items", "overview")
-    ### Bring to top of page
-  })
+  # observeEvent(input$al_marine_seafood_production_scenarios, {
+  #   updateTabItems(session, "menu-items", "overview")
+  #   ### Bring to top of page
+  # })
   
-  observeEvent(input$al_references_contact, {
-    updateTabItems(session, "menu-items", "overview")
-    ### Bring to top of page
-  })
+  # observeEvent(input$al_references_contact, {
+  #   updateTabItems(session, "menu-items", "overview")
+  # })
   
   # Navigation buttons to other sections
   observeEvent(input$ab_overview_to_global_national_outlook, {
@@ -76,7 +82,115 @@ shinyServer(function(input, output, session) {
     
   })
   
-  ### Population growth ---------------------
+  ### Nutrient Demand ---------------------
+  
+  # Reactive text: Based upon selected tab
+  output$nutrient_demand_text <- renderUI({
+    
+    selected_tab <- switch(input$nutrient_demand_tabs,
+                           "nutrient-demand-tabs-1" = list("nutrient_demand_1"),
+                           "nutrient-demand-tabs-2" = list("nutrient_demand_2"))
+    
+    includeHTML(paste0("./text/02-global-national-outlook/", selected_tab[[1]], ".html"))
+    
+  })
+  
+  # Plot output: Tab 1
+  output$nutrient_demand_plot_1 <- renderPlot({
+    
+    req(input$w_global_national_outlook_resolution)
+    req(input$w_global_national_outlook_country)
+    
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 2 
+  output$nutrient_demand_plot_2 <- renderPlot({
+    
+    req(input$w_global_national_outlook_resolution)
+    req(input$w_global_national_outlook_country)
+    
+    ### NEED
+    
+  })
+  
+  ### Marine Seafood as a Source of Nutrients ---------------------
+  
+  # Reactive text: Based upon selected tab
+  output$marine_seafood_as_source_text <- renderUI({
+    
+    selected_tab <- switch(input$marine_seafood_as_source_tabs,
+                           "marine-seafood-as-source-tabs-1" = list("marine_seafood_as_source_1"),
+                           "marine-seafood-as-source-tabs-2" = list("marine_seafood_as_source_2"),
+                           "marine-seafood-as-source-tabs-3" = list("marine_seafood_as_source_3"))
+    
+    includeHTML(paste0("./text/02-global-national-outlook/", selected_tab[[1]], ".html"))
+    
+  })
+  
+  # Plot output: Tab 1
+  output$marine_seafood_as_source_plot_1 <- renderPlot({
+    
+    req(input$w_global_national_outlook_resolution)
+    req(input$w_global_national_outlook_country)
+    
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 2 
+  output$marine_seafood_as_source_plot_2 <- renderPlot({
+    
+    req(input$w_global_national_outlook_resolution)
+    req(input$w_global_national_outlook_country)
+    
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 3
+  output$marine_seafood_as_source_plot_3 <- renderPlot({
+    
+    req(input$w_global_national_outlook_resolution)
+    req(input$w_global_national_outlook_country)
+    
+    ### NEED
+    
+  })
+  
+  ### Future Seafood Supply & Nutrient Contributions ---------------------
+  
+  # Reactive text: Based upon selected tab
+  output$future_seafood_supply_text <- renderUI({
+    
+    selected_tab <- switch(input$future_seafood_supply_tabs,
+                           "future-seafood-supply-tabs-1" = list("future_seafood_supply_1"),
+                           "future-seafood-supply-tabs-2" = list("future_seafood_supply_2"))
+    
+    includeHTML(paste0("./text/02-global-national-outlook/", selected_tab[[1]], ".html"))
+    
+  })
+  
+  # Plot output: Tab 1
+  output$future_seafood_supply_plot_1 <- renderPlot({
+    
+    req(input$w_global_national_outlook_resolution)
+    req(input$w_global_national_outlook_country)
+    
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 2 
+  output$future_seafood_supply_plot_2 <- renderPlot({
+    
+    req(input$w_global_national_outlook_resolution)
+    req(input$w_global_national_outlook_country)
+    
+    ### NEED
+    
+  })
   
   ### -------------------------------------------
   ### national-nutrition-data Tab ---------------
@@ -99,8 +213,106 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$al_nutrient_consumption_profiles, {
+    
     updateTabItems(session, "menu-items", "national-nutrition-data")
-    ### Bring to top of page
+    # Call custom javascript to scroll window
+    session$sendCustomMessage(type = "scrollObject", 1)
+    
+  })
+  
+  ### Protein Intake ---------------------
+  
+  # Reactive text: Based upon selected tab
+  output$protein_intake_text <- renderUI({
+    
+    selected_tab <- switch(input$protein_intake_tabs,
+                           "protein-intake-tabs-1" = list("protein_intake_1"),
+                           "protein-intake-tabs-2" = list("protein_intake_2"))
+    
+    includeHTML(paste0("./text/03-national-nutrition-data/", selected_tab[[1]], ".html"))
+    
+  })
+  
+  # Plot output: Tab 1
+  output$protein_intake_plot_1 <- renderPlot({
+    
+    req(input$w_national_nutrition_data_country)
+    
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 2 
+  output$protein_intake_plot_2 <- renderPlot({
+    
+    req(input$w_national_nutrition_data_country)
+    
+    ### NEED
+    
+  })
+  
+  ### Seafood Consumption & Nutrient Contributions ---------------------
+  
+  # Reactive text: Based upon selected tab
+  output$seafood_consumption_text <- renderUI({
+    
+    selected_tab <- switch(input$seafood_consumption_tabs,
+                           "seafood-consumption-tabs-1" = list("seafood_consumption_1"),
+                           "seafood-consumption-tabs-2" = list("seafood_consumption_2"),
+                           "seafood-consumption-tabs-3" = list("seafood_consumption_3"))
+    
+    includeHTML(paste0("./text/03-national-nutrition-data/", selected_tab[[1]], ".html"))
+    
+  })
+  
+  # Plot output: Tab 1
+  output$seafood_consumption_plot_1 <- renderPlot({
+    
+    req(input$w_national_nutrition_data_country)
+    
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 2 
+  output$seafood_consumption_plot_2 <- renderPlot({
+    
+    req(input$w_national_nutrition_data_country)
+    
+    ### NEED
+    
+  })
+  
+  # Plot output: Tab 3
+  output$seafood_consumption_plot_3 <- renderPlot({
+    
+    req(input$w_national_nutrition_data_country)
+    
+    ### NEED
+    
+  })
+  
+  ### Nutritional Health ---------------------
+  
+  # Plot output
+  output$nutritional_health_plot <- renderPlot({
+    
+    req(input$w_national_nutrition_data_country)
+    
+    ### NEED
+    
+  })
+  
+  ### Nutrient Consumption Profiles ---------------------
+  
+  # Plot output
+  output$nutrient_consumption_profiles_plot <- renderPlot({
+    
+    req(input$w_national_nutrition_data_country)
+    req(input$w_national_nutrition_data_nutrient)
+    
+    ### NEED
+    
   })
   
   ### -----------------------------------

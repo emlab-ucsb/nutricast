@@ -15,6 +15,7 @@ set.seed(123)
 library(shiny) # interactive applications
 library(shinyjs) # javascript functionality for shiny
 library(shinydashboard) # layout
+library(shinyWidgets)
 library(rsconnect) # needed to deploy app to shinyapps.io
 
 # Plotting
@@ -129,6 +130,7 @@ shinyUI(
                 ### Overview ---
                 menuItem(text$item_label[text$item_id == "overview"],
                          icon = NULL,
+                         expandedName = "overview",
                          
                          # Blank placeholder
                          menuSubItem("",
@@ -155,6 +157,7 @@ shinyUI(
                 ### Global & National Outlook ---
                 menuItem(text$item_label[text$item_id == "global-national-outlook"],
                          icon = NULL,
+                         expandedName = "global-national-outlook",
                          
                          # Blank placeholder
                          menuSubItem("",
@@ -186,6 +189,7 @@ shinyUI(
                 ### National Nutrition Data ---
                 menuItem(text$item_label[text$item_id == "national-nutrition-data"],
                          icon = NULL,
+                         expandedName = "national-nutrition-data",
                          
                          # Blank placeholder
                          menuSubItem("",
@@ -217,6 +221,7 @@ shinyUI(
                 ### Nutrition-Sensitive Seafood Reforms ---
                 menuItem(text$item_label[text$item_id == "seafood-reforms"],
                          icon = NULL,
+                         expandedName = "seafood-reforms",
                          
                          # Blank placeholder
                          menuSubItem("",
@@ -253,7 +258,10 @@ shinyUI(
           
           # Custom stylesheet
           tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "NutriCast.css")),
-            
+          
+          # Custom javascript
+          tags$script(src = "NutriCast.js"),
+          
             # Tabs
             tabItems(
                 

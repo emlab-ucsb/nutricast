@@ -254,6 +254,14 @@ h5 {
   width: 100%;
 }
 
+/* Shaded divider */
+#absolute-widget-panel-top-right {
+  position: absolute;
+  top: 60px;
+  right: 2vw;
+  text-align: right;
+}
+
 /*--------------*/
 /* Overview */
 /*--------------*/

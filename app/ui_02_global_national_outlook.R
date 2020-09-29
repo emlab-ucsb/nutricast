@@ -71,7 +71,7 @@ GlobalNationalOutlook <- function(){
              column(9, id = "lr-spaced-div",
                     
                     ### PLOT PLACEHOLDER
-                    plotOutput("population_growth_plot")
+                    plotOutput("population_growth_plot", height = "500px", width = "auto")
 
              )
              
@@ -90,20 +90,31 @@ GlobalNationalOutlook <- function(){
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "nutrient-demand-tabs", width = 12,
+                    tabBox(id = "nutrient_demand_tabs", width = 12,
                            
                            tabPanel(value = "nutrient-demand-tabs-1",
                                    text$item_label[text$item_id == "nutrient-demand-tabs-1"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("nutrient_demand_plot_1")
+                                   plotOutput("nutrient_demand_plot_1", height = "500px", width = "auto"),
+                                   
+                                   # Widget
+                                   column(6, offset = 6, id = "absolute-widget-panel-top-right",
+                                          
+                                          radioGroupButtons("w_nutrient_demand_plot_1",
+                                                            label = NULL,
+                                                            choices = c("% of population",
+                                                                        "persons"),
+                                                            selected = "% of population")
+                                   )
                            ),
                            
                            tabPanel(value = "nutrient-demand-tabs-2",
                                    text$item_label[text$item_id == "nutrient-demand-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("nutrient_demand_plot_2")
+                                   plotOutput("nutrient_demand_plot_2", height = "500px", width = "auto")
+                                   
                            )
                     )
                     
@@ -111,10 +122,12 @@ GlobalNationalOutlook <- function(){
              
              column(3, id = "lr-spaced-div",
                     
+                    # Section title
                     tags$h4(text$item_label[text$item_id == "nutrient_demand"]),
                     
-                    includeHTML("./text/02-global-national-outlook/nutrient_demand_1.html") #### MAKE REACTIVE
-                    
+                    # Reactive description text
+                    uiOutput("nutrient_demand_text")
+
              )
              
       ),
@@ -132,32 +145,47 @@ GlobalNationalOutlook <- function(){
              
              column(3, id = "lr-spaced-div",
                     
+                    # Section title
                     tags$h4(text$item_label[text$item_id == "marine_seafood_as_source_nutrients"]),
                     
-                    includeHTML("./text/02-global-national-outlook/marine_seafood_as_source_1.html") #### MAKE REACTIVE
+                    # Reactive description text
+                    uiOutput("marine_seafood_as_source_text")
                     
              ),
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "marine-seafood-as-source-tabs", width = 12,
+                    tabBox(id = "marine_seafood_as_source_tabs", width = 12,
                            
                            tabPanel(value = "marine-seafood-as-source-tabs-1",
-                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-1"]
+                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-1"],
                                    
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("marine_seafood_as_source_plot_1", height = "500px", width = "auto"),
+                                   
+                                   # Widget
+                                   column(6, offset = 6, id = "absolute-widget-panel-top-right",
+                                          
+                                          radioGroupButtons("w_marine_seafood_as_source_plot_1",
+                                                            label = NULL,
+                                                            choices = c("Live weight",
+                                                                        "Edible meat"),
+                                                            selected = "Live weight")
+                                   )
                            ),
                            
                            tabPanel(value = "marine-seafood-as-source-tabs-2",
-                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-2"]
+                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("marine_seafood_as_source_plot_2", height = "500px", width = "auto")
                            ),
                            
                            tabPanel(value = "marine-seafood-as-source-tabs-3",
-                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-3"]
+                                   text$item_label[text$item_id == "marine-seafood-as-source-tabs-3"],
                                    
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("marine_seafood_as_source_plot_3", height = "500px", width = "auto")
                            )
                            
                     )
@@ -179,19 +207,31 @@ GlobalNationalOutlook <- function(){
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "future-seafood-supply-tabs", width = 12,
+                    tabBox(id = "future_seafood_supply_tabs", width = 12,
                            
                            tabPanel(value = "future-seafood-supply-tabs-1",
-                                   text$item_label[text$item_id == "future-seafood-supply-tabs-1"]
+                                   text$item_label[text$item_id == "future-seafood-supply-tabs-1"],
                                      
-                                   
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("future_seafood_supply_plot_1", height = "500px", width = "auto"),
+                                   
+                                   # Widget
+                                   column(6, offset = 6, id = "absolute-widget-panel-top-right",
+                                          
+                                          radioGroupButtons("w_future_seafood_supply_plot_1",
+                                                            label = NULL,
+                                                            choices = c("Live weight",
+                                                                        "Edible meat",
+                                                                        "Edible meat per capita"),
+                                                            selected = "Live weight")
+                                   )
                            ),
                            
                            tabPanel(value = "future-seafood-supply-tabs-2",
-                                   text$item_label[text$item_id == "future-seafood-supply-tabs-2"]
+                                   text$item_label[text$item_id == "future-seafood-supply-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("future_seafood_supply_plot_2", height = "500px", width = "auto")
                            )
                     )
              ),
@@ -200,7 +240,7 @@ GlobalNationalOutlook <- function(){
                     
                     tags$h4(text$item_label[text$item_id == "future_seafood_supply"]),
                     
-                    includeHTML("./text/02-global-national-outlook/future_seafood_supply_1.html") #### MAKE REACTIVE
+                    uiOutput("future_seafood_supply_text")
                     
              )
              
