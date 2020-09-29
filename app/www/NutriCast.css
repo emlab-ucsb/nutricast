@@ -248,9 +248,10 @@ h5 {
 /* Shaded divider */
 #absolute-widget-panel-top-center {
   position: absolute;
-  top: 60px;
+  top: 40px;
   left: 2vw;
   width: 100%;
+  text-align: center;
 }
 
 /* Shaded divider */

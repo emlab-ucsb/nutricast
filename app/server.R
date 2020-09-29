@@ -100,12 +100,12 @@ shinyServer(function(input, output, session) {
     
     if(input$w_global_national_outlook_resolution == "National"){
       
-      plot_dat <- nutrient_demand_dat %>%
+      plot_dat <- nutrient_deficiency_dat %>%
         dplyr::filter(country == input$w_global_national_outlook_country)
       
     }else {
       
-      plot_dat <- nutrient_demand_dat %>%
+      plot_dat <- nutrient_deficiency_dat %>%
         dplyr::filter(country == "Global")
       
     }
@@ -121,7 +121,7 @@ shinyServer(function(input, output, session) {
       g <- ggplot(plot_dat) +
         aes(y=get(plot_variable[[1]]), x=reorder(age, desc(age)), fill=sex, alpha=type) +
         # By nutrient
-        facet_wrap(~nutrient, ncol=4) +
+        facet_wrap(~nutrient, ncol=5) +
         # Plot bars
         geom_bar(stat="identity") +
         geom_hline(yintercept = 0) +
@@ -134,34 +134,14 @@ shinyServer(function(input, output, session) {
         scale_alpha_manual(name="Nutritional Health", values=c(0.4, 1.0)) +
         # Theme
         plot_theme+
-        theme(plot.margin = unit(c(2, 0.5, 0.5, 0.5), "cm"))+
+        theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
+        theme(legend.position = "top",
+              legend.direction = "vertical",
+              legend.box = "horizontal")+
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    
+      g
       
-    # }else {
-    #   
-    #   g <- ggplot(plot_dat) +
-    #     aes(y=npeople/1e6, x=reorder(age, desc(age)), fill=sex, alpha=type) +
-    #     # By nutrient
-    #     facet_wrap(~nutrient, ncol=4) +
-    #     # Plot bars
-    #     geom_bar(stat="identity") +
-    #     geom_hline(yintercept = 0) +
-    #     # Flip axis
-    #     coord_flip() +
-    #     # Labels
-    #     labs(y="People (millions)", x="Age Range") +
-    #     # Legends
-    #     scale_fill_discrete(name="Sex") +
-    #     scale_alpha_manual(name="Nutritional Health", values=c(0.4, 1.0)) +
-    #     # Theme
-    #     plot_theme+
-    #     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-    # }
-    
-    print(g)
-    
-    ### NEED
-    
   })
   
   # Plot output: Tab 2 
@@ -169,8 +149,41 @@ shinyServer(function(input, output, session) {
     
     req(input$w_global_national_outlook_resolution)
     req(input$w_global_national_outlook_country)
+    req(input$w_nutrient_demand_plot_2)
     
-    ### NEED
+    if(input$w_global_national_outlook_resolution == "National"){
+      
+      plot_dat_hist <- nutrient_demand_dat %>% 
+        filter(type=="Historical" & country==input$w_global_national_outlook_country & nutrient==input$w_nutrient_demand_plot_2)
+      
+      plot_dat_proj <- nutrient_demand_dat %>% 
+        filter(type=="UN-WPP projections" & country==input$w_global_national_outlook_country  & nutrient==input$w_nutrient_demand_plot_2)
+      
+    }else{
+      
+      plot_dat_hist <- nutrient_demand_dat %>% 
+        filter(type=="Historical" & country=="Global" & nutrient==input$w_nutrient_demand_plot_2)
+      
+      plot_dat_proj <- nutrient_demand_dat %>% 
+        filter(type=="UN-WPP projections" & country=="Global" & nutrient==input$w_nutrient_demand_plot_2)
+      
+    }
+    
+    req(nrow(plot_dat_hist) > 0)
+    req(nrow(plot_dat_proj) > 0)
+    
+    # Plot data
+    g <- ggplot() +
+      geom_line(data=plot_dat_hist, mapping=aes(x=year, y=supply_req_mt_yr_50perc)) +
+      geom_ribbon(data=plot_dat_proj, mapping=aes(x=year, ymin=supply_req_mt_yr_05perc, ymax=supply_req_mt_yr_95perc), alpha=0.2, fill="red") +
+      geom_line(data=plot_dat_proj, mapping=aes(x=year, y=supply_req_mt_yr_50perc), color="red") +
+      labs(x="", y="Annual nutrient supply (Mg)\nrequired to eliminate deficiencies") +
+      scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20)) +
+      plot_theme+
+      theme(plot.margin = unit(c(2.5, 0.5, 0.5, 0.5), "cm"))+
+      theme(axis.title.x = element_blank())
+    
+    g
     
   })
   

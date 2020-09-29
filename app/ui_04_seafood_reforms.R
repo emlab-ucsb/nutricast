@@ -173,7 +173,7 @@ SeafoodReforms <- function(){
 
                                           fluidRow(
 
-                                            column(10, offset = 1,
+                                            column(9, offset = 2,
 
                                                    selectizeInput("w_seafood_reforms_radar_species",
                                                                   label = text$item_label[text$item_id == "w_seafood_reforms_radar_species"],

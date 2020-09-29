@@ -42,25 +42,25 @@ global_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_global.Rds") 
 pop_dat <- national_pop_dat %>%
   bind_rows(global_pop_dat)
 
-# 2) Nutrient Demand
-national_nutrient_dat <- readRDS("./data/nutr_deficiencies_by_cntry_sex_age_2011.Rds") %>%
+# 2a) Nutrient Deficiencies
+national_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_cntry_sex_age_2011.Rds") %>%
   ungroup() %>%
   dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy)
 
-global_nutrient_dat <- readRDS("./data/nutr_deficiencies_by_sex_age_2011.Rds") %>%
+global_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_sex_age_2011.Rds") %>%
   ungroup() %>%
   mutate(iso3 = "Global", country = "Global") %>%
   dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy) 
 
 # Combine data for plot and format
-nutrient_demand_dat <- national_nutrient_dat %>%
-  bind_rows(global_nutrient_dat) %>%
+nutrient_deficiency_dat <- national_nutrient_deficiency_dat %>%
+  bind_rows(global_nutrient_deficiency_dat) %>%
   filter(sex != "Children") %>% # Remove children (not symmetric)
   gather(key="type", value="npeople", 6:7) %>%  # Gather
   mutate(type=recode_factor(type,
                             "ndeficient"="Deficient",
                             "nhealthy"="Healthy"),
-         sex=factor(sex, levels=c("Men", "Women"))) %>% 
+         sex=factor(sex, levels=c("Women", "Men"))) %>% 
   group_by(iso3, country, nutrient) %>%
   mutate(ntotal = sum(npeople, na.rm = T)) %>%
   ungroup() %>%
@@ -69,6 +69,17 @@ nutrient_demand_dat <- national_nutrient_dat %>%
          ppeople=ifelse(sex=="Men", ppeople*-1, ppeople)) %>%
   mutate(npeople = npeople/1e6)
 
+# 2b) Nutrient Demand
+national_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_by_country.Rds")
+global_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_global.Rds") %>%
+  mutate(country = "Global",
+         iso3 = "Global")
+
+nutrient_demand_dat <- national_nutrient_demand_dat %>%
+  bind_rows(global_nutrient_demand_dat)
+
+nutrient_choices <- unique(nutrient_demand_dat$nutrient)
+  
 ### 0) Let's see if we can figure out to set up an API to link to files stored on Google Drive (should speed up app hosting significantly)
 # Ultimately it would probably be good to make this more secure... 
 # google_app <- httr::oauth_app(

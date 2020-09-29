@@ -4,7 +4,7 @@
 ### ----------------------------------------------
 ### ----------------------------------------------
 
-GlobalNationalOutlook <- function(country_choices){
+GlobalNationalOutlook <- function(country_choices, nutrient_choices){
   
   fluidPage(
     
@@ -125,7 +125,20 @@ GlobalNationalOutlook <- function(country_choices){
                                    text$item_label[text$item_id == "nutrient-demand-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("nutrient_demand_plot_2", height = "500px", width = "auto")
+                                   plotOutput("nutrient_demand_plot_2", height = "500px", width = "auto"),
+                                   
+                                   # Widgets
+                                   column(12, id = "absolute-widget-panel-top-center",
+                                          
+                                            column(10, offset = 1,
+                                                   
+                                                   selectizeInput("w_nutrient_demand_plot_2",
+                                                                  label = text$item_label[text$item_id == "w_nutrient_demand_plot_2"],
+                                                                  choices = nutrient_choices,
+                                                                  width = "80%")
+                                                   
+                                            )
+                                   )
                                    
                            )
                     )
