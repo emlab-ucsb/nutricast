@@ -47,6 +47,11 @@ SeafoodReforms <- function(){
              
       ),
       
+      # Placeholder to scroll to 
+      column(12, id = "seafood_nutrition_content",
+             ""
+      ),
+      
       # Content box 1: Seafood Nutrition Content
       column(12, id = "shaded-div",
              
@@ -73,6 +78,11 @@ SeafoodReforms <- function(){
              # Page text
              includeHTML("./text/04-seafood-reforms/story_text_2.html")
              
+      ),
+      
+      # Placeholder to scroll to 
+      column(12, id = "fisheries_reforms",
+             ""
       ),
       
       # Content box 2: Fisheries Reforms
@@ -122,6 +132,11 @@ SeafoodReforms <- function(){
              # Page text
              includeHTML("./text/04-seafood-reforms/story_text_3.html")
              
+      ),
+      
+      # Placeholder to scroll to 
+      column(12, id = "aquaculture_reforms",
+             ""
       ),
       
       # Content box 3: Marine Seafood as a Source of Nutrients
@@ -185,13 +200,18 @@ SeafoodReforms <- function(){
              
       ),
       
+      # Placeholder to scroll to 
+      column(12, id = "mariculture_site_explorer",
+             ""
+      ),
+      
       # Content box 4: Future Seafood Supply & Nutrient Contributions
       column(12, id = "shaded-div",
              
              column(9, id = "lr-spaced-div",
                     
                     # Plot
-                    plotOutput("mariculture_site_explorer_plot", height = "500px", width = "auto"),
+                    plotOutput("mariculture_site_explorer_plot", height = "500px", width = "auto")
                     
                     # # Widgets
                     # column(12, id = "absolute-widget-panel-top-center",

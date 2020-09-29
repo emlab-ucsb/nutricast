@@ -47,6 +47,11 @@ NationalNutritionData <- function(){
              
       ),
       
+      # Placeholder to scroll to 
+      column(12, id = "protein_intake",
+             ""
+      ),
+      
       # Content box 1: Protein Intake
       column(12, id = "shaded-div",
              
@@ -91,6 +96,11 @@ NationalNutritionData <- function(){
              # Page text
              includeHTML("./text/03-national-nutrition-data/story_text_2.html")
              
+      ),
+      
+      # Placeholder to scroll to 
+      column(12, id = "seafood_consumption",
+             ""
       ),
       
       # Content box 2: Seafood Consumption & Nutrient Contributions
@@ -145,6 +155,11 @@ NationalNutritionData <- function(){
              
       ),
       
+      # Placeholder to scroll to 
+      column(12, id = "nutritional_health",
+             ""
+      ),
+      
       # Content box 3: Nutritional Health
       column(12, id = "shaded-div",
              
@@ -171,6 +186,11 @@ NationalNutritionData <- function(){
              # Page text
              includeHTML("./text/03-national-nutrition-data/story_text_4.html")
              
+      ),
+      
+      # Placeholder to scroll to 
+      column(12, id = "nutrient_consumption_profiles",
+             ""
       ),
       
       # Content box 4: Nutrient Consumption Profiles

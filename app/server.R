@@ -17,21 +17,7 @@ shinyServer(function(input, output, session) {
   ### ----------------------------
   ### overview Tab ---------------
   ### ----------------------------
-  
-  # Navigation links within overview tab
-  # observeEvent(input$al_introduction, {
-  #   updateTabItems(session, "menu-items", "overview")
-  # })
-  
-  # observeEvent(input$al_marine_seafood_production_scenarios, {
-  #   updateTabItems(session, "menu-items", "overview")
-  #   ### Bring to top of page
-  # })
-  
-  # observeEvent(input$al_references_contact, {
-  #   updateTabItems(session, "menu-items", "overview")
-  # })
-  
+
   # Navigation buttons to other sections
   observeEvent(input$ab_overview_to_global_national_outlook, {
     updateTabItems(session, "menu-items", "global-national-outlook")
@@ -48,27 +34,6 @@ shinyServer(function(input, output, session) {
   ### -------------------------------------------
   ### global-national-outlook Tab ---------------
   ### -------------------------------------------
-  
-  # Navigation links to global-national-nutrition tab
-  observeEvent(input$al_population_growth, {
-    updateTabItems(session, "menu-items", "global-national-outlook")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_nutrient_demand, {
-    updateTabItems(session, "menu-items", "global-national-outlook")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_marine_seafood_as_source_nutrients, {
-    updateTabItems(session, "menu-items", "global-national-outlook")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_future_seafood_supply, {
-    updateTabItems(session, "menu-items", "global-national-outlook")
-    ### Bring to top of page
-  })
   
   ### Population growth ---------------------
   
@@ -196,30 +161,6 @@ shinyServer(function(input, output, session) {
   ### national-nutrition-data Tab ---------------
   ### -------------------------------------------
   
-  # Navigation links to national-nutrition-data tab
-  observeEvent(input$al_protein_intake, {
-    updateTabItems(session, "menu-items", "national-nutrition-data")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_seafood_consumption, {
-    updateTabItems(session, "menu-items", "national-nutrition-data")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_nutritional_health, {
-    updateTabItems(session, "menu-items", "national-nutrition-data")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_nutrient_consumption_profiles, {
-    
-    updateTabItems(session, "menu-items", "national-nutrition-data")
-    # Call custom javascript to scroll window
-    session$sendCustomMessage(type = "scrollObject", 1)
-    
-  })
-  
   ### Protein Intake ---------------------
   
   # Reactive text: Based upon selected tab
@@ -318,27 +259,6 @@ shinyServer(function(input, output, session) {
   ### -----------------------------------
   ### seafood-reforms Tab ---------------
   ### -----------------------------------
-  
-  # Navigation links to global-national-nutrition tab
-  observeEvent(input$al_seafood_nutrition_content, {
-    updateTabItems(session, "menu-items", "seafood-reforms")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_fisheries_reforms, {
-    updateTabItems(session, "menu-items", "seafood-reforms")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_aquaculture_reforms, {
-    updateTabItems(session, "menu-items", "seafood-reforms")
-    ### Bring to top of page
-  })
-  
-  observeEvent(input$al_mariculture_site_explorer, {
-    updateTabItems(session, "menu-items", "seafood-reforms")
-    ### Bring to top of page
-  })
   
   ### Seafood Nutrition Content -----------------
   

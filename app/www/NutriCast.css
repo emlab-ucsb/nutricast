@@ -217,13 +217,12 @@ h5 {
 
 /* Header divider */
 #header-div {
-  padding: 1vw 2vw 1vw 2vw;
+  padding: 1vw 2vw 0vw 2vw;
 }
 
 #header-div h3{
-  padding-bottom: 5px;
-  border-bottom: 2px solid var(--accent-color);
-  color: var(--accent-color);
+  padding: 0;
+  margin: 0;
 }
 
 /* Spaced divider with underline */

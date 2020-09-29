@@ -57,13 +57,20 @@ GlobalNationalOutlook <- function(){
              
       ),
       
+      # Placeholder to scroll to 
+      column(12, id = "population_growth",
+             ""
+      ),
+      
       # Content box 1: Population Growth
       column(12, id = "shaded-div",
              
              column(3, id = "lr-spaced-div",
                     
+                    # Section title
                     tags$h4(text$item_label[text$item_id == "population_growth"]),
                     
+                    # Descriptive text
                     includeHTML("./text/02-global-national-outlook/population_growth.html")
                     
              ),
@@ -83,6 +90,11 @@ GlobalNationalOutlook <- function(){
              # Page text
              includeHTML("./text/02-global-national-outlook/story_text_2.html")
              
+      ),
+      
+      # Placeholder to scroll to 
+      column(12, id = "nutrient_demand",
+             ""
       ),
       
       # Content box 2: Nutrient Demand
@@ -138,6 +150,11 @@ GlobalNationalOutlook <- function(){
              # Page text
              includeHTML("./text/02-global-national-outlook/story_text_3.html")
              
+      ),
+      
+      # Placeholder to scroll to 
+      column(12, id = "marine_seafood_as_source_nutrients",
+             ""
       ),
       
       # Content box 3: Marine Seafood as a Source of Nutrients
@@ -200,6 +217,11 @@ GlobalNationalOutlook <- function(){
              # Page text
              includeHTML("./text/02-global-national-outlook/story_text_4.html")
              
+      ),
+      
+      # Placeholder to scroll to 
+      column(12, id = "future_seafood_supply",
+             ""
       ),
       
       # Content box 4: Future Seafood Supply & Nutrient Contributions

@@ -39,6 +39,11 @@ Overview <- function(){
                ) # /div
                
       ), # /div 
+      
+      # Placeholder to scroll to for references and contact
+      column(12, id = "introduction",
+             ""
+      ),
     
     # Introduction
     column(12, id = "spaced-div",
