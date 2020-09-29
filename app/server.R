@@ -64,6 +64,20 @@ shinyServer(function(input, output, session) {
     ### Bring to top of page
   })
   
+  ### Population growth ---------------------
+  
+  # Plot output 
+  output$population_growth_plot <- renderPlot({
+    
+    req(input$w_global_national_outlook_resolution)
+    req(input$w_global_national_outlook_country)
+    
+    ### NEED
+    
+  })
+  
+  ### Population growth ---------------------
+  
   ### -------------------------------------------
   ### national-nutrition-data Tab ---------------
   ### -------------------------------------------

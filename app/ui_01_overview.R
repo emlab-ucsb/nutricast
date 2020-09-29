@@ -31,8 +31,9 @@ Overview <- function(){
                         # Main Text
                         tags$div(id = "overview_picture_overlay_text",
                                  
-                                 tags$h1(text$item_label[text$item_id == "app-title"]),
-                                 tags$h3(text$item_label[text$item_id == "overview_header"])
+                                 tags$h2(text$item_label[text$item_id == "app-title"], style = "color: white;"),
+                                 tags$br(),
+                                 tags$h4(text$item_label[text$item_id == "overview_header"])
                         )
                      
                ) # /div

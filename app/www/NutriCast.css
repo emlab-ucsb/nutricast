@@ -47,6 +47,34 @@ a:hover {
   font-weight: bold;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    color: inherit;
+}
+
+h2 {
+  font-size: 24pt;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 20pt;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 16pt;
+  margin-bottom: 20px;
+}
+
+h4 {
+  font-size: 14pt;
+}
+
+h5 {
+  font-size: 12pt;
+}
+
 /*--------------------------------------------*/
 /* Shiny Dashboard Header - dashboardHeader() */
 /*--------------------------------------------*/
@@ -235,13 +263,13 @@ a:hover {
   top: 0;
   left: 0;
   right: 0;
-  height: 35vh;
+  height: 40vh;
   width: auto;
 }
 
 #overview_picture_div{
   display: block;
-  height: 35vh;
+  height: 40vh
   width: auto;
   overflow: hidden;
 }
@@ -249,9 +277,9 @@ a:hover {
 #overview_picture_div img{
   object-fit: cover;
   min-width: 100vw;
-  min-height: 35vh;
+  min-height: 40vh;
   max-width: 100%;
-  max-height: 100%;
+  max-height: 40vh;
 }
 
 #overview_picture_overlay {
@@ -270,7 +298,7 @@ a:hover {
 #overview_picture_overlay_text{
    color: white;
    text-align: center;
-   padding: 5% 10% 5%;
+   padding: 10% 10% 5%;
    width: 100%;
 }
 
@@ -304,7 +332,7 @@ a:hover {
 /* Button appearance */
 #ab_overview_to_global_national_outlook, #ab_overview_to_national_nutrition_data, #ab_overview_to_seafood_reforms {
   background-color: var(--accent-color);
-  width: 80%;
+  width: 85%;
   color: #ffffff;
   white-space: normal;
   padding: 20px;

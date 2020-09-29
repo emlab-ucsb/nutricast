@@ -101,7 +101,7 @@ shinyUI(
             tags$li(
                 class = "dropdown",
                 a(href = 'http://emlab.msi.ucsb.edu/',
-                  img(src = 'emlab_logo_horizontal_b.png', title = text$item_label[text$item_id == "emlab_logo"], height = "30px"), 
+                  img(src = 'emlab_logo_horizontal.png', title = text$item_label[text$item_id == "emlab_logo"], height = "30px"), 
                   style = "padding-top:10px; padding-bottom:10px;"
                 ) # /a
             ) # /tags$li

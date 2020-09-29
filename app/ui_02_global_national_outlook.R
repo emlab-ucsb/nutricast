@@ -71,7 +71,8 @@ GlobalNationalOutlook <- function(){
              column(9, id = "lr-spaced-div",
                     
                     ### PLOT PLACEHOLDER
-                    
+                    plotOutput("population_growth_plot")
+
              )
              
       ),
@@ -92,15 +93,17 @@ GlobalNationalOutlook <- function(){
                     tabBox(id = "nutrient-demand-tabs", width = 12,
                            
                            tabPanel(value = "nutrient-demand-tabs-1",
-                                   text$item_label[text$item_id == "nutrient-demand-tabs-1"]
+                                   text$item_label[text$item_id == "nutrient-demand-tabs-1"],
                                    
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("nutrient_demand_plot_1")
                            ),
                            
                            tabPanel(value = "nutrient-demand-tabs-2",
-                                   text$item_label[text$item_id == "nutrient-demand-tabs-2"]
+                                   text$item_label[text$item_id == "nutrient-demand-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
+                                   plotOutput("nutrient_demand_plot_2")
                            )
                     )
                     
