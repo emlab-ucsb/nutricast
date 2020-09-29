@@ -12,8 +12,34 @@ text <- read_csv("./text/app_text.csv") %>%
   dplyr::filter(!is.na(tab_id))
 
 ### ----------------------------------
+### Plot theme -------------------------
+### ----------------------------------
+
+plot_theme <- theme_linedraw()+
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12, face = "bold"),
+        plot.background = element_rect(fill = "#e6eef6", color = "#e6eef6"))
+        #plot.background = element_rect(color = "#1a2d3f"))
+
+### ----------------------------------
 ### App data -------------------------
 ### ----------------------------------
+
+### Global and National Outlook -------------------
+
+# 1) Population growth
+national_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_by_country.Rds")
+
+# Get selectable countries for which we have population data
+global_national_outlook_countries <- unique(national_pop_dat$country)
+global_national_outlook_countries <- sort(countries)
+
+global_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_global.Rds") %>%
+  mutate(country = "Global",
+         iso3 = "Global")
+
+pop_dat <- national_pop_dat %>%
+  bind_rows(global_pop_dat)
 
 ### 0) Let's see if we can figure out to set up an API to link to files stored on Google Drive (should speed up app hosting significantly)
 # Ultimately it would probably be good to make this more secure... 

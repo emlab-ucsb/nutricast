@@ -275,7 +275,7 @@ shinyUI(
                 ### Global & National Outlook --- 
                 tabItem(tabName = "global-national-outlook",
                         
-                        GlobalNationalOutlook()
+                        GlobalNationalOutlook(country_choices = global_national_outlook_countries)
                         
                 ),
                 

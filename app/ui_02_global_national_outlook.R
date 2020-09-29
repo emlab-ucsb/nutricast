@@ -4,7 +4,7 @@
 ### ----------------------------------------------
 ### ----------------------------------------------
 
-GlobalNationalOutlook <- function(){
+GlobalNationalOutlook <- function(country_choices){
   
   fluidPage(
     
@@ -41,8 +41,8 @@ GlobalNationalOutlook <- function(){
                                      
                                      selectizeInput("w_global_national_outlook_country",
                                                     label = text$item_label[text$item_id == "w_global_national_outlook_country"],
-                                                    choices = c("A", "B", "D"),
-                                                    selected = "A",
+                                                    choices = country_choices,
+                                                    selected = "United States",
                                                     width = "100%")
                     )
              )

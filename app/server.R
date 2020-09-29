@@ -43,7 +43,38 @@ shinyServer(function(input, output, session) {
     req(input$w_global_national_outlook_resolution)
     req(input$w_global_national_outlook_country)
     
-    ### NEED
+    if(input$w_global_national_outlook_resolution == "National"){
+      
+      plot_dat_hist <- pop_dat %>%
+        dplyr::filter(country == input$w_global_national_outlook_country & source == "World Bank historical")
+      
+      plot_dat_proj <- pop_dat  %>%
+        dplyr::filter(country == input$w_global_national_outlook_country & source == "UN WPP projections")
+      
+    }else{
+      
+      plot_dat_hist <- pop_dat %>%
+        dplyr::filter(country == "Global" & source == "World Bank historical")
+      
+      plot_dat_proj <- pop_dat %>%
+        dplyr::filter(country == "Global" & source == "UN WPP projections")
+      
+    }
+    
+    req(nrow(plot_dat_hist) > 0)
+    req(nrow(plot_dat_proj) > 0)
+      
+      # Plot data
+      g <- ggplot() +
+        geom_line(data=plot_dat_hist, mapping=aes(x=year, y=pop_size_50perc/1e6)) +
+        geom_ribbon(data=plot_dat_proj, mapping=aes(x=year, ymin=pop_size_05perc/1e6, ymax=pop_size_95perc/1e6), alpha=0.2, fill="red") +
+        geom_line(data=plot_dat_proj, mapping=aes(x=year, y=pop_size_50perc/1e6), color="red") +
+        labs(x="", y="Population size\n(millions of people)") +
+        scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20)) +
+        plot_theme+
+        theme(axis.title.x = element_blank())
+      
+      g
     
   })
   
