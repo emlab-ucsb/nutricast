@@ -96,6 +96,69 @@ shinyServer(function(input, output, session) {
     
     req(input$w_global_national_outlook_resolution)
     req(input$w_global_national_outlook_country)
+    req(input$w_nutrient_demand_plot_1)
+    
+    if(input$w_global_national_outlook_resolution == "National"){
+      
+      plot_dat <- nutrient_demand_dat %>%
+        dplyr::filter(country == input$w_global_national_outlook_country)
+      
+    }else {
+      
+      plot_dat <- nutrient_demand_dat %>%
+        dplyr::filter(country == "Global")
+      
+    }
+    
+    req(nrow(plot_dat) > 0)
+    
+    # Get plotting variable and plot
+    plot_variable <- switch(input$w_nutrient_demand_plot_1,
+                            "% of population" = list("ppeople", "% of Population"),
+                            "persons" = list("npeople", "People (millions)"))
+    
+      # Plot
+      g <- ggplot(plot_dat) +
+        aes(y=get(plot_variable[[1]]), x=reorder(age, desc(age)), fill=sex, alpha=type) +
+        # By nutrient
+        facet_wrap(~nutrient, ncol=4) +
+        # Plot bars
+        geom_bar(stat="identity") +
+        geom_hline(yintercept = 0) +
+        # Flip axis
+        coord_flip() +
+        # Labels
+        labs(y=plot_variable[[2]], x="Age Range") +
+        # Legends
+        scale_fill_discrete(name="Sex") +
+        scale_alpha_manual(name="Nutritional Health", values=c(0.4, 1.0)) +
+        # Theme
+        plot_theme+
+        theme(plot.margin = unit(c(2, 0.5, 0.5, 0.5), "cm"))+
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+      
+    # }else {
+    #   
+    #   g <- ggplot(plot_dat) +
+    #     aes(y=npeople/1e6, x=reorder(age, desc(age)), fill=sex, alpha=type) +
+    #     # By nutrient
+    #     facet_wrap(~nutrient, ncol=4) +
+    #     # Plot bars
+    #     geom_bar(stat="identity") +
+    #     geom_hline(yintercept = 0) +
+    #     # Flip axis
+    #     coord_flip() +
+    #     # Labels
+    #     labs(y="People (millions)", x="Age Range") +
+    #     # Legends
+    #     scale_fill_discrete(name="Sex") +
+    #     scale_alpha_manual(name="Nutritional Health", values=c(0.4, 1.0)) +
+    #     # Theme
+    #     plot_theme+
+    #     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    # }
+    
+    print(g)
     
     ### NEED
     

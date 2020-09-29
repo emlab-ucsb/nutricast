@@ -108,7 +108,7 @@ GlobalNationalOutlook <- function(country_choices){
                                    text$item_label[text$item_id == "nutrient-demand-tabs-1"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("nutrient_demand_plot_1", height = "500px", width = "auto"),
+                                   plotOutput("nutrient_demand_plot_1", height = "700px", width = "auto"),
                                    
                                    # Widget
                                    column(6, offset = 6, id = "absolute-widget-panel-top-right",
