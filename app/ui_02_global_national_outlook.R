@@ -77,7 +77,7 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
              
              column(9, id = "lr-spaced-div",
                     
-                    ### PLOT PLACEHOLDER
+                    ### PLOT
                     plotOutput("population_growth_plot", height = "500px", width = "auto")
 
              )
@@ -107,7 +107,7 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                            tabPanel(value = "nutrient-demand-tabs-1",
                                    text$item_label[text$item_id == "nutrient-demand-tabs-1"],
                                    
-                                   ### PLOT PLACEHOLDER
+                                   ### PLOT
                                    plotOutput("nutrient_demand_plot_1", height = "700px", width = "auto"),
                                    
                                    # Widget
@@ -124,7 +124,7 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                            tabPanel(value = "nutrient-demand-tabs-2",
                                    text$item_label[text$item_id == "nutrient-demand-tabs-2"],
                                    
-                                   ### PLOT PLACEHOLDER
+                                   ### PLOT
                                    plotOutput("nutrient_demand_plot_2", height = "500px", width = "auto"),
                                    
                                    # Widgets
@@ -190,25 +190,25 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                            tabPanel(value = "marine-seafood-as-source-tabs-1",
                                    text$item_label[text$item_id == "marine-seafood-as-source-tabs-1"],
                                    
-                                   ### PLOT PLACEHOLDER
-                                   plotOutput("marine_seafood_as_source_plot_1", height = "500px", width = "auto"),
+                                   ### PLOT
+                                   plotOutput("marine_seafood_as_source_plot_1", height = "500px", width = "auto")
                                    
-                                   # Widget
-                                   column(6, offset = 6, id = "absolute-widget-panel-top-right",
-                                          
-                                          radioGroupButtons("w_marine_seafood_as_source_plot_1",
-                                                            label = NULL,
-                                                            choices = c("Live weight",
-                                                                        "Edible meat"),
-                                                            selected = "Live weight")
-                                   )
+                                   # # Widget
+                                   # column(6, offset = 6, id = "absolute-widget-panel-top-right",
+                                   #        
+                                   #        radioGroupButtons("w_marine_seafood_as_source_plot_1",
+                                   #                          label = NULL,
+                                   #                          choices = c("Live weight",
+                                   #                                      "Edible meat"),
+                                   #                          selected = "Live weight")
+                                   # )
                            ),
                            
                            tabPanel(value = "marine-seafood-as-source-tabs-2",
                                    text$item_label[text$item_id == "marine-seafood-as-source-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("marine_seafood_as_source_plot_2", height = "500px", width = "auto")
+                                   plotOutput("marine_seafood_as_source_plot_2", height = "350px", width = "auto")
                            ),
                            
                            tabPanel(value = "marine-seafood-as-source-tabs-3",

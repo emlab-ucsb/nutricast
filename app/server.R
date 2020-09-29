@@ -206,8 +206,38 @@ shinyServer(function(input, output, session) {
     
     req(input$w_global_national_outlook_resolution)
     req(input$w_global_national_outlook_country)
+    ### [EVENTUALLY ADD LANDINGS/EDIBLE MEAT TOGGLE]
     
-    ### NEED
+    if(input$w_global_national_outlook_resolution == 'National'){
+      
+      plot_dat <- production_plot_dat %>%
+        dplyr::filter(country == input$w_global_national_outlook_country & prod_type == "Landings")
+      
+    }else{
+      
+      plot_dat <- production_plot_dat %>%
+        dplyr::filter(country == "Global" & prod_type == "Landings")
+      
+    }
+    
+    req(nrow(plot_dat) > 0)
+    
+    g <- ggplot(plot_dat)+
+      aes(x = year, y = prod_mt/1e6, fill = plot_group, alpha = source)+
+      geom_area()+
+      plot_theme +
+      labs(y = "Production (million mt)")+
+      scale_x_continuous(expand = c(0,0))+
+      scale_y_continuous(expand = c(0,0))+
+      scale_fill_discrete(name="Species Type") +
+      scale_alpha_manual(name="Production Type", values=c(0.4, 1.0)) +
+      theme(axis.title.x = element_blank())+
+      theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
+      theme(legend.position = "top",
+            legend.direction = "vertical",
+            legend.box = "horizontal")
+    
+    g
     
   })
   
@@ -217,7 +247,71 @@ shinyServer(function(input, output, session) {
     req(input$w_global_national_outlook_resolution)
     req(input$w_global_national_outlook_country)
     
-    ### NEED
+    # Global protein data
+    protein_dat <- national_protein_from_seafood_dat %>% 
+      filter(nutrient=="Protein") %>% 
+      mutate(prop_seafood_cap = pmin(prop_seafood, 0.1))
+    
+    # Add protein data to map
+    world_data <- world %>% 
+      left_join(protein_dat, by=c("adm0_a3"="iso3"))
+    
+    req(nrow(world_data) > 0)
+    # if(input$w_global_national_outlook_resolution == "National"){
+    #   
+    #   # Country ISO3
+    #   country_dat <- national_protein_from_seafood_dat %>% 
+    #     filter(country==input$w_global_national_outlook_country) %>% 
+    #     pull(iso3) %>% unique()
+    
+    # # Country proportion 
+    # cntry_prop <- protein_dat %>%
+    #   filter(country==input$w_global_national_outlook_country) %>% 
+    #   pull(prop_seafood)
+      
+    # }else{
+      
+      # Plot map
+      g1 <- ggplot(world_data) +
+        geom_sf(mapping=aes(fill=prop_seafood_cap*100), lwd=0.1) +
+        # geom_sf(data=world_pts %>% filter(iso3_use==cntry_iso3), 
+        #         color="red", size=3) +
+        # geom_sf_text(data=world_pts %>% filter(iso3_use==cntry_iso3), 
+        #              label=cntry, color="red") + 
+        scale_fill_gradientn(name="% of Protein From Marine Seafood", 
+                             colors=RColorBrewer::brewer.pal(n=9, name="Blues"), 
+                             na.value = "grey70",
+                             limits=c(0,10),
+                             breaks=seq(0,10,5), 
+                             labels=c("0%", "5%", ">10%")) +
+        guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
+        map_theme+
+        theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
+        theme(legend.position = "top",
+              legend.direction = "horizontal",
+              legend.box = "horizontal")+
+        guides(fill = guide_colorbar(title.position = "top", barwidth = 15))
+      
+      
+      # Plot p(protein) histogram
+      g2 <- ggplot(protein_dat, aes(x=prop_seafood)) +
+        geom_histogram(binwidth = 0.01) +
+        #geom_vline(xintercept = cntry_prop, col="red") +
+        #annotate(geom="text", y=25, x=cntry_prop+0.01, hjust=0, label=cntry, color="red") +
+        labs(x="Percent of Protein From Marine Seafood", y="Number of Countries") +
+        scale_x_continuous(labels = scales::percent_format(accuracy=1), expand = c(0,0)) +
+        scale_y_continuous(expand = c(0,0))+
+        plot_theme
+      
+      # Merge
+      g <- gridExtra::grid.arrange(g1, g2, ncol=2, widths = c(1.75,1))
+
+      g
+      
+    # }
+    # 
+    # 
+    # 
     
   })
   

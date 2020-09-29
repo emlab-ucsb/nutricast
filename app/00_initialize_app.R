@@ -19,8 +19,23 @@ plot_theme <- theme_linedraw()+
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 12, face = "bold"),
         plot.background = element_rect(fill = "#e6eef6", color = "#e6eef6"),
-        legend.background = element_rect(fill = "#e6eef6", color = "#e6eef6"))
+        legend.background = element_rect(fill = "#e6eef6", color = "#e6eef6"),
+        legend.title = element_text(size = 12, face = "bold"))
         #plot.background = element_rect(color = "#1a2d3f"))
+
+map_theme <- theme_linedraw()+
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12, face = "bold"),
+        plot.background = element_rect(fill = "#e6eef6", color = "#e6eef6"),
+        legend.background = element_rect(fill = "#e6eef6", color = "#e6eef6"),
+        legend.title = element_text(size = 12, face = "bold"),
+        panel.background = element_rect(color = "#e6eef6"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank())
+
+world <- ne_countries(scale = 'small', 
+                      type = 'map_units',
+                      returnclass = 'sf')
 
 ### ----------------------------------
 ### App data -------------------------
@@ -79,6 +94,54 @@ nutrient_demand_dat <- national_nutrient_demand_dat %>%
   bind_rows(global_nutrient_demand_dat)
 
 nutrient_choices <- unique(nutrient_demand_dat$nutrient)
+
+# 3a) Capture and aquaculture production
+
+# Historical capture production by country (FAO)
+national_capture_production_dat <- readRDS("./data/1950_2017_fao_landings_by_country_isscaap.Rds") %>%
+  dplyr::filter(!(isscaap %in% c("Freshwater molluscs", "Miscellaneous freshwater fishes", "Freshwater crustaceans", "River eels"))) %>% # remove freshwater production
+  rename(country = country_use, iso3 = iso3_use) %>%
+  mutate(plot_group = case_when(major_group == "Pisces" ~ "Finfish",
+                                isscaap %in% c("Clams, cockles, arkshells", "Mussels", "Scallops, pectens", "Oysters") ~ "Bivalves",
+                                TRUE ~ "Other")) %>%
+  group_by(country, iso3, year, plot_group, prod_type) %>%
+  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(source = "Marine Capture")
+
+global_capture_production_dat <- national_capture_production_dat %>%
+  group_by(year, plot_group, prod_type, source) %>%
+  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(country = "Global", iso3 = "Global")
+
+# Historical aquaculture production by country (FAO)
+national_aquaculture_production_dat <- readRDS("./data/1950_2017_fao_aquaculture_data.Rds") %>%
+  dplyr::filter(environment != "Freshwater") %>% # remove freshwater production
+  mutate(plot_group = case_when(major_group == "Pisces" ~ "Finfish",
+                                order == "Bivalvia" ~ "Bivalves",
+                                TRUE ~ "Other")) %>%
+  group_by(country_orig, iso3_orig, year, plot_group) %>%
+  summarize(prod_mt = sum(quantity_mt, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(source = "Aquaculture") %>%
+  mutate(prod_type = "Landings") %>%
+  rename(country = country_orig, iso3 = iso3_orig)
+ 
+global_aquaculture_production_dat <- national_aquaculture_production_dat %>%
+  group_by(year, plot_group, prod_type, source) %>%
+  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(country = "Global", iso3 = "Global")
+
+# Output plot dat
+production_plot_dat <- national_capture_production_dat %>%
+  bind_rows(global_capture_production_dat) %>%
+  bind_rows(national_aquaculture_production_dat) %>%
+  bind_rows(global_aquaculture_production_dat)
+
+# 3b) Protein from Seafood
+national_protein_from_seafood_dat <- readRDS("./data/genus_pnutrient_seafood_by_cntry_2011.Rds")
   
 ### 0) Let's see if we can figure out to set up an API to link to files stored on Google Drive (should speed up app hosting significantly)
 # Ultimately it would probably be good to make this more secure... 
