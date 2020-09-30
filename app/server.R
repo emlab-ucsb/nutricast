@@ -133,8 +133,7 @@ shinyServer(function(input, output, session) {
         scale_fill_discrete(name="Sex") +
         scale_alpha_manual(name="Nutritional Health", values=c(0.4, 1.0)) +
         # Theme
-        plot_theme+
-        theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
+        plot_theme_tab+
         theme(legend.position = "top",
               legend.direction = "vertical",
               legend.box = "horizontal")+
@@ -178,7 +177,7 @@ shinyServer(function(input, output, session) {
       geom_line(data=plot_dat_proj, mapping=aes(x=year, y=supply_req_mt_yr_50perc), color="red") +
       labs(x="", y="Annual nutrient supply (Mg)\nrequired to eliminate deficiencies") +
       scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20)) +
-      plot_theme+
+      plot_theme_tab+
       theme(plot.margin = unit(c(2.5, 0.5, 0.5, 0.5), "cm"))+
       theme(axis.title.x = element_blank())
     
@@ -224,14 +223,13 @@ shinyServer(function(input, output, session) {
     g <- ggplot(plot_dat)+
       aes(x = year, y = prod_mt/1e6, fill = plot_group, alpha = source)+
       geom_area()+
-      plot_theme +
       labs(y = "Production (million mt)")+
       scale_x_continuous(expand = c(0,0))+
       scale_y_continuous(expand = c(0,0))+
       scale_fill_discrete(name="Species Type") +
       scale_alpha_manual(name="Production Type", values=c(0.4, 1.0)) +
+      plot_theme_tab+
       theme(axis.title.x = element_blank())+
-      theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
       theme(legend.position = "top",
             legend.direction = "vertical",
             legend.box = "horizontal")
@@ -277,8 +275,7 @@ shinyServer(function(input, output, session) {
                              breaks=seq(0,10,5), 
                              labels=c("0%", "5%", ">10%")) +
         guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
-        map_theme+
-        theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
+        map_theme_tab+
         theme(legend.position = "top",
               legend.direction = "horizontal",
               legend.box = "horizontal")+
@@ -291,7 +288,7 @@ shinyServer(function(input, output, session) {
         labs(x="Percent of Protein From Marine Seafood", y="Number of Countries") +
         scale_x_continuous(labels = scales::percent_format(accuracy=1), expand = c(0,0)) +
         scale_y_continuous(expand = c(0,0))+
-        plot_theme
+        plot_theme_tab
       
       # Merge
       g <- gridExtra::grid.arrange(g1, g2, ncol=2, widths = c(1.75,1))
@@ -309,8 +306,7 @@ shinyServer(function(input, output, session) {
                              breaks=seq(0,10,5), 
                              labels=c("0%", "5%", ">10%")) +
         guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
-        map_theme+
-        theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
+        map_theme_tab+
         theme(legend.position = "top",
               legend.direction = "horizontal",
               legend.box = "horizontal")+
@@ -325,7 +321,7 @@ shinyServer(function(input, output, session) {
         labs(x="Percent of Protein From Marine Seafood", y="Number of Countries") +
         scale_x_continuous(labels = scales::percent_format(accuracy=1), expand = c(0,0)) +
         scale_y_continuous(expand = c(0,0))+
-        plot_theme
+        plot_theme_tab
       
       # Merge
       g <- gridExtra::grid.arrange(g1, g2, ncol=2, widths = c(1.75,1))
@@ -353,8 +349,7 @@ shinyServer(function(input, output, session) {
     g1 <- ggplot(diet_data, aes(x=year, y=seafood_g_person_day)) +
       geom_line() +
       labs(y="Daily per Capita Seafood Consumption\n(grams / person / day)") +
-      # Theme
-      plot_theme+
+      plot_theme_tab+
       theme(axis.title.x=element_blank(),
             axis.text.y = element_text(angle = 90, hjust = 0.5))
     
@@ -364,8 +359,7 @@ shinyServer(function(input, output, session) {
       # Labels
       scale_y_continuous(labels = scales::percent) +
       labs(y="Percent of Daily Diet\nFrom Marine Seafood") +
-      # Theme
-      plot_theme+
+      plot_theme_tab+
       theme(axis.title.x=element_blank(),
             axis.text.y = element_text(angle = 90, hjust = 0.5))
     
@@ -382,8 +376,7 @@ shinyServer(function(input, output, session) {
       # Labels
       labs(y="Percent of Daily Nutrient Consumption\nFrom Marine Seafood") +
       scale_y_continuous(labels = scales::percent) +
-      # Theme
-      plot_theme+
+      plot_theme_tab+
       theme(axis.title.y=element_blank())
     
     # Merge
@@ -471,8 +464,7 @@ shinyServer(function(input, output, session) {
                            breaks=seq(0,10,5), 
                            labels=c("0%", "5%", ">10%")) +
       guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
-      map_theme+
-      theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
+      map_theme_tab+
       theme(legend.position = "top",
             legend.direction = "horizontal",
             legend.box = "horizontal")+
@@ -498,8 +490,7 @@ shinyServer(function(input, output, session) {
       labs(x="Percent of Protein From Marine Seafood", y="Number of Countries") +
       scale_x_continuous(labels = scales::percent_format(accuracy=1), expand = c(0,0)) +
       scale_y_continuous(expand = c(0,0))+
-      plot_theme+
-      theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))
+      plot_theme_tab
     
     g
 
@@ -537,7 +528,7 @@ shinyServer(function(input, output, session) {
       geom_line() +
       labs(y="Daily per Capita Seafood Consumption\n(grams / person / day)") +
       # Theme
-      plot_theme+
+      plot_theme_tab+
       theme(axis.title.x=element_blank(),
             axis.text.y = element_text(angle = 90, hjust = 0.5))
     
@@ -565,7 +556,7 @@ shinyServer(function(input, output, session) {
       scale_y_continuous(labels = scales::percent) +
       labs(y="Percent of Daily Diet\nFrom Marine Seafood") +
       # Theme
-      plot_theme+
+      plot_theme_tab+
       theme(axis.title.x=element_blank(),
             axis.text.y = element_text(angle = 90, hjust = 0.5))
     
@@ -593,7 +584,7 @@ shinyServer(function(input, output, session) {
       labs(y="Percent of Daily Nutrient Consumption\nFrom Marine Seafood") +
       scale_y_continuous(labels = scales::percent, expand = c(0,0)) +
       # Theme
-      plot_theme+
+      plot_theme_tab+
       theme(axis.title.y=element_blank())
     
     g
@@ -637,6 +628,16 @@ shinyServer(function(input, output, session) {
   
   ### Nutrient Consumption Profiles ---------------------
   
+  ### Info modal (on button click) ----------------------------
+  observeEvent(input$info_nutrient_types, {
+    
+    showModal(modalDialog(title = NULL,
+                          includeHTML(paste0("./text/03-national-nutrition-data/info_nutrient_types.html")),
+                          size = "l",
+                          easyClose = T))
+    
+  })
+  
   # Plot output
   output$nutrient_consumption_profiles_plot <- renderPlot({
     
@@ -672,7 +673,7 @@ shinyServer(function(input, output, session) {
       ylim(0, max_val) +
       # Labels
       labs(x="Year", y=paste0("Daily Per Capita Consumption\n(", nutr_unit, " / person / day)")) +
-      plot_theme+
+      plot_theme_tab+
       scale_x_continuous(expand = c(0,0))
     
     # Sex plot
@@ -687,10 +688,10 @@ shinyServer(function(input, output, session) {
       geom_line(data=plot_dri_dat, mapping=aes(x=age_range, y=value, group=sex), inherit.aes = F, color="black") +
       geom_point(data=plot_dri_dat, mapping=aes(x=age_range, y=value, group=sex), inherit.aes = F, color="black") +
       # Labels
-      labs(x="Age Range", y="") +
+      labs(x="Age Range", y=paste0("Daily Per Capita Consumption\n(", nutr_unit, " / person / day)")) +
       scale_fill_discrete(name="Sex") +
       # Theme
-      plot_theme+
+      plot_theme_tab+
       theme(legend.position = "none",
             axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
             panel.grid.major = element_blank(), 
@@ -698,8 +699,12 @@ shinyServer(function(input, output, session) {
       scale_y_continuous(expand = c(0,0), limits = c(0, max_val))
     
     # Combine
-    g <- gridExtra::grid.arrange(g1, g2, ncol=2, widths=c(0.45, 0.55))
-    g
+    g <- gridExtra::grid.arrange(g1, g2, ncol=1, heights=c(1, 1))
+    out <- cowplot::ggdraw(g) + 
+      plot_theme +
+      theme(panel.background = element_rect(color = "#ffffff"))
+    
+    out
       
   })
   
@@ -821,8 +826,7 @@ shinyServer(function(input, output, session) {
       coord_flip() +
       facet_wrap( ~ group, scales = "free", ncol = 2) +
       scale_y_continuous(expand = c(0,0))+
-      plot_theme+
-      theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
+      plot_theme_tab+
       theme(legend.position = "none")
       
 
@@ -847,11 +851,6 @@ shinyServer(function(input, output, session) {
                          "w_seafood_reforms_radar_species",
                          choices = levels(viable_species$species))
     
-    # Update input
-    updateSelectizeInput(session,
-                         "w_seafood_reforms_site_explorer_species",
-                         choices = levels(viable_species$species))
-    
   })
   
   # Plot output
@@ -872,6 +871,7 @@ shinyServer(function(input, output, session) {
     
     # Plot data
     g <- ggradar(plot_data) +
+      theme(plot.margin = unit(c(3.5, 0.5, 0.5, 0.5), "cm"))+
       theme(legend.position = "right")
     g
     
@@ -880,14 +880,85 @@ shinyServer(function(input, output, session) {
   
   ### Mariculture Site Explorer ---------------
   
+  ### Update scenario select input based species selected  ---------
+  observe({
+
+    # Viable Species ordered
+    possible_scenarios_years <- rcp_projections %>%
+      dplyr::filter(species == input$w_seafood_reforms_site_explorer_species) %>%
+      distinct(species, scenario, year)
+    
+    scenarios <- unique(possible_scenarios_years$scenario)
+    
+    # Update input
+    updateSelectizeInput(session,
+                         "w_seafood_reforms_site_explorer_climate_scenario",
+                         choices = scenarios)
+
+  })
+
+  ## Update species select input based on scenario selected  ---------
+  observe({
+
+    # Viable Species ordered
+    possible_species_years <- rcp_projections %>%
+      dplyr::filter(scenario == input$w_seafood_reforms_site_explorer_climate_scenario) %>%
+      distinct(species, scenario, year)
+
+    species <- unique(possible_species_years$species)
+    
+    # Update input
+    updateSelectizeInput(session,
+                         "w_seafood_reforms_site_explorer_species",
+                         choices = species)
+
+  })
+  
+  ### Reactive data set based on selected country and climate scenario ---
+  site_explorer_dat <- eventReactive(c(input$w_seafood_reforms_site_explorer_species,
+                                       input$w_seafood_reforms_site_explorer_climate_scenario), {
+
+
+            # plot_dat <- rcp_projections %>%
+            #             dplyr::filter(species == input$aqua_explorer_select_species &
+            #                             scenario == input$aqua_explorer_select_scenario)
+           # Load data
+           scenario <- str_replace(str_replace(input$w_seafood_reforms_site_explorer_climate_scenario, " ", ""), "[.]", "")
+           category <- unique(rcp_projections$group[rcp_projections$species == input$w_seafood_reforms_site_explorer_species])
+           species <- str_replace(input$w_seafood_reforms_site_explorer_species, " ", "_")
+           dat_file_name <- paste0(scenario, "_", category, "_", species, ".Rds")
+           
+           data <- readRDS(paste0("./data/raw/", dat_file_name))
+
+           
+  })
+  
   # Plot output
   output$mariculture_site_explorer_plot <- renderPlot({
     
-    req(input$w_seafood_reforms_country)
-    req(input$w_seafood_reforms_site_explorer_species)
-    req(input$w_seafood_reforms_climate_scenario)
+    req(nrow(site_explorer_dat()) > 0)
+
+    # Filter for year, and plot
+    plot_dat <- site_explorer_dat() %>%
+      dplyr::filter(year == 2100)
     
-    ### NEED
+    # data_raster <- raster::rasterFromXYZ(data,
+    #                                      crs = "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs")
+    #
+    
+    # Plot data
+    g <- ggplot() +
+      geom_sf(data = world) +
+      coord_sf(crs = st_crs('+proj=moll'),
+               expand = F) +
+      geom_raster(data = plot_dat, aes(x = x, y = y), fill = "red") +
+      labs(x = "", y = "") +
+      map_theme +
+      # scale_x_continuous(limits = c(-18086282, 18083718))+
+      # scale_y_continuous(limits = c(-9069952, 9070048))+
+      theme(axis.text = element_blank())
+    
+    g
     
   })
   

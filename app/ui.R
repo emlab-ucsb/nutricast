@@ -23,6 +23,7 @@ library(leaflet) # interactive maps
 library(plotly) # interactive charts
 library(viridis) # colorblind color scales
 library(RColorBrewer) # other color scales
+library(cowplot)
 library(ggradar)
 library(raster)
 library(rgeos)
@@ -293,7 +294,7 @@ shinyUI(
                         
                         SeafoodReforms(country_choices = widget_country_choices,
                                        climate_scenario_choices = climate_scenario_choices,
-                                       species_choices)
+                                       species_choices = species_choices)
                         
                 )
 
@@ -303,7 +304,6 @@ shinyUI(
         
     ) # /dashboardPage
 ) # /shinyUI
-        
         
 
 

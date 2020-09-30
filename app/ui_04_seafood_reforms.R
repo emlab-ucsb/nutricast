@@ -225,31 +225,6 @@ SeafoodReforms <- function(country_choices,
                     # Plot
                     plotOutput("mariculture_site_explorer_plot", height = "500px", width = "auto")
                     
-                    # # Widgets
-                    # column(12, id = "absolute-widget-panel-top-center",
-                    #        
-                    #        fluidRow(
-                    #          
-                    #          column(5, offset = 1, 
-                    #                 
-                    #                 selectizeInput("w_seafood_reforms_site_explorer_species",
-                    #                                label = text$item_label[text$item_id == "w_seafood_reforms_site_explorer_species"],
-                    #                                choices = c("A", "B", "C"),
-                    #                                selected = "A",
-                    #                                width = "80%")
-                    #                 
-                    #          ),
-                    #          column(5, 
-                    #                 
-                    #                 selectizeInput("w_seafood_reforms_climate_scenario",
-                    #                                label = text$item_label[text$item_id == "w_seafood_reforms_climate_scenario"],
-                    #                                choices = c("A", "B", "C"),
-                    #                                selected = "A",
-                    #                                width = "80%")
-                    #                 
-                    #          )
-                    #        )
-                    # )
              ),
              
              column(3, id = "lr-spaced-div",
@@ -261,7 +236,7 @@ SeafoodReforms <- function(country_choices,
                                    choices = species_choices,
                                    width = "100%"),
                     
-                    selectizeInput("w_seafood_reforms_climate_scenario",
+                    selectizeInput("w_seafood_reforms_site_explorer_climate_scenario",
                                    label = text$item_label[text$item_id == "w_seafood_reforms_climate_scenario"],
                                    choices = climate_scenario_choices,
                                    width = "100%"),

@@ -18,20 +18,40 @@ text <- read_csv("./text/app_text.csv") %>%
 plot_theme <- theme_linedraw()+
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 12, face = "bold"),
-        plot.background = element_rect(fill = "#e6eef6", color = "#e6eef6"),
-        legend.background = element_rect(fill = "#e6eef6", color = "#e6eef6"),
-        legend.title = element_text(size = 12, face = "bold"))
-        #plot.background = element_rect(color = "#1a2d3f"))
+        plot.background = element_rect(fill = "#ffffff", color = "#1a2d3f", size = 2),
+        legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
+        legend.title = element_text(size = 12, face = "bold"),
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
+
+plot_theme_tab <- theme_linedraw()+
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12, face = "bold"),
+        plot.background = element_rect(fill = "#ffffff", color = "#ffffff"),
+        legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
+        legend.title = element_text(size = 12, face = "bold"),
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
 
 map_theme <- theme_linedraw()+
   theme(axis.text = element_text(size = 12),
         axis.title = element_text(size = 12, face = "bold"),
-        plot.background = element_rect(fill = "#e6eef6", color = "#e6eef6"),
-        legend.background = element_rect(fill = "#e6eef6", color = "#e6eef6"),
+        plot.background = element_rect(fill = "#ffffff", color = "#1a2d3f", size = 2),
+        legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
         legend.title = element_text(size = 12, face = "bold"),
-        panel.background = element_rect(color = "#e6eef6"),
+        panel.background = element_rect(color = "#ffffff"),
         panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
+
+map_theme_tab <- theme_linedraw()+
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12, face = "bold"),
+        plot.background = element_rect(fill = "#ffffff", color = "#ffffff"),
+        legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
+        legend.title = element_text(size = 12, face = "bold"),
+        panel.background = element_rect(color = "#ffffff"),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
 
 world <- ne_countries(scale = 'small', 
                       type = 'map_units',

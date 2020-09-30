@@ -200,7 +200,7 @@ NationalNutritionData <- function(country_choices,
              column(9, id = "lr-spaced-div",
                     
                     ### Plot
-                    plotOutput("nutrient_consumption_profiles_plot", height = "500px", width = "auto")
+                    plotOutput("nutrient_consumption_profiles_plot", height = "800px", width = "auto")
 
              ),
              
@@ -209,7 +209,12 @@ NationalNutritionData <- function(country_choices,
                     tags$h4(text$item_label[text$item_id == "nutrient_consumption_profiles"]),
                     
                     selectizeInput("w_national_nutrition_data_nutrient",
-                                   label = text$item_label[text$item_id == "w_national_nutrition_data_nutrient"],
+                                   label = tagList(
+                                     tags$b(text$item_label[text$item_id == "w_national_nutrition_data_nutrient"]),
+                                     # Info button
+                                     tags$button(id = "info_nutrient_types",
+                                                 class = "btn action-button info-button",
+                                                 icon("info"))),
                                    choices = nutrient_choices,
                                    selected = nutrient_choices[1]),
                     
