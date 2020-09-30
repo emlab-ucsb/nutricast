@@ -292,7 +292,8 @@ shinyUI(
                 tabItem(tabName = "seafood-reforms",
                         
                         SeafoodReforms(country_choices = widget_country_choices,
-                                       climate_scenario_choices = climate_scenario_choices)
+                                       climate_scenario_choices = climate_scenario_choices,
+                                       species_choices)
                         
                 )
 

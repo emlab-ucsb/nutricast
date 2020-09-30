@@ -5,7 +5,8 @@
 ### ----------------------------------------------
 
 SeafoodReforms <- function(country_choices,
-                           climate_scenario_choices){
+                           climate_scenario_choices,
+                           species_choices){
   
   fluidPage(
     
@@ -91,7 +92,7 @@ SeafoodReforms <- function(country_choices,
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "fisheries-reforms-tabs", width = 12,
+                    tabBox(id = "fisheries_reforms_tabs", width = 12,
                            
                            tabPanel(value = "fisheries-reforms-tabs-1",
                                    text$item_label[text$item_id == "fisheries-reforms-tabs-1"],
@@ -119,9 +120,11 @@ SeafoodReforms <- function(country_choices,
              
              column(3, id = "lr-spaced-div",
                     
+                    # Section title
                     tags$h4(text$item_label[text$item_id == "fisheries_reforms"]),
                     
-                    includeHTML("./text/02-global-national-outlook/nutrient_demand_1.html") #### MAKE REACTIVE
+                    # Reactive descriptive text
+                    uiOutput("fisheries_reforms_text")
                     
              )
              
@@ -152,19 +155,21 @@ SeafoodReforms <- function(country_choices,
                                    choices = climate_scenario_choices,
                                    width = "100%"),
                     
-                    includeHTML("./text/04-seafood-reforms/marine_seafood_as_source_1.html") #### MAKE REACTIVE
+                    uiOutput("aquaculture_reforms_text")
+                    
+                    #includeHTML("./text/04-seafood-reforms/marine_seafood_as_source_1.html") #### MAKE REACTIVE
                     
              ),
              
              column(9, id = "lr-spaced-div",
                     
-                    tabBox(id = "aquaculture-reforms-tabs", width = 12,
+                    tabBox(id = "aquaculture_reforms_tabs", width = 12,
                            
                            tabPanel(value = "aquaculture-reforms-tabs-1",
                                    text$item_label[text$item_id == "aquaculture-reforms-tabs-1"],
                                    
-                                   ### PLOT PLACEHOLDER
-                                   plotOutput("aquaculture_reforms_plot_1", height = "500px", width = "auto")
+                                   ### PLOT
+                                   plotOutput("aquaculture_reforms_plot_1", height = "1200px", width = "auto")
                                    
                            ),
                            
@@ -185,7 +190,8 @@ SeafoodReforms <- function(country_choices,
                                                                   label = text$item_label[text$item_id == "w_seafood_reforms_radar_species"],
                                                                   choices = c("A", "B", "C"),
                                                                   selected = "A",
-                                                                  width = "80%")
+                                                                  width = "80%",
+                                                                  multiple = T)
 
                                             )
                                           )
@@ -252,17 +258,15 @@ SeafoodReforms <- function(country_choices,
                     
                     selectizeInput("w_seafood_reforms_site_explorer_species",
                                    label = text$item_label[text$item_id == "w_seafood_reforms_site_explorer_species"],
-                                   choices = c("A", "B", "C"),
-                                   selected = "A",
+                                   choices = species_choices,
                                    width = "100%"),
                     
                     selectizeInput("w_seafood_reforms_climate_scenario",
                                    label = text$item_label[text$item_id == "w_seafood_reforms_climate_scenario"],
-                                   choices = c("A", "B", "C"),
-                                   selected = "A",
+                                   choices = climate_scenario_choices,
                                    width = "100%"),
                     
-                    includeHTML("./text/02-global-national-outlook/future_seafood_supply_1.html") #### MAKE REACTIVE
+                    includeHTML("./text/04-seafood-reforms/mariculture_site_explorer.html")
                     
              )
              

@@ -737,6 +737,18 @@ shinyServer(function(input, output, session) {
   
   ### Fisheries Reforms ---------------
   
+  # Reactive text: Based upon selected tab
+  output$fisheries_reforms_text <- renderUI({
+    
+    selected_tab <- switch(input$fisheries_reforms_tabs,
+                           "fisheries-reforms-tabs-1" = list("fisheries_reforms_1"),
+                           "fisheries-reforms-tabs-2" = list("fisheries_reforms_2"),
+                           "fisheries-reforms-tabs-3" = list("fisheries_reforms_2"))
+    
+    includeHTML(paste0("./text/04-seafood-reforms/", selected_tab[[1]], ".html"))
+    
+  })
+  
   # Plot output: Tab 1
   output$fisheries_reforms_plot_1 <- renderPlot({
     
@@ -767,31 +779,78 @@ shinyServer(function(input, output, session) {
   
   ### Aquaculture Reforms ---------------
   
+  # Reactive text: Based upon selected tab
+  output$aquaculture_reforms_text <- renderUI({
+    
+    selected_tab <- switch(input$aquaculture_reforms_tabs,
+                           "aquaculture-reforms-tabs-1" = list("aquaculture_reforms_1"),
+                           "aquaculture-reforms-tabs-2" = list("aquaculture_reforms_2"))
+    
+    includeHTML(paste0("./text/04-seafood-reforms/", selected_tab[[1]], ".html"))
+    
+  })
+  
+  # Make reactive data object because it's called in multiple places
+  aquaculture_reforms_dat <- eventReactive(c(input$w_seafood_reforms_country,
+                                             input$w_seafood_reforms_aquaculture_climate_scenario), {
+    
+    out <- rcp_projections %>%
+      dplyr::filter(sov1_iso == input$w_seafood_reforms_country & scenario == input$w_seafood_reforms_aquaculture_climate_scenario) %>%
+      dplyr::filter(year == 2100) %>%
+      dplyr::filter(prod_mt_yr > 0) %>%
+      mutate(rank = dense_rank(desc(prod_mt_yr))) %>%
+      mutate(species = fct_reorder(species, desc(rank)))
+    
+  })
+  
   # Plot output
   output$aquaculture_reforms_plot_1 <- renderPlot({
     
     req(input$w_seafood_reforms_country)
     req(input$w_seafood_reforms_aquaculture_climate_scenario)
     
-    # Filter data
-    plot_dat <- rcp_projections %>%
-      dplyr::filter(sov1_iso == input$w_seafood_reforms_country & scenario == input$w_seafood_reforms_aquaculture_climate_scenario) %>%
-      dplyr::filter(year == 2100) %>%
-      mutate(rank = dense_rank(desc(prod_mt_yr))) %>%
-      mutate(species = fct_reorder(species, desc(rank)))
-    
+    plot_dat <- aquaculture_reforms_dat()
+
     req(nrow(plot_dat) > 0)
     
     g <-ggplot(plot_dat)+
-      aes(x = species, y = prod_mt_yr / 1e6, fill = group) +
+      aes(x = species, y = prod_mt_yr/1e6, fill = group) +
       geom_bar(stat = "identity") +
       theme_bw() +
       labs(x = "", y = "Production (million mt)", fill = "Species Type") +
       coord_flip() +
       facet_wrap( ~ group, scales = "free", ncol = 2) +
+      scale_y_continuous(expand = c(0,0))+
+      plot_theme+
+      theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"))+
       theme(legend.position = "none")
+      
 
     g
+    
+  })
+  
+  ### Update species select input based on country and RCP selected above ---------
+  observe({
+
+    # Viable Species ordered
+    viable_species_ordered <- aquaculture_reforms_dat() %>%
+      dplyr::select(species, rank)
+
+    # Only allow species that are viable in 2100 to be selected
+    viable_species <- nutrient_dat_pmax %>%
+      inner_join(viable_species_ordered, by = "species") %>%
+      mutate(species = fct_reorder(species, rank))
+
+    # Update input
+    updateSelectizeInput(session,
+                         "w_seafood_reforms_radar_species",
+                         choices = levels(viable_species$species))
+    
+    # Update input
+    updateSelectizeInput(session,
+                         "w_seafood_reforms_site_explorer_species",
+                         choices = levels(viable_species$species))
     
   })
   
@@ -799,9 +858,22 @@ shinyServer(function(input, output, session) {
   output$aquaculture_reforms_plot_2 <- renderPlot({
     
     req(input$w_seafood_reforms_country)
+    req(input$w_seafood_reforms_aquaculture_climate_scenario)
     req(input$w_seafood_reforms_radar_species)
     
-    ### NEED
+    req(nrow(aquaculture_reforms_dat()) > 0,
+        length(input$w_seafood_reforms_radar_species) > 0)
+
+    # Subset data
+    plot_data <- nutrient_dat_pmax %>%
+      filter(species %in% input$w_seafood_reforms_radar_species)
+    
+    req(nrow(plot_data) > 0)
+    
+    # Plot data
+    g <- ggradar(plot_data) +
+      theme(legend.position = "right")
+    g
     
   })
   

@@ -224,7 +224,6 @@ rcp_projections <- rcp_26_projections %>%
 
 species_choices <- sort(unique(rcp_projections$species))
 climate_scenario_choices <- unique(rcp_projections$scenario)
-browser()
 
 load("./data/Vaitla_etal_2018_nutrient_data.Rdata")
 
