@@ -15,39 +15,41 @@ text <- read_csv("./text/app_text.csv") %>%
 ### Plot theme -------------------------
 ### ----------------------------------
 
+text_size <- 14
+
 plot_theme <- theme_linedraw()+
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12, face = "bold"),
+  theme(axis.text = element_text(size = text_size),
+        axis.title = element_text(size = text_size, face = "bold"),
         plot.background = element_rect(fill = "#ffffff", color = "#1a2d3f", size = 2),
         legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
-        legend.title = element_text(size = 12, face = "bold"),
+        legend.title = element_text(size = text_size, face = "bold"),
         plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
 
 plot_theme_tab <- theme_linedraw()+
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12, face = "bold"),
+  theme(axis.text = element_text(size = text_size),
+        axis.title = element_text(size = text_size, face = "bold"),
         plot.background = element_rect(fill = "#ffffff", color = "#ffffff"),
         legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
-        legend.title = element_text(size = 12, face = "bold"),
+        legend.title = element_text(size = text_size, face = "bold"),
         plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
 
 map_theme <- theme_linedraw()+
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12, face = "bold"),
+  theme(axis.text = element_text(size = text_size),
+        axis.title = element_text(size = text_size, face = "bold"),
         plot.background = element_rect(fill = "#ffffff", color = "#1a2d3f", size = 2),
         legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
-        legend.title = element_text(size = 12, face = "bold"),
+        legend.title = element_text(size = text_size, face = "bold"),
         panel.background = element_rect(color = "#ffffff"),
         panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
 
 map_theme_tab <- theme_linedraw()+
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12, face = "bold"),
+  theme(axis.text = element_text(size = text_size),
+        axis.title = element_text(size = text_size, face = "bold"),
         plot.background = element_rect(fill = "#ffffff", color = "#ffffff"),
         legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
-        legend.title = element_text(size = 12, face = "bold"),
+        legend.title = element_text(size = text_size, face = "bold"),
         panel.background = element_rect(color = "#ffffff"),
         panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
@@ -184,10 +186,12 @@ national_nutritional_health_dat <- readRDS("./data/genus_nutrient_supplies_by_ag
 nutritional_health_plot_dat <- national_nutritional_health_dat %>%
   mutate(sex=recode_factor(sex, "Children"="Children", "Females"="Women", "Males"="Men"),
          nutrient_type=recode(nutrient_type, 
-                              "Macronutrient"="Macro\nnutrient"))
+                              "Macronutrient"="Macro\nnutrient")) %>%
+  dplyr::filter(nutrient != "Sodium")
 
 # 4) Nutrient consumption profiles
-national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds")
+national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds") %>%
+  dplyr::filter(nutrient != "Sodium")
 
 widget_nutrient_choices_national_nutrition_data <- unique(national_nutrient_supplies_dat$nutrient)
 

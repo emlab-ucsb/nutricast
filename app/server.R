@@ -51,6 +51,9 @@ shinyServer(function(input, output, session) {
       plot_dat_proj <- pop_dat  %>%
         dplyr::filter(iso3 == input$w_global_national_outlook_country & source == "UN WPP projections")
       
+      plot_div <- 1e6
+      plot_axis_legend <- "Population size\n(millions of people)"
+      
     }else{
       
       plot_dat_hist <- pop_dat %>%
@@ -59,6 +62,9 @@ shinyServer(function(input, output, session) {
       plot_dat_proj <- pop_dat %>%
         dplyr::filter(iso3 == "Global" & source == "UN WPP projections")
       
+      plot_div <- 1e9
+      plot_axis_legend <- "Population size\n(billions of people)"
+      
     }
     
     req(nrow(plot_dat_hist) > 0)
@@ -66,11 +72,11 @@ shinyServer(function(input, output, session) {
       
       # Plot data
       g <- ggplot() +
-        geom_line(data=plot_dat_hist, mapping=aes(x=year, y=pop_size_50perc/1e6)) +
-        geom_ribbon(data=plot_dat_proj, mapping=aes(x=year, ymin=pop_size_05perc/1e6, ymax=pop_size_95perc/1e6), alpha=0.2, fill="red") +
-        geom_line(data=plot_dat_proj, mapping=aes(x=year, y=pop_size_50perc/1e6), color="red") +
-        labs(x="", y="Population size\n(millions of people)") +
-        scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20)) +
+        geom_line(data=plot_dat_hist, mapping=aes(x=year, y=pop_size_50perc/plot_div)) +
+        geom_ribbon(data=plot_dat_proj, mapping=aes(x=year, ymin=pop_size_05perc/plot_div, ymax=pop_size_95perc/plot_div), alpha=0.2, fill="red") +
+        geom_line(data=plot_dat_proj, mapping=aes(x=year, y=pop_size_50perc/plot_div), color="red") +
+        labs(x="", y=plot_axis_legend) +
+        scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20), expand = c(0,0)) +
         plot_theme+
         theme(axis.title.x = element_blank())
       
@@ -114,8 +120,8 @@ shinyServer(function(input, output, session) {
     
     # Get plotting variable and plot
     plot_variable <- switch(input$w_nutrient_demand_plot_1,
-                            "% of population" = list("ppeople", "% of Population"),
-                            "persons" = list("npeople", "People (millions)"))
+                            "% of population" = list("ppeople", "% of population", 9),
+                            "number of people" = list("npeople", "People (millions)", 7))
     
       # Plot
       g <- ggplot(plot_dat) +
@@ -128,15 +134,17 @@ shinyServer(function(input, output, session) {
         # Flip axis
         coord_flip() +
         # Labels
-        labs(y=plot_variable[[2]], x="Age Range") +
+        labs(y=plot_variable[[2]], x="Age range") +
         # Legends
         scale_fill_discrete(name="Sex") +
-        scale_alpha_manual(name="Nutritional Health", values=c(0.4, 1.0)) +
+        scale_alpha_manual(name="Nutritional health", values=c(0.4, 1.0)) +
+        scale_y_continuous(breaks = pretty(plot_dat[[plot_variable[[1]]]]), labels = abs(pretty(plot_dat[[plot_variable[[1]]]]))) +
         # Theme
         plot_theme_tab+
         theme(legend.position = "top",
               legend.direction = "vertical",
-              legend.box = "horizontal")+
+              legend.box = "horizontal",
+              legend.justification = "left")+
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
     
       g
@@ -158,6 +166,9 @@ shinyServer(function(input, output, session) {
       plot_dat_proj <- nutrient_demand_dat %>% 
         filter(type=="UN-WPP projections" & iso3==input$w_global_national_outlook_country & nutrient==input$w_nutrient_demand_plot_2)
       
+      plot_fac <- 1
+      plot_axis_title <- "Nutrient supply required to eliminate deficiencies\n(Mg per year)"
+      
     }else{
       
       plot_dat_hist <- nutrient_demand_dat %>% 
@@ -166,19 +177,22 @@ shinyServer(function(input, output, session) {
       plot_dat_proj <- nutrient_demand_dat %>% 
         filter(type=="UN-WPP projections" & iso3=="Global" & nutrient==input$w_nutrient_demand_plot_2)
       
+      plot_fac <- 1000
+      plot_axis_title <- "Nutrient supply required to eliminate deficiencies\n(thousands of Mg per year)"
+      
     }
     
     req(nrow(plot_dat_hist) > 0 | nrow(plot_dat_proj) > 0)
-
+    
     # Plot data
     g <- ggplot() +
-      geom_line(data=plot_dat_hist, mapping=aes(x=year, y=supply_req_mt_yr_50perc)) +
-      geom_ribbon(data=plot_dat_proj, mapping=aes(x=year, ymin=supply_req_mt_yr_05perc, ymax=supply_req_mt_yr_95perc), alpha=0.2, fill="red") +
-      geom_line(data=plot_dat_proj, mapping=aes(x=year, y=supply_req_mt_yr_50perc), color="red") +
-      labs(x="", y="Annual nutrient supply (Mg)\nrequired to eliminate deficiencies") +
-      scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20)) +
+      geom_line(data=plot_dat_hist, mapping=aes(x=year, y=supply_req_mt_yr_50perc/plot_fac)) +
+      geom_ribbon(data=plot_dat_proj, mapping=aes(x=year, ymin=supply_req_mt_yr_05perc/plot_fac, ymax=supply_req_mt_yr_95perc/plot_fac), alpha=0.2, fill="red") +
+      geom_line(data=plot_dat_proj, mapping=aes(x=year, y=supply_req_mt_yr_50perc/plot_fac), color="red") +
+      labs(x="", y=plot_axis_title) +
+      scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20), expand = c(0,0)) +
       plot_theme_tab+
-      theme(plot.margin = unit(c(2.5, 0.5, 0.5, 0.5), "cm"))+
+      theme(plot.margin = unit(c(3, 0.5, 0.5, 0.5), "cm"))+
       theme(axis.title.x = element_blank())
     
     g
@@ -204,7 +218,7 @@ shinyServer(function(input, output, session) {
     
     req(input$w_global_national_outlook_resolution)
     req(input$w_global_national_outlook_country)
-    ### [EVENTUALLY ADD LANDINGS/EDIBLE MEAT TOGGLE]
+    ### [EVENTUALLY ADD LANDINGS/EDIBLE MEAT/EDIBLE MEAT PER CAPITA TOGGLE]
     
     if(input$w_global_national_outlook_resolution == 'National'){
       
@@ -223,16 +237,17 @@ shinyServer(function(input, output, session) {
     g <- ggplot(plot_dat)+
       aes(x = year, y = prod_mt/1e6, fill = plot_group, alpha = source)+
       geom_area()+
-      labs(y = "Production (million mt)")+
+      labs(y = "Production (millions of mt)")+
       scale_x_continuous(expand = c(0,0))+
       scale_y_continuous(expand = c(0,0))+
-      scale_fill_discrete(name="Species Type") +
-      scale_alpha_manual(name="Production Type", values=c(0.4, 1.0)) +
+      scale_fill_discrete(name="Species type") +
+      scale_alpha_manual(name="Production type", values=c(0.4, 1.0)) +
       plot_theme_tab+
       theme(axis.title.x = element_blank())+
       theme(legend.position = "top",
             legend.direction = "vertical",
-            legend.box = "horizontal")
+            legend.box = "horizontal",
+            legend.justification = "left")
     
     g
     
@@ -268,26 +283,25 @@ shinyServer(function(input, output, session) {
       g1 <- ggplot(world_data) +
         geom_sf(mapping=aes(fill=prop_seafood_cap*100), lwd=0.1) +
         geom_sf(data=selected_country_point, color="red", size=3) +
-        scale_fill_gradientn(name="% of Protein From Marine Seafood", 
+        scale_fill_gradientn(name="% of protein from marine seafood", 
                              colors=RColorBrewer::brewer.pal(n=9, name="Blues"), 
                              na.value = "grey70",
                              limits=c(0,10),
                              breaks=seq(0,10,5), 
                              labels=c("0%", "5%", ">10%")) +
-        guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
+        guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black",
+                                     title.position = "top", barwidth = 25, title.hjust = 0.5)) +        
         map_theme_tab+
         theme(legend.position = "top",
               legend.direction = "horizontal",
-              legend.box = "horizontal")+
-        guides(fill = guide_colorbar(title.position = "top", barwidth = 25, ticks.colour = "black", frame.colour = "black", title.hjust = 0.5))
+              legend.box = "horizontal")
       
       # Plot p(protein) histogram
       g2 <- ggplot(protein_dat, aes(x=prop_seafood)) +
         geom_histogram(binwidth = 0.01) +
         geom_vline(xintercept = selected_country_prop, col="red") +
-        labs(x="Percent of Protein From Marine Seafood", y="Number of Countries") +
+        labs(x="% of protein from\nmarine seafood", y="Number of countries") +
         scale_x_continuous(labels = scales::percent_format(accuracy=1), expand = c(0,0)) +
-        scale_y_continuous(expand = c(0,0))+
         plot_theme_tab
       
       # Merge
@@ -299,18 +313,18 @@ shinyServer(function(input, output, session) {
       # Plot map
       g1 <- ggplot(world_data) +
         geom_sf(mapping=aes(fill=prop_seafood_cap*100), lwd=0.1) +
-        scale_fill_gradientn(name="% of Protein From Marine Seafood", 
+        scale_fill_gradientn(name="% of protein from marine seafood", 
                              colors=RColorBrewer::brewer.pal(n=9, name="Blues"), 
                              na.value = "grey70",
                              limits=c(0,10),
                              breaks=seq(0,10,5), 
                              labels=c("0%", "5%", ">10%")) +
-        guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
         map_theme_tab+
+        guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black",
+                                     title.position = "top", barwidth = 25, title.hjust = 0.5)) + 
         theme(legend.position = "top",
               legend.direction = "horizontal",
-              legend.box = "horizontal")+
-        guides(fill = guide_colorbar(title.position = "top", barwidth = 15))
+              legend.box = "horizontal")
       
       
       # Plot p(protein) histogram
@@ -318,9 +332,8 @@ shinyServer(function(input, output, session) {
         geom_histogram(binwidth = 0.01) +
         #geom_vline(xintercept = cntry_prop, col="red") +
         #annotate(geom="text", y=25, x=cntry_prop+0.01, hjust=0, label=cntry, color="red") +
-        labs(x="Percent of Protein From Marine Seafood", y="Number of Countries") +
-        scale_x_continuous(labels = scales::percent_format(accuracy=1), expand = c(0,0)) +
-        scale_y_continuous(expand = c(0,0))+
+        labs(x="% of protein from\nmarine seafood", y="Number of countries") +
+        scale_x_continuous(labels = scales::percent_format(accuracy=1)) +
         plot_theme_tab
       
       # Merge
@@ -348,20 +361,23 @@ shinyServer(function(input, output, session) {
     # Plot % of diet from seafood over time
     g1 <- ggplot(diet_data, aes(x=year, y=seafood_g_person_day)) +
       geom_line() +
-      labs(y="Daily per Capita Seafood Consumption\n(grams / person / day)") +
+      labs(y="Daily per capita seafood consumption\n(grams per person per day)") +
       plot_theme_tab+
       theme(axis.title.x=element_blank(),
-            axis.text.y = element_text(angle = 90, hjust = 0.5))
+            axis.text.y = element_text(angle = 90, hjust = 0.5))+
+      scale_x_continuous(expand = c(0,0))
+      
     
     # Plot % of diet from seafood over time
     g2 <- ggplot(diet_data, aes(x=year, y=prop_seafood)) +
       geom_line() +
       # Labels
       scale_y_continuous(labels = scales::percent) +
-      labs(y="Percent of Daily Diet\nFrom Marine Seafood") +
+      labs(y="% of daily diet\nfrom marine seafood") +
       plot_theme_tab+
       theme(axis.title.x=element_blank(),
-            axis.text.y = element_text(angle = 90, hjust = 0.5))
+            axis.text.y = element_text(angle = 90, hjust = 0.5))+
+      scale_x_continuous(expand = c(0,0))
     
     # Data
     nutrient_data <- national_nutrient_from_seafood_dat %>% 
@@ -374,7 +390,7 @@ shinyServer(function(input, output, session) {
       geom_bar(stat="identity") +
       coord_flip() +
       # Labels
-      labs(y="Percent of Daily Nutrient Consumption\nFrom Marine Seafood") +
+      labs(y="% of daily nutrient consumption\nfrom marine seafood") +
       scale_y_continuous(labels = scales::percent) +
       plot_theme_tab+
       theme(axis.title.y=element_blank())
@@ -457,13 +473,12 @@ shinyServer(function(input, output, session) {
     g <- ggplot(world_data) +
       geom_sf(mapping=aes(fill=prop_seafood_cap*100), lwd=0.1) +
       geom_sf(data=selected_country_point, color="red", size=3) +
-      scale_fill_gradientn(name="% of Protein From Marine Seafood", 
+      scale_fill_gradientn(name="% of protein from marine seafood", 
                            colors=RColorBrewer::brewer.pal(n=9, name="Blues"), 
                            na.value = "grey70",
                            limits=c(0,10),
                            breaks=seq(0,10,5), 
                            labels=c("0%", "5%", ">10%")) +
-      guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
       map_theme_tab+
       theme(legend.position = "top",
             legend.direction = "horizontal",
@@ -487,9 +502,8 @@ shinyServer(function(input, output, session) {
     g <- ggplot(protein_dat, aes(x=prop_seafood)) +
       geom_histogram(binwidth = 0.01) +
       geom_vline(xintercept = selected_country_prop, col="red") +
-      labs(x="Percent of Protein From Marine Seafood", y="Number of Countries") +
-      scale_x_continuous(labels = scales::percent_format(accuracy=1), expand = c(0,0)) +
-      scale_y_continuous(expand = c(0,0))+
+      labs(x="% of protein from marine seafood", y="Number of countries") +
+      scale_x_continuous(labels = scales::percent_format(accuracy=1)) +
       plot_theme_tab
     
     g
@@ -526,7 +540,7 @@ shinyServer(function(input, output, session) {
     # Plot % of diet from seafood over time
     g <- ggplot(diet_data, aes(x=year, y=seafood_g_person_day)) +
       geom_line() +
-      labs(y="Daily per Capita Seafood Consumption\n(grams / person / day)") +
+      labs(y="Daily per capita seafood consumption\n(grams per person per day)") +
       # Theme
       plot_theme_tab+
       theme(axis.title.x=element_blank(),
@@ -554,7 +568,7 @@ shinyServer(function(input, output, session) {
       geom_line() +
       # Labels
       scale_y_continuous(labels = scales::percent) +
-      labs(y="Percent of Daily Diet\nFrom Marine Seafood") +
+      labs(y="% of daily diet\nfrom marine seafood") +
       # Theme
       plot_theme_tab+
       theme(axis.title.x=element_blank(),
@@ -581,7 +595,7 @@ shinyServer(function(input, output, session) {
       geom_bar(stat="identity") +
       coord_flip() +
       # Labels
-      labs(y="Percent of Daily Nutrient Consumption\nFrom Marine Seafood") +
+      labs(y="% of daily nutrient consumption\nfrom marine seafood") +
       scale_y_continuous(labels = scales::percent, expand = c(0,0)) +
       # Theme
       plot_theme_tab+
@@ -610,7 +624,7 @@ shinyServer(function(input, output, session) {
       geom_raster() +
       # Labels
       labs(x="", y="") +
-      scale_fill_gradient2(name="Percent Above or Below Daily Recommendation", 
+      scale_fill_gradient2(name="% above or below daily recommendation", 
                            midpoint = 0,
                            limits = c(-100,100)) +
       # Theme
@@ -638,8 +652,8 @@ shinyServer(function(input, output, session) {
     
   })
   
-  # Plot output
-  output$nutrient_consumption_profiles_plot <- renderPlot({
+  # Plot output (top plot)
+  output$nutrient_consumption_profiles_plot_1 <- renderPlot({
     
     req(input$w_national_nutrition_data_country)
     req(input$w_national_nutrition_data_nutrient)
@@ -664,7 +678,7 @@ shinyServer(function(input, output, session) {
     
     # Extract unit
     nutr_unit <- unique(plot_dat_1$units_short)
-
+    
     # Time Series Plot
     g1 <- ggplot(plot_dat_1, aes(x=year, y=value_med)) +
       geom_line() +
@@ -672,9 +686,39 @@ shinyServer(function(input, output, session) {
       # Y-axis limits
       ylim(0, max_val) +
       # Labels
-      labs(x="Year", y=paste0("Daily Per Capita Consumption\n(", nutr_unit, " / person / day)")) +
+      labs(x="Year", y=paste0("Daily per capita consumption\n(", nutr_unit, " per person per day)")) +
       plot_theme_tab+
       scale_x_continuous(expand = c(0,0))
+    
+    g1
+    
+  })
+  
+  output$nutrient_consumption_profiles_plot_2 <- renderPlot({
+    
+    req(input$w_national_nutrition_data_country)
+    req(input$w_national_nutrition_data_nutrient)
+    
+    # Subset data
+    plot_dat_1 <- national_nutrient_supplies_dat %>% 
+      filter(iso3==input$w_national_nutrition_data_country & nutrient==input$w_national_nutrition_data_nutrient)
+    
+    plot_dat_2 <- nutritional_health_plot_dat %>% 
+      filter(iso3==input$w_national_nutrition_data_country & nutrient==input$w_national_nutrition_data_nutrient)
+    
+    # DRI data 
+    plot_dri_dat <- dri_dat %>%
+      filter(nutrient==input$w_national_nutrition_data_nutrient & dri_type=="Estimated Average Requirement (EAR)") %>% 
+      arrange(sex, age_range)
+    
+    # Maximum value
+    max1 <- max(plot_dat_1$value_hi, na.rm=T)
+    max2 <- max(plot_dat_2$value_hi, na.rm=T)
+    max_dri <- max(plot_dri_dat$value)
+    max_val <- max(max2, max_dri)
+    
+    # Extract unit
+    nutr_unit <- unique(plot_dat_1$units_short)
     
     # Sex plot
     g2 <- ggplot(plot_dat_2, aes(x=age_range, y=value_med, fill=sex)) +
@@ -688,7 +732,7 @@ shinyServer(function(input, output, session) {
       geom_line(data=plot_dri_dat, mapping=aes(x=age_range, y=value, group=sex), inherit.aes = F, color="black") +
       geom_point(data=plot_dri_dat, mapping=aes(x=age_range, y=value, group=sex), inherit.aes = F, color="black") +
       # Labels
-      labs(x="Age Range", y=paste0("Daily Per Capita Consumption\n(", nutr_unit, " / person / day)")) +
+      labs(x="Age range", y=paste0("Daily per capita consumption\n(", nutr_unit, " per person per day)")) +
       scale_fill_discrete(name="Sex") +
       # Theme
       plot_theme_tab+
@@ -696,15 +740,9 @@ shinyServer(function(input, output, session) {
             axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
             panel.grid.major = element_blank(), 
             panel.grid.minor = element_blank())+
-      scale_y_continuous(expand = c(0,0), limits = c(0, max_val))
+      scale_y_continuous(limits = c(0, max_val))
     
-    # Combine
-    g <- gridExtra::grid.arrange(g1, g2, ncol=1, heights=c(1, 1))
-    out <- cowplot::ggdraw(g) + 
-      plot_theme +
-      theme(panel.background = element_rect(color = "#ffffff"))
-    
-    out
+    g2
       
   })
   

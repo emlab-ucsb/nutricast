@@ -195,12 +195,16 @@ NationalNutritionData <- function(country_choices,
       ),
       
       # Content box 4: Nutrient Consumption Profiles
-      column(12, id = "shaded-div",
+      column(12, id = "shaded-div", style = "padding-left: 2vw;",
              
-             column(9, id = "lr-spaced-div",
+             column(9, style = "border: 2px solid #1a2d3f;",
                     
                     ### Plot
-                    plotOutput("nutrient_consumption_profiles_plot", height = "800px", width = "auto")
+                    plotOutput("nutrient_consumption_profiles_plot_1", height = "400px", width = "auto"),
+                    
+                    ### Plot
+                    plotOutput("nutrient_consumption_profiles_plot_2", height = "400px", width = "auto")
+                    
 
              ),
              

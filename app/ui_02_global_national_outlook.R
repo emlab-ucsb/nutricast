@@ -108,7 +108,7 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                    text$item_label[text$item_id == "nutrient-demand-tabs-1"],
                                    
                                    ### PLOT
-                                   plotOutput("nutrient_demand_plot_1", height = "700px", width = "auto"),
+                                   plotOutput("nutrient_demand_plot_1", height = "800px", width = "auto"),
                                    
                                    # Widget
                                    column(6, offset = 6, id = "absolute-widget-panel-top-right",
@@ -116,7 +116,7 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                           radioGroupButtons("w_nutrient_demand_plot_1",
                                                             label = NULL,
                                                             choices = c("% of population",
-                                                                        "persons"),
+                                                                        "number of people"),
                                                             selected = "% of population")
                                    )
                            ),
@@ -125,12 +125,12 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                    text$item_label[text$item_id == "nutrient-demand-tabs-2"],
                                    
                                    ### PLOT
-                                   plotOutput("nutrient_demand_plot_2", height = "500px", width = "auto"),
+                                   plotOutput("nutrient_demand_plot_2", height = "550px", width = "auto"),
                                    
                                    # Widgets
                                    column(12, id = "absolute-widget-panel-top-center",
                                           
-                                            column(10, offset = 1,
+                                            column(9, offset = 2,
                                                    
                                                    selectizeInput("w_nutrient_demand_plot_2",
                                                                   label = text$item_label[text$item_id == "w_nutrient_demand_plot_2"],
@@ -191,31 +191,32 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                    text$item_label[text$item_id == "marine-seafood-as-source-tabs-1"],
                                    
                                    ### PLOT
-                                   plotOutput("marine_seafood_as_source_plot_1", height = "500px", width = "auto")
+                                   plotOutput("marine_seafood_as_source_plot_1", height = "600px", width = "auto"),
                                    
-                                   # # Widget
-                                   # column(6, offset = 6, id = "absolute-widget-panel-top-right",
-                                   #        
-                                   #        radioGroupButtons("w_marine_seafood_as_source_plot_1",
-                                   #                          label = NULL,
-                                   #                          choices = c("Live weight",
-                                   #                                      "Edible meat"),
-                                   #                          selected = "Live weight")
-                                   # )
+                                   # Widget
+                                   column(6, offset = 6, id = "absolute-widget-panel-top-right",
+
+                                          radioGroupButtons("w_marine_seafood_as_source_plot_1",
+                                                            label = NULL,
+                                                            choices = c("live weight",
+                                                                        "edible meat",
+                                                                        "edible meat per capita"),
+                                                            selected = "live weight")
+                                   )
                            ),
                            
                            tabPanel(value = "marine-seafood-as-source-tabs-2",
                                    text$item_label[text$item_id == "marine-seafood-as-source-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("marine_seafood_as_source_plot_2", height = "350px", width = "auto")
+                                   plotOutput("marine_seafood_as_source_plot_2", height = "500px", width = "auto")
                            ),
                            
                            tabPanel(value = "marine-seafood-as-source-tabs-3",
                                    text$item_label[text$item_id == "marine-seafood-as-source-tabs-3"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("marine_seafood_as_source_plot_3", height = "500px", width = "auto")
+                                   plotOutput("marine_seafood_as_source_plot_3", height = "600px", width = "auto")
                            )
                            
                     )
