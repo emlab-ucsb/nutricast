@@ -105,14 +105,14 @@ SeafoodReforms <- function(country_choices,
                                    text$item_label[text$item_id == "fisheries-reforms-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("fisheries_reforms_plot_2", height = "500px", width = "auto")
+                                   plotOutput("fisheries_reforms_plot_2", height = "600px", width = "auto")
                            ),
                            
                            tabPanel(value = "fisheries-reforms-tabs-3",
                                     text$item_label[text$item_id == "fisheries-reforms-tabs-3"],
                                     
                                     ### PLOT PLACEHOLDER
-                                    plotOutput("fisheries_reforms_plot_3", height = "500px", width = "auto")
+                                    plotOutput("fisheries_reforms_plot_3", height = "700px", width = "auto")
                            )
                     )
                     
@@ -169,7 +169,7 @@ SeafoodReforms <- function(country_choices,
                                    text$item_label[text$item_id == "aquaculture-reforms-tabs-1"],
                                    
                                    ### PLOT
-                                   plotOutput("aquaculture_reforms_plot_1", height = "1200px", width = "auto")
+                                   plotOutput("aquaculture_reforms_plot_1", height = "800px", width = "auto")
                                    
                            ),
                            

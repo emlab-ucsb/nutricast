@@ -777,7 +777,7 @@ shinyServer(function(input, output, session) {
     selected_tab <- switch(input$fisheries_reforms_tabs,
                            "fisheries-reforms-tabs-1" = list("fisheries_reforms_1"),
                            "fisheries-reforms-tabs-2" = list("fisheries_reforms_2"),
-                           "fisheries-reforms-tabs-3" = list("fisheries_reforms_2"))
+                           "fisheries-reforms-tabs-3" = list("fisheries_reforms_3"))
     
     includeHTML(paste0("./text/04-seafood-reforms/", selected_tab[[1]], ".html"))
     
