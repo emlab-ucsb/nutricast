@@ -33,6 +33,8 @@ library(rnaturalearthdata)
 
 # Other functions
 #library(lubridate)
+library(countrycode) # fix and standardize country codes
+library(tidytext)
 library(googledrive)
 library(gargle)
 library(tidyverse)

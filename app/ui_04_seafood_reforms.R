@@ -98,7 +98,7 @@ SeafoodReforms <- function(country_choices,
                                    text$item_label[text$item_id == "fisheries-reforms-tabs-1"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("fisheries_reforms_plot_1", height = "500px", width = "auto")
+                                   plotOutput("fisheries_reforms_plot_1", height = "600px", width = "auto")
                            ),
                            
                            tabPanel(value = "fisheries-reforms-tabs-2",
@@ -222,8 +222,8 @@ SeafoodReforms <- function(country_choices,
              
              column(9, id = "lr-spaced-div",
                     
-                    # Plot
-                    plotOutput("mariculture_site_explorer_plot", height = "500px", width = "auto")
+                    # # Plot
+                    # plotOutput("mariculture_site_explorer_plot", height = "500px", width = "auto")
                     
              ),
              

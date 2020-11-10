@@ -115,9 +115,9 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                           
                                           radioGroupButtons("w_nutrient_demand_plot_1",
                                                             label = NULL,
-                                                            choices = c("% of population",
-                                                                        "number of people"),
-                                                            selected = "% of population")
+                                                            choices = c("number of people",
+                                                                        "% of population"),
+                                                            selected = "number of people")
                                    )
                            ),
                            
@@ -256,10 +256,10 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                           
                                           radioGroupButtons("w_future_seafood_supply_plot_1",
                                                             label = NULL,
-                                                            choices = c("Live weight",
-                                                                        "Edible meat",
-                                                                        "Edible meat per capita"),
-                                                            selected = "Live weight")
+                                                            choices = c("live weight",
+                                                                        "edible meat",
+                                                                        "edible meat per capita"),
+                                                            selected = "live weight")
                                    )
                            ),
                            

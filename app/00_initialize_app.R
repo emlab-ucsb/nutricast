@@ -81,7 +81,9 @@ pop_dat <- national_pop_dat %>%
 
 # 2a) Nutrient Deficiencies
 national_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_cntry_sex_age_2011.Rds") %>%
-  ungroup() %>%
+  ungroup()
+
+national_nutrient_deficiency_dat_edit <- national_nutrient_deficiency_dat %>%
   dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy)
 
 global_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_sex_age_2011.Rds") %>%
@@ -90,7 +92,7 @@ global_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_sex_age_2
   dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy) 
 
 # Combine data for plot and format
-nutrient_deficiency_dat <- national_nutrient_deficiency_dat %>%
+nutrient_deficiency_dat <- national_nutrient_deficiency_dat_edit %>%
   bind_rows(global_nutrient_deficiency_dat) %>%
   filter(sex != "Children") %>% # Remove children (not symmetric)
   gather(key="type", value="npeople", 6:7) %>%  # Gather
@@ -98,7 +100,7 @@ nutrient_deficiency_dat <- national_nutrient_deficiency_dat %>%
                             "ndeficient"="Deficient",
                             "nhealthy"="Healthy"),
          sex=factor(sex, levels=c("Women", "Men"))) %>% 
-  group_by(iso3, country, nutrient) %>%
+  group_by(iso3, country, sex, age, nutrient) %>%
   mutate(ntotal = sum(npeople, na.rm = T)) %>%
   ungroup() %>%
   mutate(ppeople = (npeople/ntotal)*100) %>%
@@ -107,7 +109,10 @@ nutrient_deficiency_dat <- national_nutrient_deficiency_dat %>%
   mutate(npeople = npeople/1e6)
 
 # 2b) Nutrient Demand
-national_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_by_country.Rds")
+national_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_by_country.Rds") %>%
+  dplyr::select(-iso3) %>%
+  mutate(iso3 = countrycode(country, "country.name", "iso3c"))
+
 global_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_global.Rds") %>%
   mutate(country = "Global",
          iso3 = "Global")
@@ -180,14 +185,14 @@ names(widget_country_choices) <- unique(country_choices$country)
 
 ### National Nutrition Data -------------------
 
-# 3) Nutritional health
-national_nutritional_health_dat <- readRDS("./data/genus_nutrient_supplies_by_age_sex_2011_w_us_diet_req.Rds")
-
-nutritional_health_plot_dat <- national_nutritional_health_dat %>%
-  mutate(sex=recode_factor(sex, "Children"="Children", "Females"="Women", "Males"="Men"),
-         nutrient_type=recode(nutrient_type, 
-                              "Macronutrient"="Macro\nnutrient")) %>%
-  dplyr::filter(nutrient != "Sodium")
+# # 3) Nutritional health
+# national_nutritional_health_dat <- readRDS("./data/genus_nutrient_supplies_by_age_sex_2011_w_us_diet_req.Rds")
+# 
+# nutritional_health_plot_dat <- national_nutritional_health_dat %>%
+#   mutate(sex=recode_factor(sex, "Children"="Children", "Females"="Women", "Males"="Men"),
+#          nutrient_type=recode(nutrient_type, 
+#                               "Macronutrient"="Macro\nnutrient")) %>%
+#   dplyr::filter(nutrient != "Sodium")
 
 # 4) Nutrient consumption profiles
 national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds") %>%
@@ -204,7 +209,43 @@ dri_dat <- readRDS("./data/DRIs_matched_to_genus_age_sex_groups.Rds") %>%
 # 1) Seafood nutrition content
 load("./data/vaitla_etal_2018_finfish_nutrient_data.Rdata")
 
-# 2) MISSING FISHERY REFORMS STUFF
+# 2) Fishery reforms
+
+### Radar plot data
+fish_nutrition_content_dat <- read.csv("./data/GENUS_nutrient_per_100g_by_seafood_group.csv", as.is = T)
+
+# Nutrients of interest
+nutrients_keep <- c("calcium_mg", "copper_mg", "folate_mcg", "iron_mg", "magnesium_mg", "niacin_mg", "phosphorus_mg",
+             "riboflavin_mg", "thiamin_mg", "vitamin_a_mcg_rae", "vitamin_b6_mg", "vitamin_c_mg", "zinc_mg")
+
+# Reformat for plotting
+fish_nutrition_content_plot_dat <- fish_nutrition_content_dat %>% 
+  gather(key="nutrient", value="quantity", 2:ncol(.)) %>% 
+  group_by(nutrient) %>% 
+  mutate(quantity_prop=quantity/max(quantity)) %>%  # Calculate as percent of maximum
+  ungroup() %>% 
+  mutate(species_group=recode(genus_food_name,  # Recode group names
+                              "Demersal Fish"="Fish, demersal",
+                              "Pelagic Fish"="Fish, pelagic",
+                              "Marine Fish; Other"="Fish, other",
+                              "Molluscs; Other"="Bivalves and gastropods")) %>% 
+  filter(nutrient %in% nutrients_keep) %>%  # Reduce to nutrients of interest
+  mutate(nutrient=recode(nutrient, 
+                         "calcium_mg"="Calcium", 
+                         "copper_mg"="Copper", 
+                         "folate_mcg"="Folate", 
+                         "iron_mg"="Iron", 
+                         "magnesium_mg"="Magnesium", 
+                         "niacin_mg"="Niacin", 
+                         "phosphorus_mg"="Phosphorus",
+                         "riboflavin_mg"="Riboflavin", 
+                         "thiamin_mg"="Thiamin", 
+                         "vitamin_a_mcg_rae"="Vit A", 
+                         "vitamin_b6_mg"="Vit B6", 
+                         "vitamin_c_mg"="Vit C", 
+                         "zinc_mg"="Zinc")) %>% 
+  select(species_group, nutrient, quantity_prop) %>%   # Reduce for plotting
+  spread(key="nutrient", value="quantity_prop")
 
 # 3) Mariculture reforms
 

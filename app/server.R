@@ -78,7 +78,8 @@ shinyServer(function(input, output, session) {
         labs(x="", y=plot_axis_legend) +
         scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20), expand = c(0,0)) +
         plot_theme+
-        theme(axis.title.x = element_blank())
+        theme(axis.title.x = element_blank())+
+        theme(plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
       
       g
     
@@ -120,7 +121,7 @@ shinyServer(function(input, output, session) {
     
     # Get plotting variable and plot
     plot_variable <- switch(input$w_nutrient_demand_plot_1,
-                            "% of population" = list("ppeople", "% of population", 9),
+                            "% of population" = list("ppeople", "% of group (age and sex)", 9),
                             "number of people" = list("npeople", "People (millions)", 7))
     
       # Plot
@@ -192,7 +193,7 @@ shinyServer(function(input, output, session) {
       labs(x="", y=plot_axis_title) +
       scale_x_continuous(limits=c(1960,2100), breaks=seq(1960, 2100, 20), expand = c(0,0)) +
       plot_theme_tab+
-      theme(plot.margin = unit(c(3, 0.5, 0.5, 0.5), "cm"))+
+      theme(plot.margin = unit(c(3, 0.8, 0.8, 0.8), "cm"))+
       theme(axis.title.x = element_blank())
     
     g
@@ -238,7 +239,7 @@ shinyServer(function(input, output, session) {
       aes(x = year, y = prod_mt/1e6, fill = plot_group, alpha = source)+
       geom_area()+
       labs(y = "Production (millions of mt)")+
-      scale_x_continuous(expand = c(0,0))+
+      scale_x_continuous(expand = c(0,0), breaks = c(1955, 1970, 1985, 2000, 2015))+
       scale_y_continuous(expand = c(0,0))+
       scale_fill_discrete(name="Species type") +
       scale_alpha_manual(name="Production type", values=c(0.4, 1.0)) +
@@ -381,6 +382,7 @@ shinyServer(function(input, output, session) {
     
     # Data
     nutrient_data <- national_nutrient_from_seafood_dat %>% 
+      dplyr::filter(nutrient != "Sodium") %>%
       filter(iso3==input$w_global_national_outlook_country)
     
     req(nrow(nutrient_data) > 0)
@@ -390,7 +392,7 @@ shinyServer(function(input, output, session) {
       geom_bar(stat="identity") +
       coord_flip() +
       # Labels
-      labs(y="% of daily nutrient consumption\nfrom marine seafood") +
+      labs(y="% of daily nutrient\nconsumption from\nmarine seafood") +
       scale_y_continuous(labels = scales::percent) +
       plot_theme_tab+
       theme(axis.title.y=element_blank())
@@ -613,21 +615,22 @@ shinyServer(function(input, output, session) {
     req(input$w_national_nutrition_data_country)
     
     # Subset and format data
-    plot_data <- nutritional_health_plot_dat %>% 
-      filter(iso3==input$w_national_nutrition_data_country & !is.na(diet_req))
+    plot_data <- national_nutrient_deficiency_dat %>%
+      #nutritional_health_plot_dat %>% 
+      filter(iso3==input$w_national_nutrition_data_country)
     
     req(nrow(plot_data) > 0)
     
     # Plot data
-    g <- ggplot(plot_data, aes(x=age_range, y=nutrient, fill=value_perc_req_cap)) +
-      facet_grid(nutrient_type ~ sex, scale="free", space="free") +
+    g <- ggplot(plot_data, aes(x=age, y=nutrient, fill=pdeficient*100)) +
+      facet_grid(nutrient_type~sex, scales="free", space="free") +
       geom_raster() +
+      # Legend
+      scale_fill_gradientn(name="% of population nutrient deficient", 
+                           colors=RColorBrewer::brewer.pal(9, "YlOrRd"), limits=c(0,100)) +
+      guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
       # Labels
-      labs(x="", y="") +
-      scale_fill_gradient2(name="% above or below daily recommendation", 
-                           midpoint = 0,
-                           limits = c(-100,100)) +
-      # Theme
+      labs(x="Age group", y="") +
       plot_theme+
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
             axis.title = element_blank())+
@@ -755,7 +758,7 @@ shinyServer(function(input, output, session) {
   # Plot output 
   output$seafood_nutrition_content_plot <- renderPlot({
     
-    req(input$w_seafood_reforms_country)
+    #req(input$w_seafood_reforms_country)
     
     # # Subset species data
     # plot_data <- vaitla_nutr_preds_long %>% 
@@ -769,10 +772,9 @@ shinyServer(function(input, output, session) {
       #geom_vline(data=sdata, aes(xintercept=value_md, color=species_label), lwd=1.5) +
       # Labels
       scale_color_discrete(name="") +
-      labs(x="Nutrient Concentration", y="Number of Species") +
+      labs(x="Nutrient concentration", y="Number of species") +
       # Theme
-      plot_theme+
-      scale_y_continuous(expand = c(0,0))
+      plot_theme
     
     g
 
@@ -795,9 +797,13 @@ shinyServer(function(input, output, session) {
   # Plot output: Tab 1
   output$fisheries_reforms_plot_1 <- renderPlot({
     
-    req(input$w_seafood_reforms_country)
+    #req(input$w_seafood_reforms_country)
+    req(nrow(fish_nutrition_content_plot_dat) > 0)
 
-    ### NEED
+    g <- ggradar::ggradar(fish_nutrition_content_plot_dat) + 
+      theme(legend.position = "right")
+      #theme(plot.margin = unit(c(0.8, 0.5, 0.5, 0.5), "cm"))
+    g
     
   })
   
@@ -840,9 +846,13 @@ shinyServer(function(input, output, session) {
     out <- rcp_projections %>%
       dplyr::filter(sov1_iso == input$w_seafood_reforms_country & scenario == input$w_seafood_reforms_aquaculture_climate_scenario) %>%
       dplyr::filter(year == 2100) %>%
-      dplyr::filter(prod_mt_yr > 0) %>%
-      mutate(rank = dense_rank(desc(prod_mt_yr))) %>%
-      mutate(species = fct_reorder(species, desc(rank)))
+      mutate(viable_area = n_points*100) %>% # number of 100 sq km cells
+      dplyr::filter(viable_area > 0) %>%
+      mutate(rank = dense_rank(desc(viable_area))) %>%
+      # mutate(species = fct_reorder(species, desc(rank))) %>%
+      group_by(group, sov1_iso, scenario) %>%
+      slice_min(rank, n = 10, with_ties = F) %>%
+      ungroup()
     
   })
   
@@ -856,14 +866,17 @@ shinyServer(function(input, output, session) {
 
     req(nrow(plot_dat) > 0)
     
+    custom_pal <- c("Bivalve" = "#F8766D", "Finfish" = "#00BFC4")
+    
     g <-ggplot(plot_dat)+
-      aes(x = species, y = prod_mt_yr/1e6, fill = group) +
+      aes(x = reorder_within(species, viable_area, group), y = viable_area/1000, fill = group) +
       geom_bar(stat = "identity") +
       theme_bw() +
-      labs(x = "", y = "Production (million mt)", fill = "Species Type") +
+      scale_x_reordered() +
+      labs(x = "", y = "Profitable area (thousands of square km)", fill = "Species type") +
+      scale_fill_manual(values = custom_pal[names(custom_pal) %in% unique(plot_dat$group)]) +
       coord_flip() +
-      facet_wrap( ~ group, scales = "free", ncol = 2) +
-      scale_y_continuous(expand = c(0,0))+
+      facet_wrap( ~ group, scales = "free_y", ncol = 1) +
       plot_theme_tab+
       theme(legend.position = "none")
       
@@ -879,15 +892,17 @@ shinyServer(function(input, output, session) {
     viable_species_ordered <- aquaculture_reforms_dat() %>%
       dplyr::select(species, rank)
 
-    # Only allow species that are viable in 2100 to be selected
+    # Only allow the top 10 species (ranked in terms of profitable area) to be selected. 
     viable_species <- nutrient_dat_pmax %>%
       inner_join(viable_species_ordered, by = "species") %>%
-      mutate(species = fct_reorder(species, rank))
-
+      mutate(species = fct_reorder(species, rank)) %>%
+      arrange(rank)
+    
     # Update input
     updateSelectizeInput(session,
                          "w_seafood_reforms_radar_species",
-                         choices = levels(viable_species$species))
+                         choices = levels(viable_species$species),
+                         selected = viable_species$species[1:2])
     
   })
   
@@ -952,54 +967,54 @@ shinyServer(function(input, output, session) {
 
   })
   
-  ### Reactive data set based on selected country and climate scenario ---
-  site_explorer_dat <- eventReactive(c(input$w_seafood_reforms_site_explorer_species,
-                                       input$w_seafood_reforms_site_explorer_climate_scenario), {
-
-
-            # plot_dat <- rcp_projections %>%
-            #             dplyr::filter(species == input$aqua_explorer_select_species &
-            #                             scenario == input$aqua_explorer_select_scenario)
-           # Load data
-           scenario <- str_replace(str_replace(input$w_seafood_reforms_site_explorer_climate_scenario, " ", ""), "[.]", "")
-           category <- unique(rcp_projections$group[rcp_projections$species == input$w_seafood_reforms_site_explorer_species])
-           species <- str_replace(input$w_seafood_reforms_site_explorer_species, " ", "_")
-           dat_file_name <- paste0(scenario, "_", category, "_", species, ".Rds")
-           
-           data <- readRDS(paste0("./data/raw/", dat_file_name))
-
-           
-  })
-  
-  # Plot output
-  output$mariculture_site_explorer_plot <- renderPlot({
-    
-    req(nrow(site_explorer_dat()) > 0)
-
-    # Filter for year, and plot
-    plot_dat <- site_explorer_dat() %>%
-      dplyr::filter(year == 2100)
-    
-    # data_raster <- raster::rasterFromXYZ(data,
-    #                                      crs = "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs")
-    #
-    
-    # Plot data
-    g <- ggplot() +
-      geom_sf(data = world) +
-      coord_sf(crs = st_crs('+proj=moll'),
-               expand = F) +
-      geom_raster(data = plot_dat, aes(x = x, y = y), fill = "red") +
-      labs(x = "", y = "") +
-      map_theme +
-      # scale_x_continuous(limits = c(-18086282, 18083718))+
-      # scale_y_continuous(limits = c(-9069952, 9070048))+
-      theme(axis.text = element_blank())
-    
-    g
-    
-  })
-  
+  # ### Reactive data set based on selected country and climate scenario ---
+  # site_explorer_dat <- eventReactive(c(input$w_seafood_reforms_site_explorer_species,
+  #                                      input$w_seafood_reforms_site_explorer_climate_scenario), {
+  # 
+  # 
+  #           # plot_dat <- rcp_projections %>%
+  #           #             dplyr::filter(species == input$aqua_explorer_select_species &
+  #           #                             scenario == input$aqua_explorer_select_scenario)
+  #          # Load data
+  #          scenario <- str_replace(str_replace(input$w_seafood_reforms_site_explorer_climate_scenario, " ", ""), "[.]", "")
+  #          category <- unique(rcp_projections$group[rcp_projections$species == input$w_seafood_reforms_site_explorer_species])
+  #          species <- str_replace(input$w_seafood_reforms_site_explorer_species, " ", "_")
+  #          dat_file_name <- paste0(scenario, "_", category, "_", species, ".Rds")
+  #          
+  #          data <- readRDS(paste0("./data/raw/", dat_file_name))
+  # 
+  #          
+  # })
+  # 
+  # # Plot output
+  # output$mariculture_site_explorer_plot <- renderPlot({
+  #   
+  #   req(nrow(site_explorer_dat()) > 0)
+  # 
+  #   # Filter for year, and plot
+  #   plot_dat <- site_explorer_dat() %>%
+  #     dplyr::filter(year == 2100)
+  #   
+  #   # data_raster <- raster::rasterFromXYZ(data,
+  #   #                                      crs = "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs")
+  #   #
+  #   
+  #   # Plot data
+  #   g <- ggplot() +
+  #     geom_sf(data = world) +
+  #     coord_sf(crs = st_crs('+proj=moll'),
+  #              expand = F) +
+  #     geom_raster(data = plot_dat, aes(x = x, y = y), fill = "red") +
+  #     labs(x = "", y = "") +
+  #     map_theme +
+  #     # scale_x_continuous(limits = c(-18086282, 18083718))+
+  #     # scale_y_continuous(limits = c(-9069952, 9070048))+
+  #     theme(axis.text = element_blank())
+  #   
+  #   g
+  #   
+  # })
+  # 
     ### ----------------------------------
     ### aqua-potential Tab ---------------
     ### ----------------------------------
