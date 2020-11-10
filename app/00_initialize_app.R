@@ -186,13 +186,13 @@ names(widget_country_choices) <- unique(country_choices$country)
 ### National Nutrition Data -------------------
 
 # # 3) Nutritional health
-# national_nutritional_health_dat <- readRDS("./data/genus_nutrient_supplies_by_age_sex_2011_w_us_diet_req.Rds")
-# 
-# nutritional_health_plot_dat <- national_nutritional_health_dat %>%
-#   mutate(sex=recode_factor(sex, "Children"="Children", "Females"="Women", "Males"="Men"),
-#          nutrient_type=recode(nutrient_type, 
-#                               "Macronutrient"="Macro\nnutrient")) %>%
-#   dplyr::filter(nutrient != "Sodium")
+national_nutritional_health_dat <- readRDS("./data/genus_nutrient_supplies_by_age_sex_2011_w_us_diet_req.Rds")
+
+nutritional_health_plot_dat <- national_nutritional_health_dat %>%
+  mutate(sex=recode_factor(sex, "Children"="Children", "Females"="Women", "Males"="Men"),
+         nutrient_type=recode(nutrient_type,
+                              "Macronutrient"="Macro\nnutrient")) %>%
+  dplyr::filter(nutrient != "Sodium")
 
 # 4) Nutrient consumption profiles
 national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds") %>%
@@ -209,9 +209,7 @@ dri_dat <- readRDS("./data/DRIs_matched_to_genus_age_sex_groups.Rds") %>%
 # 1) Seafood nutrition content
 load("./data/vaitla_etal_2018_finfish_nutrient_data.Rdata")
 
-# 2) Fishery reforms
-
-### Radar plot data
+# 2a) Fishery reforms - nutrient content
 fish_nutrition_content_dat <- read.csv("./data/GENUS_nutrient_per_100g_by_seafood_group.csv", as.is = T)
 
 # Nutrients of interest
@@ -246,6 +244,22 @@ fish_nutrition_content_plot_dat <- fish_nutrition_content_dat %>%
                          "zinc_mg"="Zinc")) %>% 
   select(species_group, nutrient, quantity_prop) %>%   # Reduce for plotting
   spread(key="nutrient", value="quantity_prop")
+
+# 2b) Fishery Reforms - edible meat production plot
+edible_meat_production_data <- readRDS("./data/Free_etal_2020_capture_meat_proj_by_rcp_mgmt_genus_group.Rds") %>%
+  ungroup() %>% 
+  mutate(scenario=recode_factor(scenario, 
+                                "No Adaptation"="BAU",
+                                "Full Adaptation"="Reforms"),
+         genus=recode(genus,
+                      "Demersal Fish"="Fish, demersal",
+                      "Marine Fish; Other"="Fish, other",
+                      "Molluscs; Other"="Bivalves and gastropods",
+                      "Pelagic Fish"="Fish, pelagic"))
+
+# 2c) Fishery reforms - 
+nutrient_demand_edible_meat_production_data <- readRDS("./data/2050_2100_nutr_demand_prop_from_wc_rcp_mgmt_cntry_group.Rds") %>%
+  dplyr::filter(scenario == "Reforms")
 
 # 3) Mariculture reforms
 

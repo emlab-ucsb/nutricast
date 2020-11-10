@@ -758,22 +758,11 @@ shinyServer(function(input, output, session) {
   # Plot output 
   output$seafood_nutrition_content_plot <- renderPlot({
     
-    #req(input$w_seafood_reforms_country)
-    
-    # # Subset species data
-    # plot_data <- vaitla_nutr_preds_long %>% 
-    #   filter(species_label %in% spp)
-    
-    # Plot
     g <- ggplot(vaitla_nutr_preds_long, aes(x=value_md)) +
       geom_histogram(fill="grey70") +
       facet_wrap(~nutrient_label, ncol=3, scales="free") +
-      # Add species lines
-      #geom_vline(data=sdata, aes(xintercept=value_md, color=species_label), lwd=1.5) +
-      # Labels
       scale_color_discrete(name="") +
       labs(x="Nutrient concentration", y="Number of species") +
-      # Theme
       plot_theme
     
     g
@@ -811,9 +800,26 @@ shinyServer(function(input, output, session) {
   output$fisheries_reforms_plot_2 <- renderPlot({
     
     req(input$w_seafood_reforms_country)
-
-    ### NEED
     
+    # Prepare data
+    plot_data <- edible_meat_production_data %>% 
+      dplyr::filter(iso3 == input$w_seafood_reforms_country) %>% 
+      dplyr::filter(year == 2100)
+    
+    req(nrow(plot_data) > 0)
+    
+    custom_pal <- c("Bivalves and gastropods" = "#FF5A5F", "Cephalopods" = "#FFB400", "Crustaceans" = "#007A87", "Fish, demersal" = "#8CE071", "Fish, other" =  "#7B0051", "Fish, pelagic" = "#00D1C1")
+    
+    # Plot data
+    g <- ggplot(plot_data, aes(x=scenario, y=meat_mt/1e6, fill=genus)) +
+      facet_wrap(~rcp, ncol=4) +
+      geom_bar(stat="identity") +
+      labs(x="Management scenario", y="Edible meat (millions of mt)") +
+      scale_fill_manual(name = "Major group", values = custom_pal[names(custom_pal) %in% unique(plot_data$genus)]) +
+      plot_theme_tab
+    
+    g
+
   })
   
   # Plot output: Tab 3
@@ -821,7 +827,23 @@ shinyServer(function(input, output, session) {
     
     req(input$w_seafood_reforms_country)
     
-    ### NEED
+    # Prepare data
+    plot_data <- nutrient_demand_edible_meat_production_data %>% 
+      filter(iso3 == input$w_seafood_reforms_country)
+    
+    req(nrow(plot_data) > 0)
+    
+    custom_pal <- c("Bivalves and gastropods" = "#FF5A5F", "Cephalopods" = "#FFB400", "Crustaceans" = "#007A87", "Fish, demersal" = "#8CE071", "Fish, other" =  "#7B0051", "Fish, pelagic" = "#00D1C1")
+    
+    # Plot data
+    g <- ggplot(plot_data, aes(x=demand_prop, y=nutrient, fill=genus)) +
+      facet_grid(year ~ rcp) +
+      geom_bar(stat="identity") +
+      # Labels
+      labs(x="% of nutrient demand met from marine capture fisheries reforms", y="") +
+      scale_fill_manual(name = "Major group", values = custom_pal[names(custom_pal) %in% unique(plot_data$genus)]) +
+      plot_theme_tab
+    g
     
   })
   

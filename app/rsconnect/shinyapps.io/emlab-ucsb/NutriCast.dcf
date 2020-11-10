@@ -1,12 +1,12 @@
-name: NutriCast
-title: NutriCast
+name: Nutricast
+title: Nutricast
 username:
 account: emlab-ucsb
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1942457
-bundleId: 3688713
+bundleId: 3844686
 url: https://emlab-ucsb.shinyapps.io/nutricast/
-when: 1601494180.07126
+when: 1605043097.69807
 asMultiple: FALSE
 asStatic: FALSE
