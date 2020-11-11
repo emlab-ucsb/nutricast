@@ -84,21 +84,24 @@ nutrient_choices <- unique(nutrient_demand_plot_2_data$nutrient)
 # Plot 3a) Marine Seafood as a Source of Nutrients - Fisheries and Mariculture Production
 fisheries_mariculture_production_plot_data <- readRDS("./data/processed/01_03a_fisheries_mariculture_production_plot_data.Rds")
 
-# 3b/c) Protein and Nutrients from Seafood
-national_nutrient_from_seafood_dat <- readRDS("./data/genus_pnutrient_seafood_by_cntry_2011.Rds")
-national_diet_from_seafood_dat <- readRDS("./data/genus_pdiet_seafood_by_cntry_year.Rds")
-  
-protein_dat <- national_nutrient_from_seafood_dat %>% 
-  filter(nutrient=="Protein") %>% 
-  mutate(prop_seafood_cap = pmin(prop_seafood, 0.1))
+# Plots 3b) Marine Seafood as a Source of Nutrients - Protein from Seafood
+protein_from_seafood_plot_data <- readRDS("./data/processed/01_03b_protein_from_seafood_plot_data.Rds")
+
+# Plot 3c) Marine Seafood as a Source of Nutrients - Seafood Consumption
+seafood_consumption_plot_data_diet <- readRDS("./data/processed/01_03c_seafood_consumption_plot_data_diet.Rds")
+seafood_consumption_plot_data_nutrients <- readRDS("./data/processed/01_03c_seafood_consumption_plot_data_nutrients.Rds")
 
 # Get selectable countries for which we have nutrition data
-country_choices <- national_nutrient_from_seafood_dat %>%
+country_choices <- protein_from_seafood_plot_data %>%
   ungroup() %>%
   distinct(country, iso3) 
 
 widget_country_choices <- unique(country_choices$iso3)
 names(widget_country_choices) <- unique(country_choices$country)
+
+# Plot 4a) NEED
+
+# PLOT 4b) NEED 
 
 ### National Nutrition Data -------------------
 

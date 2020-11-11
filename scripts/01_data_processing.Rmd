@@ -202,3 +202,31 @@ saveRDS(production_plot_dat, paste0(data_dir, "01_03a_fisheries_mariculture_prod
 saveRDS(production_plot_dat, paste0(app_data_dir, "01_03a_fisheries_mariculture_production_plot_data.Rds"))
 ```
 
+## Nutrients from Seafood and Seafood as a Part of the Diet
+
+This is from the Genus project. 
+
+```{r}
+national_nutrient_from_seafood_dat <- readRDS(here::here("data", "raw", "genus_pnutrient_seafood_by_cntry_2011.Rds"))
+
+national_diet_from_seafood_dat <- readRDS(here::here("data", "raw", "genus_pdiet_seafood_by_cntry_year.Rds"))
+  
+protein_dat <- national_nutrient_from_seafood_dat %>% 
+  filter(nutrient=="Protein") %>% 
+  mutate(prop_seafood_cap = pmin(prop_seafood, 0.1))
+
+# Save
+saveRDS(protein_dat, paste0(data_dir, "01_03b_protein_from_seafood_plot_data.Rds"))
+saveRDS(protein_dat, paste0(app_data_dir, "01_03b_protein_from_seafood_plot_data.Rds"))
+
+# Save
+saveRDS(national_diet_from_seafood_dat, paste0(data_dir, "01_03c_seafood_consumption_plot_data_diet.Rds"))
+saveRDS(national_diet_from_seafood_dat, paste0(app_data_dir, "01_03c_seafood_consumption_plot_data_diet.Rds"))
+
+# Save
+saveRDS(national_nutrient_from_seafood_dat, paste0(data_dir, "01_03c_seafood_consumption_plot_data_nutrients.Rds"))
+saveRDS(national_nutrient_from_seafood_dat, paste0(app_data_dir, "01_03c_seafood_consumption_plot_data_nutrients.Rds"))
+```
+
+
+

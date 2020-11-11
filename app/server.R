@@ -267,7 +267,7 @@ shinyServer(function(input, output, session) {
     
     # Add protein data to map
     world_data <- world %>% 
-      left_join(protein_dat, by=c("adm0_a3"="iso3"))
+      left_join(protein_from_seafood_plot_data, by=c("adm0_a3"="iso3"))
     
     req(nrow(world_data) > 0)
     
@@ -275,11 +275,11 @@ shinyServer(function(input, output, session) {
       
       selected_country_point <- world_points %>%
         dplyr::filter(adm0_a3 == input$w_global_national_outlook_country) %>%
-        left_join(protein_dat, by=c("adm0_a3"="iso3"))
+        left_join(protein_from_seafood_plot_data, by=c("adm0_a3"="iso3"))
       
       req(nrow(selected_country_point) > 0)
       
-      selected_country_prop <- protein_dat %>%
+      selected_country_prop <- protein_from_seafood_plot_data %>%
         filter(iso3==input$w_global_national_outlook_country) %>%
         pull(prop_seafood)
       
@@ -303,11 +303,11 @@ shinyServer(function(input, output, session) {
               legend.box = "horizontal")
       
       # Plot p(protein) histogram
-      g2 <- ggplot(protein_dat, aes(x=prop_seafood)) +
+      g2 <- ggplot(protein_from_seafood_plot_data, aes(x=prop_seafood)) +
         geom_histogram(binwidth = 0.01) +
         geom_vline(xintercept = selected_country_prop, col="red") +
         labs(x="% of protein from\nmarine seafood", y="Number of countries") +
-        scale_x_continuous(labels = scales::percent_format(accuracy=1), expand = c(0,0)) +
+        scale_x_continuous(labels = scales::percent_format(accuracy=1)) +
         plot_theme_tab
       
       # Merge
@@ -334,10 +334,8 @@ shinyServer(function(input, output, session) {
       
       
       # Plot p(protein) histogram
-      g2 <- ggplot(protein_dat, aes(x=prop_seafood)) +
+      g2 <- ggplot(protein_from_seafood_plot_data, aes(x=prop_seafood)) +
         geom_histogram(binwidth = 0.01) +
-        #geom_vline(xintercept = cntry_prop, col="red") +
-        #annotate(geom="text", y=25, x=cntry_prop+0.01, hjust=0, label=cntry, color="red") +
         labs(x="% of protein from\nmarine seafood", y="Number of countries") +
         scale_x_continuous(labels = scales::percent_format(accuracy=1)) +
         plot_theme_tab
@@ -358,7 +356,7 @@ shinyServer(function(input, output, session) {
     req(input$w_global_national_outlook_country)
     
     # Data
-    diet_data <- national_diet_from_seafood_dat %>% 
+    diet_data <- seafood_consumption_plot_data_diet %>% 
       filter(iso3==input$w_global_national_outlook_country) %>% 
       mutate(seafood_g_person_day = ifelse(total_g_person_day==0, NA, seafood_g_person_day))
     
@@ -386,7 +384,7 @@ shinyServer(function(input, output, session) {
       scale_x_continuous(expand = c(0,0))
     
     # Data
-    nutrient_data <- national_nutrient_from_seafood_dat %>% 
+    nutrient_data <- seafood_consumption_plot_data_nutrients %>% 
       dplyr::filter(nutrient != "Sodium") %>%
       filter(iso3==input$w_global_national_outlook_country)
     
