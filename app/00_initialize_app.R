@@ -120,9 +120,8 @@ nutritional_health_plot_dat <- readRDS("./data/processed/02_03_nutritional_healt
 nutrient_consumption_plot_data_country_year <- readRDS("./data/processed/02_04_nutrient_consumption_plot_data_country_year.Rds") %>%
   arrange(nutrient)
 
+# Widget choices nutrients
 widget_nutrient_choices_national_nutrition_data <- unique(nutrient_consumption_plot_data_country_year$nutrient)
-# national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds") %>%
-#   dplyr::filter(nutrient != "Sodium")
 
 nutrient_consumption_plot_data_age_sex <- readRDS("./data/processed/02_04_nutrient_consumption_plot_data_age_sex.Rds")
 
@@ -249,19 +248,6 @@ nutrient_dat_pmax <- nutrient_preds_long %>%
   ungroup() %>%
   spread(key="nutrient", value="pmax_fill")
 
-### 0) Let's see if we can figure out to set up an API to link to files stored on Google Drive (should speed up app hosting significantly)
-# Ultimately it would probably be good to make this more secure... 
-# google_app <- httr::oauth_app(
-#   "google-app",
-#   key = "458956698118-dif8ifchgf0ob0pij2n4gcsql6m14e75.apps.googleusercontent.com",
-#   secret = "gtCUX5snOXD4otTCJpz0lEzo"
-# )
-# drive_auth_configure(app = google_app)
-# 
-# # Set data file path (in google drive)
-# drive_file_path <- "~Shared"
-# drive_find("RCP26")
-
 ### 1) EEZ raster
 # eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
 # eez_10km_df <- raster::as.data.frame(eez_raster_10km, xy = T)
@@ -281,53 +267,3 @@ production_future_sovereign_dat <- production_future_dat %>%
   arrange(sov1_name)
 
 country_choices <- unique(production_future_sovereign_dat$sov1_name)
-
-# ### 3) Historical aquaculture production by country (FAO)
-# production_current_dat <- readRDS("./data/1950_2017_fao_aquaculture_data.Rds") %>%
-#   arrange(country_orig) %>%
-#   dplyr::filter(environment != "Freshwater") %>% # remove freshwater to be consistant above
-#   mutate(is_finfish = ifelse(major_group == "Pisces", T, F),
-#          is_bivalve = ifelse(order == "Bivalvia", T, F)) %>%
-#   left_join(ter_sov_lookup, by = c("iso3_orig" = "ter1_iso")) %>%
-#   dplyr::filter(sov1_name %in% country_choices)
-
-# # Summarize production dat by species category
-# production_current_group_dat <- production_current_dat %>%
-#   group_by(sov1_name, sov1_iso, isscaap, year) %>%
-#   summarize(quantity_mt = sum(quantity_mt, na.rm = T)) 
-# 
-# # Summarize production dat for bivalves
-# production_current_sovereign_dat <- production_current_dat %>%
-#   dplyr::filter(is_bivalve | is_finfish) %>%
-#   mutate(group = ifelse(is_bivalve, "Bivalves", "Finfish")) %>%
-#   group_by(sov1_name, sov1_iso, year, group) %>%
-#   summarize(quantity_mt = sum(quantity_mt, na.rm = T),
-#             profits_usd = sum(value_usd_t, na.rm = T)*1000) %>%
-#   mutate(rcp = "Historical",
-#          feed_scen = NA,
-#          dev_pattern = "Historical")
-# 
-# # Add them together
-# production_all_sovereign_dat <- production_current_sovereign_dat %>%
-#   bind_rows(production_future_sovereign_dat) %>%
-#   arrange(sov1_name, year)
-
-# ### 5) Nutrition information
-# load("./data/Vaitla_etal_2018_nutrient_data.Rdata")
-# 
-# nutrient_dat_max <- nutrient_preds_long %>% 
-#   group_by(nutrient) %>%
-#   summarize(value_md_max = max(value_md, na.rm = T))
-#   
-# nutrient_dat_pmax <- nutrient_preds_long %>%
-#   left_join(nutrient_dat_max, by = "nutrient") %>%
-#   mutate(pmax_fill = (value_md/value_md_max)) %>%
-#   dplyr::filter(!is.na(pmax_fill)) %>%
-#   dplyr::select(species, nutrient, pmax_fill) %>% 
-#   mutate(nutrient=recode(nutrient, 
-#                          "Omega-3 fatty acids"="Omega-3\nfatty acids",
-#                          "Omega-6 fatty acids"="Omega-6\nfatty acids")) %>% 
-#   group_by(species, nutrient) %>%
-#   summarize(pmax_fill = median(pmax_fill)) %>%
-#   ungroup() %>%
-#   spread(key="nutrient", value="pmax_fill")

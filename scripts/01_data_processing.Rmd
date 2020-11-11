@@ -248,7 +248,6 @@ nutrient_supplies_age_sex_dat <- readRDS(here::here("data", "raw", "genus_nutrie
 
 # Save
 saveRDS(nutrient_supplies_age_sex_dat, paste0(data_dir, "02_04_nutrient_consumption_plot_data_age_sex.Rds"))
-
 saveRDS(nutrient_supplies_age_sex_dat, paste0(app_data_dir, "02_04_nutrient_consumption_plot_data_age_sex.Rds"))
 
 ```
