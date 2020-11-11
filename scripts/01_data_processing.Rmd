@@ -1,0 +1,110 @@
+---
+title: "Nutricast: Data preparation"
+output: html_document
+---
+
+## Introduction
+
+This script wrangles the various datasets used in the Nutricast app.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(countrycode) # fix and standardize country codes
+library(here)
+library(tidyverse)
+
+data_dir <- here::here("data", "processed/")
+if (dir.exists(data_dir) == F) {
+  dir.create(data_dir, recursive = T)
+} 
+
+app_data_dir <- here::here("app", "data", "processed/")
+if (dir.exists(app_data_dir) == F) {
+  dir.create(app_data_dir, recursive = T)
+} 
+```
+
+## Population Growth
+
+Population data used in the app is from the World Bank. 
+
+```{r}
+# Population growth
+national_pop_dat <- readRDS(here::here("data", "raw", "WB_UN_1960_2100_human_population_by_country.Rds"))
+
+global_pop_dat <- readRDS(here::here("data", "raw", "WB_UN_1960_2100_human_population_global.Rds")) %>%
+  mutate(country = "Global",
+         iso3 = "Global")
+
+pop_dat <- national_pop_dat %>%
+  bind_rows(global_pop_dat) %>%
+  dplyr::select(source, country, iso3, year, pop_size_05perc, pop_size_50perc, pop_size_95perc)
+
+# Save 
+saveRDS(pop_dat, paste0(data_dir, "01_01_population_growth_plot_data.Rds"))
+saveRDS(pop_dat, paste0(app_data_dir, "01_01_population_growth_plot_data.Rds"))
+```
+
+## Nutrient Deficiencies
+
+Not entirely sure where this data comes from
+
+```{r, echo=FALSE}
+# Load national nutrient deficit data
+national_nutrient_deficiency_dat <- readRDS(here::here("data", "raw", "nutr_deficiencies_by_cntry_sex_age_2011.Rds")) %>%
+  ungroup()
+
+# The national level data is used in one plot as is - so let's save this for that
+saveRDS(national_nutrient_deficiency_dat, paste0(data_dir, "02_03_nutritional_health_plot_data.Rds"))
+saveRDS(national_nutrient_deficiency_dat, paste0(app_data_dir, "02_03_nutritional_health_plot_data.Rds"))
+
+# Now let's wrangle it to combine with the global data for a different plot
+national_nutrient_deficiency_dat_edit <- national_nutrient_deficiency_dat %>%
+  dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy)
+
+global_nutrient_deficiency_dat <- readRDS(here::here("data", "raw", "nutr_deficiencies_by_sex_age_2011.Rds")) %>%
+  ungroup() %>%
+  mutate(iso3 = "Global", country = "Global") %>%
+  dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy) 
+
+# Combine data for plot and format
+nutrient_deficiency_dat <- national_nutrient_deficiency_dat_edit %>%
+  bind_rows(global_nutrient_deficiency_dat) %>%
+  filter(sex != "Children") %>% # Remove children (not symmetric)
+  gather(key="type", value="npeople", 6:7) %>%  # Gather
+  mutate(type=recode_factor(type,
+                            "ndeficient"="Deficient",
+                            "nhealthy"="Healthy"),
+         sex=factor(sex, levels=c("Women", "Men"))) %>% 
+  group_by(iso3, country, sex, age, nutrient) %>%
+  mutate(ntotal = sum(npeople, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(ppeople = (npeople/ntotal)*100) %>%
+  mutate(npeople=ifelse(sex=="Men", npeople*-1, npeople),   # Make male values negative for plotting
+         ppeople=ifelse(sex=="Men", ppeople*-1, ppeople))
+
+# Save
+saveRDS(nutrient_deficiency_dat, paste0(data_dir, "01_02a_nutrient_demand_plot_data.Rds"))
+saveRDS(nutrient_deficiency_dat, paste0(app_data_dir, "01_02a_nutrient_demand_plot_data.Rds"))
+```
+
+## Projected Nutrient Demands
+
+```{r}
+national_nutrient_demand_dat <- readRDS(here::here("data", "raw", "1960_2100_nutrient_demand_by_country.Rds")) 
+  # dplyr::select(-iso3) %>%
+  # mutate(iso3 = countrycode(country, "country.name", "iso3c"))
+
+global_nutrient_demand_dat <- readRDS(here::here("data", "raw", "1960_2100_nutrient_demand_global.Rds")) %>%
+  mutate(country = "Global",
+         iso3 = "Global")
+
+nutrient_demand_dat <- national_nutrient_demand_dat %>%
+  bind_rows(global_nutrient_demand_dat)
+
+# Save
+saveRDS(nutrient_demand_dat, paste0(data_dir, "01_02b_nutrient_demand_plot_data.Rds"))
+saveRDS(nutrient_demand_dat, paste0(app_data_dir, "01_02b_nutrient_demand_plot_data.Rds"))
+```
+

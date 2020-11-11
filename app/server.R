@@ -45,10 +45,10 @@ shinyServer(function(input, output, session) {
     
     if(input$w_global_national_outlook_resolution == "National"){
       
-      plot_dat_hist <- pop_dat %>%
+      plot_dat_hist <- population_growth_plot_data %>%
         dplyr::filter(iso3 == input$w_global_national_outlook_country & source == "World Bank historical")
       
-      plot_dat_proj <- pop_dat  %>%
+      plot_dat_proj <- population_growth_plot_data  %>%
         dplyr::filter(iso3 == input$w_global_national_outlook_country & source == "UN WPP projections")
       
       plot_div <- 1e6
@@ -56,10 +56,10 @@ shinyServer(function(input, output, session) {
       
     }else{
       
-      plot_dat_hist <- pop_dat %>%
+      plot_dat_hist <- population_growth_plot_data %>%
         dplyr::filter(iso3 == "Global" & source == "World Bank historical")
       
-      plot_dat_proj <- pop_dat %>%
+      plot_dat_proj <- population_growth_plot_data %>%
         dplyr::filter(iso3 == "Global" & source == "UN WPP projections")
       
       plot_div <- 1e9
@@ -107,12 +107,12 @@ shinyServer(function(input, output, session) {
     
     if(input$w_global_national_outlook_resolution == "National"){
       
-      plot_dat <- nutrient_deficiency_dat %>%
+      plot_dat <- nutrient_demand_plot_1_data %>%
         dplyr::filter(iso3 == input$w_global_national_outlook_country)
       
     }else {
       
-      plot_dat <- nutrient_deficiency_dat %>%
+      plot_dat <- nutrient_demand_plot_1_data %>%
         dplyr::filter(iso3 == "Global")
       
     }
@@ -121,12 +121,12 @@ shinyServer(function(input, output, session) {
     
     # Get plotting variable and plot
     plot_variable <- switch(input$w_nutrient_demand_plot_1,
-                            "% of population" = list("ppeople", "% of group (age and sex)", 9),
-                            "number of people" = list("npeople", "People (millions)", 7))
+                            "% of population" = list("ppeople", "% of group (age-sex)", 1),
+                            "number of people" = list("npeople", "People (millions)", 1e6))
     
       # Plot
       g <- ggplot(plot_dat) +
-        aes(y=get(plot_variable[[1]]), x=reorder(age, desc(age)), fill=sex, alpha=type) +
+        aes(y=get(plot_variable[[1]])/plot_variable[[3]], x=reorder(age, desc(age)), fill=sex, alpha=type) +
         # By nutrient
         facet_wrap(~nutrient, ncol=5) +
         # Plot bars
@@ -161,10 +161,10 @@ shinyServer(function(input, output, session) {
     
     if(input$w_global_national_outlook_resolution == "National"){
       
-      plot_dat_hist <- nutrient_demand_dat %>% 
+      plot_dat_hist <- nutrient_demand_plot_2_data %>% 
         filter(type=="Historical" & iso3==input$w_global_national_outlook_country & nutrient==input$w_nutrient_demand_plot_2)
       
-      plot_dat_proj <- nutrient_demand_dat %>% 
+      plot_dat_proj <- nutrient_demand_plot_2_data %>% 
         filter(type=="UN-WPP projections" & iso3==input$w_global_national_outlook_country & nutrient==input$w_nutrient_demand_plot_2)
       
       plot_fac <- 1
@@ -172,10 +172,10 @@ shinyServer(function(input, output, session) {
       
     }else{
       
-      plot_dat_hist <- nutrient_demand_dat %>% 
+      plot_dat_hist <- nutrient_demand_plot_2_data %>% 
         filter(type=="Historical" & iso3=="Global" & nutrient==input$w_nutrient_demand_plot_2)
       
-      plot_dat_proj <- nutrient_demand_dat %>% 
+      plot_dat_proj <- nutrient_demand_plot_2_data %>% 
         filter(type=="UN-WPP projections" & iso3=="Global" & nutrient==input$w_nutrient_demand_plot_2)
       
       plot_fac <- 1000

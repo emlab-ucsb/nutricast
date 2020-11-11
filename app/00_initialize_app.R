@@ -67,60 +67,30 @@ world_points <- world %>%
 ### App data -------------------------
 ### ----------------------------------
 
-### Global and National Outlook -------------------
+### Tab 1 - Global and National Outlook -------------------
 
-# 1) Population growth
-national_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_by_country.Rds")
+# Plot 1) Population growth
+population_growth_plot_data <- readRDS("./data/processed/01_01_population_growth_plot_data.Rds")
 
-global_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_global.Rds") %>%
-  mutate(country = "Global",
-         iso3 = "Global")
+# Plot 2a) Nutrient Demand - Nutrient Deficiencies
+nutrient_demand_plot_1_data <- readRDS("./data/processed/01_02a_nutrient_demand_plot_data.Rds")
+  
+# Plot 2b) Nutrient Demand - Projected Nutrient Demands
+nutrient_demand_plot_2_data <- readRDS("./data/processed/01_02b_nutrient_demand_plot_data.Rds") %>%
+  arrange(nutrient)
 
-pop_dat <- national_pop_dat %>%
-  bind_rows(global_pop_dat)
+# national_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_by_country.Rds") %>%
+#   dplyr::select(-iso3) %>%
+#   mutate(iso3 = countrycode(country, "country.name", "iso3c"))
+# 
+# global_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_global.Rds") %>%
+#   mutate(country = "Global",
+#          iso3 = "Global")
+# 
+# nutrient_demand_dat <- national_nutrient_demand_dat %>%
+#   bind_rows(global_nutrient_demand_dat)
 
-# 2a) Nutrient Deficiencies
-national_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_cntry_sex_age_2011.Rds") %>%
-  ungroup()
-
-national_nutrient_deficiency_dat_edit <- national_nutrient_deficiency_dat %>%
-  dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy)
-
-global_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_sex_age_2011.Rds") %>%
-  ungroup() %>%
-  mutate(iso3 = "Global", country = "Global") %>%
-  dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy) 
-
-# Combine data for plot and format
-nutrient_deficiency_dat <- national_nutrient_deficiency_dat_edit %>%
-  bind_rows(global_nutrient_deficiency_dat) %>%
-  filter(sex != "Children") %>% # Remove children (not symmetric)
-  gather(key="type", value="npeople", 6:7) %>%  # Gather
-  mutate(type=recode_factor(type,
-                            "ndeficient"="Deficient",
-                            "nhealthy"="Healthy"),
-         sex=factor(sex, levels=c("Women", "Men"))) %>% 
-  group_by(iso3, country, sex, age, nutrient) %>%
-  mutate(ntotal = sum(npeople, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(ppeople = (npeople/ntotal)*100) %>%
-  mutate(npeople=ifelse(sex=="Men", npeople*-1, npeople),   # Make male values negative for plotting
-         ppeople=ifelse(sex=="Men", ppeople*-1, ppeople)) %>%
-  mutate(npeople = npeople/1e6)
-
-# 2b) Nutrient Demand
-national_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_by_country.Rds") %>%
-  dplyr::select(-iso3) %>%
-  mutate(iso3 = countrycode(country, "country.name", "iso3c"))
-
-global_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_global.Rds") %>%
-  mutate(country = "Global",
-         iso3 = "Global")
-
-nutrient_demand_dat <- national_nutrient_demand_dat %>%
-  bind_rows(global_nutrient_demand_dat)
-
-nutrient_choices <- unique(nutrient_demand_dat$nutrient)
+nutrient_choices <- unique(nutrient_demand_plot_2_data$nutrient)
 
 # 3a) Capture and aquaculture production
 
@@ -242,7 +212,7 @@ fish_nutrition_content_plot_dat <- fish_nutrition_content_dat %>%
                          "vitamin_b6_mg"="Vit B6", 
                          "vitamin_c_mg"="Vit C", 
                          "zinc_mg"="Zinc")) %>% 
-  select(species_group, nutrient, quantity_prop) %>%   # Reduce for plotting
+  dplyr::select(species_group, nutrient, quantity_prop) %>%   # Reduce for plotting
   spread(key="nutrient", value="quantity_prop")
 
 # 2b) Fishery Reforms - edible meat production plot
