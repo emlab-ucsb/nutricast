@@ -84,7 +84,7 @@ nutrient_choices <- unique(nutrient_demand_plot_2_data$nutrient)
 # Plot 3a) Marine Seafood as a Source of Nutrients - Fisheries and Mariculture Production
 fisheries_mariculture_production_plot_data <- readRDS("./data/processed/01_03a_fisheries_mariculture_production_plot_data.Rds")
 
-# Plots 3b) Marine Seafood as a Source of Nutrients - Protein from Seafood
+# Plot 3b) Marine Seafood as a Source of Nutrients - Protein from Seafood
 protein_from_seafood_plot_data <- readRDS("./data/processed/01_03b_protein_from_seafood_plot_data.Rds")
 
 # Plot 3c) Marine Seafood as a Source of Nutrients - Seafood Consumption
@@ -105,24 +105,30 @@ names(widget_country_choices) <- unique(country_choices$country)
 
 ### National Nutrition Data -------------------
 
-# # 3) Nutritional health
-national_nutritional_health_dat <- readRDS("./data/genus_nutrient_supplies_by_age_sex_2011_w_us_diet_req.Rds")
+# Plots 1a/b) Same as those from Plot 3b in the previous section
 
-nutritional_health_plot_dat <- national_nutritional_health_dat %>%
+# Plots 2a-c) Same as those from Plot 3c in the previous section
+
+# Plot 3) Nutritional Health
+nutritional_health_plot_dat <- readRDS("./data/processed/02_03_nutritional_health_plot_data.Rds") %>%
   mutate(sex=recode_factor(sex, "Children"="Children", "Females"="Women", "Males"="Men"),
          nutrient_type=recode(nutrient_type,
                               "Macronutrient"="Macro\nnutrient")) %>%
   dplyr::filter(nutrient != "Sodium")
 
-# 4) Nutrient consumption profiles
-national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds") %>%
-  dplyr::filter(nutrient != "Sodium")
+# Plot 4) Nutrient Consumption Profiles
+nutrient_consumption_plot_data_country_year <- readRDS("./data/processed/02_04_nutrient_consumption_plot_data_country_year.Rds") %>%
+  arrange(nutrient)
 
-widget_nutrient_choices_national_nutrition_data <- unique(national_nutrient_supplies_dat$nutrient)
+widget_nutrient_choices_national_nutrition_data <- unique(nutrient_consumption_plot_data_country_year$nutrient)
+# national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds") %>%
+#   dplyr::filter(nutrient != "Sodium")
+
+nutrient_consumption_plot_data_age_sex <- readRDS("./data/processed/02_04_nutrient_consumption_plot_data_age_sex.Rds")
 
 # DRIs data
 dri_dat <- readRDS("./data/DRIs_matched_to_genus_age_sex_groups.Rds") %>% 
-  filter(nutrient!="Protein")
+  filter(nutrient != "Protein")
 
 ### Seafood Reforms Data -------------------
 

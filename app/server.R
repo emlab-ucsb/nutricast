@@ -463,14 +463,14 @@ shinyServer(function(input, output, session) {
     
     # Add country level protein data to map
     world_data <- world %>% 
-      left_join(protein_dat, by=c("adm0_a3"="iso3"))
+      left_join(protein_from_seafood_plot_data, by=c("adm0_a3"="iso3"))
     
     req(nrow(world_data) > 0)
     
     # Get point for selected country
     selected_country_point <- world_points %>%
       dplyr::filter(adm0_a3 == input$w_national_nutrition_data_country) %>%
-      left_join(protein_dat, by=c("adm0_a3"="iso3"))
+      left_join(protein_from_seafood_plot_data, by=c("adm0_a3"="iso3"))
     
     #req(nrow(selected_country_point) > 0)
     
@@ -499,12 +499,12 @@ shinyServer(function(input, output, session) {
     
     req(input$w_national_nutrition_data_country)
     
-    selected_country_prop <- protein_dat %>%
+    selected_country_prop <- protein_from_seafood_plot_data %>%
       filter(iso3==input$w_national_nutrition_data_country) %>%
       pull(prop_seafood)
     
     # Plot p(protein) histogram
-    g <- ggplot(protein_dat, aes(x=prop_seafood)) +
+    g <- ggplot(protein_from_seafood_plot_data, aes(x=prop_seafood)) +
       geom_histogram(binwidth = 0.01) +
       geom_vline(xintercept = selected_country_prop, col="red") +
       labs(x="% of protein from marine seafood", y="Number of countries") +
@@ -535,7 +535,7 @@ shinyServer(function(input, output, session) {
     req(input$w_national_nutrition_data_country)
     
     # Data
-    diet_data <- national_diet_from_seafood_dat %>% 
+    diet_data <- seafood_consumption_plot_data_diet %>% 
       filter(iso3==input$w_national_nutrition_data_country) %>% 
       mutate(seafood_g_person_day = ifelse(total_g_person_day==0, NA, seafood_g_person_day)) %>%
       dplyr::filter(!is.na(seafood_g_person_day))
@@ -561,7 +561,7 @@ shinyServer(function(input, output, session) {
     req(input$w_national_nutrition_data_country)
     
     # Data
-    diet_data <- national_diet_from_seafood_dat %>% 
+    diet_data <- seafood_consumption_plot_data_diet %>% 
       filter(iso3==input$w_national_nutrition_data_country) %>% 
       mutate(seafood_g_person_day = ifelse(total_g_person_day==0, NA, seafood_g_person_day)) %>%
       dplyr::filter(!is.na(seafood_g_person_day))
@@ -589,7 +589,7 @@ shinyServer(function(input, output, session) {
     req(input$w_national_nutrition_data_country)
     
     # Data
-    nutrient_data <- national_nutrient_from_seafood_dat %>% 
+    nutrient_data <- seafood_consumption_plot_data_nutrients %>% 
       dplyr::filter(nutrient != "Sodium") %>%
       filter(iso3==input$w_national_nutrition_data_country)
     
@@ -618,8 +618,7 @@ shinyServer(function(input, output, session) {
     req(input$w_national_nutrition_data_country)
     
     # Subset and format data
-    plot_data <- national_nutrient_deficiency_dat %>%
-      #nutritional_health_plot_dat %>% 
+    plot_data <- nutritional_health_plot_dat %>%
       filter(iso3==input$w_national_nutrition_data_country)
     
     req(nrow(plot_data) > 0)
@@ -665,10 +664,10 @@ shinyServer(function(input, output, session) {
     req(input$w_national_nutrition_data_nutrient)
     
     # Subset data
-    plot_dat_1 <- national_nutrient_supplies_dat %>% 
+    plot_dat_1 <- nutrient_consumption_plot_data_country_year %>% 
       filter(iso3==input$w_national_nutrition_data_country & nutrient==input$w_national_nutrition_data_nutrient)
     
-    plot_dat_2 <- nutritional_health_plot_dat %>% 
+    plot_dat_2 <- nutrient_consumption_plot_data_age_sex %>% 
       filter(iso3==input$w_national_nutrition_data_country & nutrient==input$w_national_nutrition_data_nutrient)
     
     # DRI data 
@@ -706,10 +705,10 @@ shinyServer(function(input, output, session) {
     req(input$w_national_nutrition_data_nutrient)
     
     # Subset data
-    plot_dat_1 <- national_nutrient_supplies_dat %>% 
+    plot_dat_1 <- nutrient_consumption_plot_data_country_year %>% 
       filter(iso3==input$w_national_nutrition_data_country & nutrient==input$w_national_nutrition_data_nutrient)
     
-    plot_dat_2 <- nutritional_health_plot_dat %>% 
+    plot_dat_2 <- nutrient_consumption_plot_data_age_sex %>% 
       filter(iso3==input$w_national_nutrition_data_country & nutrient==input$w_national_nutrition_data_nutrient)
     
     # DRI data 
