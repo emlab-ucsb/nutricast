@@ -1,0 +1,25 @@
+﻿group,isscaap,catch2meat,source
+Crustaceans,"Crabs, sea-spiders ",0.36,Edwards et al. 2019
+Crustaceans,"King crabs, squat-lobsters ",0.36,Edwards et al. 2019
+Crustaceans,"Lobsters, spiny-rock lobsters",0.36,Edwards et al. 2019
+Crustaceans,Miscellaneous marine crustaceans ,0.36,Edwards et al. 2019
+Crustaceans,"Shrimps, prawns",0.36,Edwards et al. 2019
+Echinoderms,Sea-urchins and other echinoderms,0.3,Costello et al. 2020
+Finfish,"Cods, hakes, haddocks",0.87,Edwards et al. 2019
+Finfish,"Flounders, halibuts, soles",0.87,Edwards et al. 2019
+Finfish,"Herrings, sardines, anchovies",0.87,Edwards et al. 2019
+Finfish,Miscellaneous coastal fishes,0.87,Edwards et al. 2019
+Finfish,Miscellaneous demersal fishes,0.87,Edwards et al. 2019
+Finfish,Miscellaneous diadromous fishes,0.87,Edwards et al. 2019
+Finfish,Miscellaneous pelagic fishes,0.87,Edwards et al. 2019
+Finfish,"Salmons, trouts, smelts",0.87,Edwards et al. 2019
+Finfish,Shads ,0.87,Edwards et al. 2019
+Finfish,"Sharks, rays, chimaeras",0.87,Edwards et al. 2019
+Finfish,"Tunas, bonitos, billfishes ",0.87,Edwards et al. 2019
+Molluscs,"Abalones, winkles, conchs",0.17,Edwards et al. 2019
+Molluscs,"Clams, cockles, arkshells",0.17,Edwards et al. 2019
+Molluscs,Mussels ,0.17,Edwards et al. 2019
+Molluscs,Oysters,0.17,Edwards et al. 2019
+Molluscs,"Scallops, pectens",0.17,Edwards et al. 2019
+Non-edible,Horseshoe crabs and other arachnoids ,0,logic
+Cephalopods,"Squids, cuttlefishes, octopuses",0.69,FAO 1989

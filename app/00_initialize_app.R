@@ -79,63 +79,10 @@ nutrient_demand_plot_1_data <- readRDS("./data/processed/01_02a_nutrient_demand_
 nutrient_demand_plot_2_data <- readRDS("./data/processed/01_02b_nutrient_demand_plot_data.Rds") %>%
   arrange(nutrient)
 
-# national_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_by_country.Rds") %>%
-#   dplyr::select(-iso3) %>%
-#   mutate(iso3 = countrycode(country, "country.name", "iso3c"))
-# 
-# global_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_global.Rds") %>%
-#   mutate(country = "Global",
-#          iso3 = "Global")
-# 
-# nutrient_demand_dat <- national_nutrient_demand_dat %>%
-#   bind_rows(global_nutrient_demand_dat)
-
 nutrient_choices <- unique(nutrient_demand_plot_2_data$nutrient)
 
-# 3a) Capture and aquaculture production
-
-# Historical capture production by country (FAO)
-national_capture_production_dat <- readRDS("./data/1950_2017_fao_landings_by_country_isscaap.Rds") %>%
-  dplyr::filter(!(isscaap %in% c("Freshwater molluscs", "Miscellaneous freshwater fishes", "Freshwater crustaceans", "River eels"))) %>% # remove freshwater production
-  rename(country = country_use, iso3 = iso3_use) %>%
-  mutate(plot_group = case_when(major_group == "Pisces" ~ "Finfish",
-                                isscaap %in% c("Clams, cockles, arkshells", "Mussels", "Scallops, pectens", "Oysters") ~ "Bivalves",
-                                TRUE ~ "Other")) %>%
-  group_by(country, iso3, year, plot_group, prod_type) %>%
-  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(source = "Marine Capture")
-
-global_capture_production_dat <- national_capture_production_dat %>%
-  group_by(year, plot_group, prod_type, source) %>%
-  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(country = "Global", iso3 = "Global")
-
-# Historical aquaculture production by country (FAO)
-national_aquaculture_production_dat <- readRDS("./data/1950_2017_fao_aquaculture_data.Rds") %>%
-  dplyr::filter(environment != "Freshwater") %>% # remove freshwater production
-  mutate(plot_group = case_when(major_group == "Pisces" ~ "Finfish",
-                                order == "Bivalvia" ~ "Bivalves",
-                                TRUE ~ "Other")) %>%
-  group_by(country_orig, iso3_orig, year, plot_group) %>%
-  summarize(prod_mt = sum(quantity_mt, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(source = "Aquaculture") %>%
-  mutate(prod_type = "Landings") %>%
-  rename(country = country_orig, iso3 = iso3_orig)
- 
-global_aquaculture_production_dat <- national_aquaculture_production_dat %>%
-  group_by(year, plot_group, prod_type, source) %>%
-  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(country = "Global", iso3 = "Global")
-
-# Output plot dat
-production_plot_dat <- national_capture_production_dat %>%
-  bind_rows(global_capture_production_dat) %>%
-  bind_rows(national_aquaculture_production_dat) %>%
-  bind_rows(global_aquaculture_production_dat)
+# Plot 3a) Marine Seafood as a Source of Nutrients - Fisheries and Mariculture Production
+fisheries_mariculture_production_plot_data <- readRDS("./data/processed/01_03a_fisheries_mariculture_production_plot_data.Rds")
 
 # 3b/c) Protein and Nutrients from Seafood
 national_nutrient_from_seafood_dat <- readRDS("./data/genus_pnutrient_seafood_by_cntry_2011.Rds")

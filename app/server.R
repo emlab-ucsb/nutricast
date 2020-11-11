@@ -219,27 +219,32 @@ shinyServer(function(input, output, session) {
     
     req(input$w_global_national_outlook_resolution)
     req(input$w_global_national_outlook_country)
-    ### [EVENTUALLY ADD LANDINGS/EDIBLE MEAT/EDIBLE MEAT PER CAPITA TOGGLE]
+    req(input$w_marine_seafood_as_source_plot_1)
     
     if(input$w_global_national_outlook_resolution == 'National'){
       
-      plot_dat <- production_plot_dat %>%
-        dplyr::filter(iso3 == input$w_global_national_outlook_country & prod_type == "Landings")
+      plot_dat <- fisheries_mariculture_production_plot_data %>%
+        dplyr::filter(iso3 == input$w_global_national_outlook_country)
       
     }else{
       
-      plot_dat <- production_plot_dat %>%
-        dplyr::filter(iso3 == "Global" & prod_type == "Landings")
+      plot_dat <- fisheries_mariculture_production_plot_data %>%
+        dplyr::filter(iso3 == "Global")
       
     }
     
     req(nrow(plot_dat) > 0)
     
+    plot_variable <- switch(input$w_marine_seafood_as_source_plot_1,
+                            "live weight" = list("live_weight", 1e6, "Production\n(millions of mt)"),
+                            "edible meat" = list("edible_meat", 1e6, "Production\n(millions of mt)"),
+                            "edible meat per capita" = list("edible_meat_per_capita", 1, "Production\n(mt per person)"))
+    
     g <- ggplot(plot_dat)+
-      aes(x = year, y = prod_mt/1e6, fill = plot_group, alpha = source)+
+      aes(x = year, y = get(plot_variable[[1]])/plot_variable[[2]], fill = plot_group, alpha = source)+
       geom_area()+
-      labs(y = "Production (millions of mt)")+
-      scale_x_continuous(expand = c(0,0), breaks = c(1955, 1970, 1985, 2000, 2015))+
+      labs(y = plot_variable[[3]])+
+      scale_x_continuous(expand = c(0,0), breaks = c(1960, 1970, 1980, 1990, 2000, 2010, 2020))+
       scale_y_continuous(expand = c(0,0))+
       scale_fill_discrete(name="Species type") +
       scale_alpha_manual(name="Production type", values=c(0.4, 1.0)) +

@@ -108,3 +108,97 @@ saveRDS(nutrient_demand_dat, paste0(data_dir, "01_02b_nutrient_demand_plot_data.
 saveRDS(nutrient_demand_dat, paste0(app_data_dir, "01_02b_nutrient_demand_plot_data.Rds"))
 ```
 
+## Marine Capture & Mariculture Production
+
+From the FAO.
+
+```{r}
+# Historical capture production by country (FAO)
+national_capture_production_dat <- readRDS(here::here("data", "raw", "1950_2017_fao_landings_by_country_isscaap.Rds")) %>%
+  dplyr::filter(!(isscaap %in% c("Freshwater molluscs", "Miscellaneous freshwater fishes", "Freshwater crustaceans", "River eels"))) %>% # remove freshwater production
+  rename(country = country_use, iso3 = iso3_use) %>%
+  mutate(plot_group = case_when(major_group == "Pisces" ~ "Finfish",
+                                isscaap %in% c("Clams, cockles, arkshells", "Mussels", "Scallops, pectens", "Oysters") ~ "Bivalves",
+                                TRUE ~ "Other")) %>%
+  dplyr::filter(prod_type == "Landings")
+
+# Use conversion factors to get edible meat equivalents. 
+national_capture_production_dat <- national_capture_production_dat %>%
+  rename(live_weight = prod_mt) %>%
+  mutate(edible_meat = live_weight * conv_factor) %>%
+  group_by(country, iso3, year, plot_group) %>%
+  summarize(live_weight = sum(live_weight, na.rm = T),
+            edible_meat = sum(edible_meat, na.rm = T)) %>%
+  ungroup()
+
+# Then join population data to get edible meat per capita. 
+pop_dat_to_match <- pop_dat %>%
+  group_by(iso3, year) %>%
+  summarize(capita = unique(pop_size_50perc)) %>%
+  ungroup()
+
+national_capture_production_dat <- national_capture_production_dat %>%
+  left_join(pop_dat_to_match, by = c("iso3", "year")) %>%
+  mutate(edible_meat_per_capita = edible_meat/capita) %>%
+  mutate(source = "Marine Capture")
+
+# Now do global
+global_capture_production_dat <- national_capture_production_dat %>%
+  group_by(year, plot_group, source) %>%
+  summarize(live_weight = sum(live_weight, na.rm = T),
+            edible_meat = sum(edible_meat, na.rm = T),
+            capita = sum(capita, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(edible_meat_per_capita = edible_meat/capita) %>%
+  mutate(country = "Global", iso3 = "Global")
+
+### Now do aquaculture production -----------------
+
+# Historical aquaculture production by country (FAO)
+national_aquaculture_production_dat <- readRDS(here::here("data", "raw", "1950_2017_fao_aquaculture_data.Rds")) %>%
+  dplyr::filter(environment != "Freshwater") %>% # remove freshwater production
+  mutate(plot_group = case_when(major_group == "Pisces" ~ "Finfish",
+                                order == "Bivalvia" ~ "Bivalves",
+                                TRUE ~ "Other")) 
+
+# Load conversion factors to apply live weight to edible meat conversions
+lw_to_em_conversion <- read_csv(here::here("data", "isscaap_conversion_factors.csv")) %>%
+  dplyr::select(isscaap, conv_factor = catch2meat)
+
+national_aquaculture_production_dat <- national_aquaculture_production_dat %>%
+  left_join(lw_to_em_conversion, by = c("isscaap")) %>%
+  rename(country = country_orig, iso3 = iso3_orig, live_weight = quantity_mt) %>%
+  mutate(edible_meat = live_weight * conv_factor) %>%
+  group_by(country, iso3, year, plot_group) %>%
+  summarize(live_weight = sum(live_weight, na.rm = T),
+            edible_meat = sum(edible_meat, na.rm = T)) %>%
+  ungroup()
+
+# Now apply population numbers
+national_aquaculture_production_dat <- national_aquaculture_production_dat %>%
+  left_join(pop_dat_to_match, by = c("iso3", "year")) %>%
+  mutate(edible_meat_per_capita = edible_meat/capita) %>%
+  mutate(source = "Mariculture")
+
+# Now do global
+global_aquaculture_production_dat <- national_aquaculture_production_dat %>%
+  group_by(year, plot_group, source) %>%
+  summarize(live_weight = sum(live_weight, na.rm = T),
+            edible_meat = sum(edible_meat, na.rm = T),
+            capita = sum(capita, na.rm = T)) %>%
+  ungroup() %>%
+  mutate(edible_meat_per_capita = edible_meat/capita) %>%
+  mutate(country = "Global", iso3 = "Global")
+
+# Output plot dat
+production_plot_dat <- national_capture_production_dat %>%
+  bind_rows(global_capture_production_dat) %>%
+  bind_rows(national_aquaculture_production_dat) %>%
+  bind_rows(global_aquaculture_production_dat) %>%
+  dplyr::filter(year >= 1960)
+
+# Save
+saveRDS(production_plot_dat, paste0(data_dir, "01_03a_fisheries_mariculture_production_plot_data.Rds"))
+saveRDS(production_plot_dat, paste0(app_data_dir, "01_03a_fisheries_mariculture_production_plot_data.Rds"))
+```
+
