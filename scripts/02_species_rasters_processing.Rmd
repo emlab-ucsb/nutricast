@@ -1,0 +1,186 @@
+---
+title: "Nutricast - Process Species Suitability Rasters"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(countrycode) # fix and standardize country codes
+library(here)
+library(tidyverse)
+library(raster)
+library(stringr)
+library(leaflet)
+library(rgdal)
+
+data_dir <- here::here("data", "processed", "species_rasters/")
+if (dir.exists(data_dir) == F) {
+  dir.create(data_dir, recursive = T)
+} 
+
+app_data_dir <- here::here("app", "data", "processed", "species_rasters/")
+if (dir.exists(app_data_dir) == F) {
+  dir.create(app_data_dir, recursive = T)
+} 
+```
+
+## Testing
+
+Let's start by reading in a sample file to see how the new files (from August 2020) have changed relative to the old ones. 
+
+```{r cars}
+# Get our files of interest... 
+raster_data_path <- "/Volumes/GoogleDrive/Shared\ drives/emlab/projects/current-projects/blue-paper-2/data/output/raw"
+raster_files <- list.files(path = raster_data_path, full.names = T, pattern = "*.Rds")
+
+# Practice extracting the data we need to extract from a single file... 
+file_name <- str_replace(raster_files[1], paste0(raster_data_path, "/"), "")
+scenario_name <- str_extract(file_name, "[^_]+")
+genus_name <- str_extract(str_replace(file_name, paste0(scenario_name, "_"), ""), "[^_]+")
+species_name <- str_replace(str_extract(str_replace(file_name, paste0(scenario_name, "_", genus_name, "_"), ""), "[^_]+"), ".Rds", "")
+full_species_name <- paste(genus_name, species_name)
+
+# Now load test file... 
+test_file <- readRDS(raster_files[1]) %>%
+  dplyr::select(x, y, viable)
+
+head(test_file)
+
+# Let's try the practice of turning it into a raster and adding to leaflet... we'll then compare to the data frame... 
+coordinates(test_file) <- ~ x + y
+gridded(test_file) <- TRUE
+crs(test_file) <- sp::CRS("+proj=moll +ellps=WGS84 +datum=WGS84 +no_defs")
+raster_file <- raster(test_file)
+
+# Now add to leaflet - seems to work pretty well. 
+pal <- colorNumeric(c("green"), values(raster_file),
+  na.color = "transparent")
+
+leaflet() %>% addTiles() %>%
+  addRasterImage(raster_file, colors = pal, opacity = 0.8) %>%
+  addLegend(pal = pal, values = values(raster_file),
+    title = "Suitability")
+
+# Now let's save, and reread and see how large this file is/how long it takes. 
+saveRDS(raster_file, paste0(data_dir, "test_file.Rds"))
+```
+
+Okie, this seems to be working well... Let's see if we can now make raster stacks or bricks by species. 
+
+```{r}
+# Respecify our files of interest... 
+raster_data_path <- "/Volumes/GoogleDrive/Shared\ drives/emlab/projects/current-projects/blue-paper-2/data/output/raw"
+raster_files <- list.files(path = raster_data_path, full.names = T, pattern = "*.Rds")
+
+# Now lets see if we can get a list of all species... Practice extracting the data we need to extract from all files. Oh good they vectorized these. 
+file_names_short <- str_replace(raster_files, paste0(raster_data_path, "/"), "")
+scenario_names <- str_extract(file_names_short, "[^_]+")
+genus_names <- str_extract(str_replace(file_names_short, paste0(scenario_names, "_"), ""), "[^_]+")
+species_names <- str_replace(str_extract(str_replace(file_names_short, paste0(scenario_names, "_", genus_names, "_"), ""), "[^_]+"), ".Rds", "")
+full_species_names <- paste(genus_names, species_names)
+
+# Ok let's see how many species we have. Looks like 193. 
+unique_scenario_names <- unique(scenario_names)
+unique_species_names <- unique(full_species_names)
+```
+
+```{r}
+# Testing values
+file_dir <- raster_data_path
+all_file_names <- raster_files
+all_scenario_names <- unique_scenario_names
+species_name <- unique_species_names[1]
+
+# Now let's set up a function for reading in all files cooresponding to a single species. 
+ReadAllSpeciesFiles <- function(file_dir, all_file_names, all_scenario_names, species_name){
+  
+  # Format the species name, and generate all possible files for this species. We do not know if all of these files will actually exist for each species. 
+  species_name_separated <- str_replace(species_name, " ", "_")
+  possible_file_names <- paste0(file_dir, "/", all_scenario_names, "_", species_name_separated, ".Rds")
+  
+  # Find the matching files
+  matching_files <- all_file_names[all_file_names %in% possible_file_names]
+  
+  # Get the scenario names for matching files (important later for naming the layers in the raster object)
+  matching_files_short <- str_replace(matching_files, paste0(file_dir, "/"), "")
+  scenario_names <- str_extract(matching_files_short, "[^_]+")
+  
+  # Now load first file and turn into a raster
+  file_1 <- readRDS(matching_files[1]) %>%
+    dplyr::filter(period == "2091-2100")%>%
+    dplyr::select(x, y, viable)
+  
+  coordinates(file_1) <- ~ x + y
+  gridded(file_1) <- TRUE
+  crs(file_1) <- sp::CRS("+proj=moll +ellps=WGS84 +datum=WGS84 +no_defs")
+  raster_layer_1 <- raster(file_1)
+  
+  tibble_out <- tibble(species = species_name, scenario = scenario_names[1], suitability = list(raster_layer_1))
+  
+  # Now load other files (if applicable) and add into our tibble
+  for(i in 2:length(matching_files)){
+    
+    # Now load first file and turn into a raster
+    file_add <- readRDS(matching_files[i]) %>%
+      dplyr::filter(period == "2091-2100") %>%
+      dplyr::select(x, y, viable)
+  
+    coordinates(file_add) <- ~ x + y
+    gridded(file_add) <- TRUE
+    crs(file_add) <- sp::CRS("+proj=moll +ellps=WGS84 +datum=WGS84 +no_defs")
+    raster_layer_add <- raster(file_add)
+    
+    tibble_entry_add <- tibble(species = species_name, scenario = scenario_names[i], suitability = list(raster_layer_add))
+    
+    # Stack
+    tibble_out <- tibble_out %>%
+      bind_rows(tibble_entry_add)
+  }
+
+  saveRDS(tibble_out, paste0(data_dir, species_name_separated, ".Rds"))
+  
+  print(paste0(species_name, " Completed"))
+  
+  return(tibble_out)
+  
+}
+```
+
+## Merge data files by species - Practice run
+
+```{r}
+# Run function for one species and see if it works
+test_species <- ReadAllSpeciesFiles(file_dir, all_file_names, all_scenario_names, species_name)
+
+# Practice extracting plot data
+plot_dat <- test_species %>%
+  dplyr::filter(scenario == "RCP85")
+
+raster_plot <- unlist(plot_dat$suitability)[[1]]
+
+# Now add to leaflet
+pal <- colorNumeric(c("green"), values(raster_plot),
+  na.color = "transparent")
+
+leaflet() %>% addTiles() %>%
+  addRasterImage(raster_plot, colors = pal, opacity = 0.8) %>%
+  addLegend(pal = pal, values = values(raster_plot),
+    title = "Suitability")
+```
+
+I'm starting to think that I might be able to put all species rasters in one tibble... This would speed things up immensely in only having to load in one file at the beginning.. Let's try it. 
+
+```{r}
+output_tibble <- NULL
+files_to_run <- unique_species_names[!(unique_species_names %in% c("Anguilla anguilla (1)", "Coryphaena hippurus (1)", "Dicentrarchus labrax (1)", "Pollachius pollachius (1)"))]
+
+for(p in 1:length(unique_species_names)){
+  
+  species_to_add_to_tibble <- ReadAllSpeciesFiles(file_dir, all_file_names, all_scenario_names, files_to_run[p])
+  
+  output_tibble <- output_tibble %>%
+    bind_rows(species_to_add_to_tibble)
+}
+```
+
