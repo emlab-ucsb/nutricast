@@ -23,7 +23,8 @@ plot_theme <- theme_linedraw()+
         plot.background = element_rect(fill = "#ffffff", color = "#1a2d3f", size = 2),
         legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
         legend.title = element_text(size = text_size, face = "bold"),
-        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"),
+        strip.text = element_text(size = text_size, face = "bold"))
 
 plot_theme_tab <- theme_linedraw()+
   theme(axis.text = element_text(size = text_size),
@@ -31,7 +32,8 @@ plot_theme_tab <- theme_linedraw()+
         plot.background = element_rect(fill = "#ffffff", color = "#ffffff"),
         legend.background = element_rect(fill = "#ffffff", color = "#ffffff"),
         legend.title = element_text(size = text_size, face = "bold"),
-        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"))
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"),
+        strip.text = element_text(size = text_size, face = "bold"))
 
 map_theme <- theme_linedraw()+
   theme(axis.text = element_text(size = text_size),
@@ -91,15 +93,38 @@ protein_from_seafood_plot_data <- readRDS("./data/processed/01_03b_protein_from_
 seafood_consumption_plot_data_diet <- readRDS("./data/processed/01_03c_seafood_consumption_plot_data_diet.Rds")
 seafood_consumption_plot_data_nutrients <- readRDS("./data/processed/01_03c_seafood_consumption_plot_data_nutrients.Rds")
 
-# Get selectable countries for which we have nutrition data
-country_choices <- protein_from_seafood_plot_data %>%
+# country_choices <- protein_from_seafood_plot_data %>%
+#   ungroup() %>%
+#   distinct(country, iso3) 
+# 
+# widget_country_choices <- unique(country_choices$iso3)
+# names(widget_country_choices) <- unique(country_choices$country)
+
+# Plot 4a) Future Seafood Supply and Nutrient Contributions - Forecasted Seafood Supply
+forecasted_seafood_supply_plot_data_historical <- readRDS("./data/processed/01_04a_forecasted_seafood_supply_data_historical.Rds") %>%
+  mutate(sector = fct_relevel(sector, "Bivalve mariculture", "Finfish mariculture", "Capture fisheries"))
+forecasted_seafood_supply_plot_data_projections <- readRDS("./data/processed/01_04a_forecasted_seafood_supply_data_projections.Rds") %>%
+  mutate(sector = fct_relevel(sector, "Bivalve mariculture", "Finfish mariculture", "Capture fisheries"))
+
+### DEAL WITH COUNTRY CHOICES ----------
+# Get selectable countries for which we have projection data - may need to refine this list further 
+country_choices_forecast <- forecasted_seafood_supply_plot_data_projections %>%
   ungroup() %>%
-  distinct(country, iso3) 
+  dplyr::filter(iso3 != "Global") %>%
+  distinct(country, iso3) %>%
+  arrange(country) %>%
+  dplyr::filter(!(iso3 %in% c("CHN/HKG/MAC", "MNP/GUM"))) %>%
+  dplyr::filter(!(country %in% c("Antigua and Barbuda", "Falkland / Malvinas Islands", "Line Group", "Micronesia (Federated States of)", "Myanmar (Burma)", "Other nei", "Sao Tome and Principe", "Turks and Caicos Islands", "Ivory Coast", "Galapagos", "Canary Islands", "Faeroe", "Gilbert Islands", "Saint Kitts and Nevis", "Saint Lucia", "Republic of Mauritius", "Madeira", "Federal Republic of Somalia", "East Timor")))
 
-widget_country_choices <- unique(country_choices$iso3)
-names(widget_country_choices) <- unique(country_choices$country)
+country_choices_nutrition <- protein_from_seafood_plot_data %>%
+  ungroup() %>%
+  distinct(country, iso3)
 
-# Plot 4a) NEED
+country_choices_out <- country_choices_forecast %>%
+  inner_join(country_choices_nutrition %>% dplyr::select(iso3), by = "iso3")
+  
+widget_country_choices <- unique(country_choices_out$iso3)
+names(widget_country_choices) <- unique(country_choices_out$country)
 
 # PLOT 4b) NEED 
 

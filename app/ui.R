@@ -34,6 +34,7 @@ library(rnaturalearthdata)
 # Other functions
 #library(lubridate)
 library(countrycode) # fix and standardize country codes
+library(forcats)
 library(tidytext)
 library(googledrive)
 library(gargle)

@@ -424,8 +424,105 @@ shinyServer(function(input, output, session) {
     
     req(input$w_global_national_outlook_resolution)
     req(input$w_global_national_outlook_country)
+    req(input$w_future_seafood_supply_plot_1)
     
-    ### NEED THESE PLOTS
+    if(input$w_global_national_outlook_resolution == "National"){
+      
+      historical_dat <- forecasted_seafood_supply_plot_data_historical %>%
+        dplyr::filter(iso3 == input$w_global_national_outlook_country)
+      
+      projection_dat_bau <- forecasted_seafood_supply_plot_data_projections %>%
+        dplyr::filter(iso3 == input$w_global_national_outlook_country & dev_scenario == "Proportional") %>%
+        dplyr::filter(year != 2020 & scenario == "Business-as-usual")
+      
+      projection_dat_reform <- forecasted_seafood_supply_plot_data_projections %>%
+        dplyr::filter(iso3 == input$w_global_national_outlook_country & dev_scenario == "Proportional") %>%
+        dplyr::filter(year != 2020 & scenario == "Progressive reforms")
+      
+    }else {
+      
+      historical_dat <- forecasted_seafood_supply_plot_data_historical %>%
+        dplyr::filter(iso3 == "Global")
+      
+      projection_dat_bau <- forecasted_seafood_supply_plot_data_projections %>%
+        dplyr::filter(iso3 == "Global" & dev_scenario == "Proportional") %>%
+        dplyr::filter(year != 2020 & scenario == "Business-as-usual")
+      
+      projection_dat_reform <- forecasted_seafood_supply_plot_data_projections %>%
+        dplyr::filter(iso3 == "Global" & dev_scenario == "Proportional") %>%
+        dplyr::filter(year != 2020 & scenario == "Progressive reforms")
+
+    }
+    
+    req(nrow(historical_dat) > 0 & (nrow(projection_dat_bau) > 0 | nrow(projection_dat_reform) > 0))
+    
+    plot_var <- switch(input$w_future_seafood_supply_plot_1,
+                       "live weight" = list("live_weight", 1e6, "Total production (millions of mt)"),
+                       "edible meat" = list("edible_meat", 1e6, "Total production (millions of mt)"),
+                       "edible meat per capita" = list("edible_meat_per_capita", 1, "Total production (kg per capita)"))
+    
+    # Get max values for plotting
+    historical_max <- historical_dat %>%
+      group_by(year) %>%
+      summarize(value = sum(get(plot_var[[1]]))/plot_var[[2]]) %>%
+      pull(value) %>% max()
+    
+    projection_max <- projection_dat_reform %>%
+      group_by(rcp, scenario, period) %>%
+      summarize(value = sum(get(plot_var[[1]]))/plot_var[[2]]) %>%
+      pull(value) %>% max()
+    
+    max_val <- max(historical_max, projection_max) * 1.02
+    fill_pal <- c("Capture fisheries" = "#3b5998", "Bivalve mariculture" = "#ff0084", "Finfish mariculture" = "#64d448")
+    
+    # Historical plot panel
+    g1 <- ggplot(historical_dat, aes(x=year, y=get(plot_var[[1]])/plot_var[[2]], fill=sector)) +
+      geom_area() +
+      # Axis
+      scale_y_continuous(lim=c(0, max_val)) +
+      scale_x_continuous(lim=c(1960, 2020), breaks=seq(1960,2020,10)) +
+      # Labels
+      labs(x=" ", y= plot_var[[3]], title=" \nHistorical seafood production") +
+      scale_fill_manual(name="Sector", values = fill_pal[names(fill_pal) %in% unique(historical_dat$sector)]) +
+      plot_theme_tab +
+      theme(legend.position = c(0.15, 1.2))+
+      theme(plot.margin = unit(c(3, 0.1, 0.5, 0.5), "cm"))
+    
+    # BAU forecast plot panel
+    g2 <- ggplot(projection_dat_bau, aes(x=rcp, y=get(plot_var[[1]])/plot_var[[2]], fill=sector)) +
+      geom_bar(stat="identity") +
+      facet_wrap(~year) +
+      # Axis
+      scale_y_continuous(lim=c(0, max_val)) +
+      # Labels
+      labs(x="Climate change scenario (RCP)", y="", title="Future seafood production\nin a business-as-usual scenario") +
+      geom_text(data=projection_dat_bau %>% distinct(scenario, year), mapping=aes(x=2.5, y=max_val, label=year), inherit.aes = F, size=4, fontface="bold") +
+      scale_fill_manual(name="Sector", values = fill_pal[names(fill_pal) %in% unique(historical_dat$sector)]) +
+      plot_theme_tab +
+      theme(legend.position = "none",
+            strip.background = element_blank(),
+            strip.text = element_blank())+
+      theme(plot.margin = unit(c(3, 0.1, 0.5, 0.1), "cm"))
+    
+    # Reform forecast plot panel
+    g3 <- ggplot(projection_dat_reform, aes(x=rcp, y=get(plot_var[[1]])/plot_var[[2]], fill=sector)) +
+      geom_bar(stat="identity") +
+      facet_wrap(~year) +
+      # Axis
+      scale_y_continuous(lim=c(0, max_val)) +
+      # Labels
+      labs(x="Climate change scenario (RCP)", y="", title="Future seafood production\nin a progressive reform scenario") +
+      geom_text(data=projection_dat_reform %>% distinct(scenario, year), mapping=aes(x=2.5, y=max_val, label=year), inherit.aes = F, size=4, fontface="bold") +
+      scale_fill_manual(name="Sector", values = fill_pal[names(fill_pal) %in% unique(historical_dat$sector)]) +
+      plot_theme_tab +
+      theme(legend.position = "none",
+            strip.background = element_blank(),
+            strip.text = element_blank())+
+      theme(plot.margin = unit(c(3, 0.5, 0.5, 0.1), "cm"))
+
+    # Merge plots
+    g <- gridExtra::grid.arrange(g1, g2, g3, nrow=1, widths=c(0.4, 0.3, 0.3))
+    g
     
   })
   

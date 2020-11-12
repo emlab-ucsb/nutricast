@@ -252,4 +252,67 @@ saveRDS(nutrient_supplies_age_sex_dat, paste0(app_data_dir, "02_04_nutrient_cons
 
 ```
 
+## Global and National Production Forecasts
+
+These datasets were generated as part of analysis for Blue Paper 2. 
+
+```{r}
+# We need to merge some data files to create this one
+# Read in global projections - WHAT IS THE DEVELOPMENT SCENARIO ASSUMED HERE..?
+projections_global <- readRDS(here::here("data", "raw", "global_capture_mariculture_output_merged.Rds")) %>%
+  mutate(country = "Global", 
+         iso3 = "Global",
+         dev_scenario = "Proportional") %>% # This is an assumption on my part - check with Chris
+  dplyr::select(rcp, scenario, dev_scenario, country, iso3, sector, period, live_weight = prod_mt, edible_meat = meat_mt, capita = npeople, edible_meat_per_capita = meat_kg_person)
+
+# Read in national projections - MISSING EDIBLE MEAT PER CAPITA RESULTS 
+projections_national <- readRDS(here::here("data", "raw", "national_capture_mariculture_output_merged.Rds")) %>%
+  dplyr::select(rcp, scenario, dev_scenario, country, iso3, sector, period, live_weight = prod_mt, edible_meat = meat_mt, capita = npeople, edible_meat_per_capita = meat_kg_person)
+
+# projections_bivalve_national <- baq_nat %>%
+#   dplyr::select(rcp, scenario, dev_scenario, country, iso3, sector, period, live_weight = prod_mt, edible_meat = meat_mt) %>%
+#   mutate(capita = NA,
+#          edible_meat_per_capita = NA)
+# 
+# projections_finfish_national <- faq_nat %>%
+#   dplyr::select(rcp, scenario, dev_scenario, country, iso3, sector, period, live_weight = prod_mt, edible_meat = meat_mt) %>%
+#   mutate(capita = NA,
+#          edible_meat_per_capita = NA)
+# 
+# projections_capture_national <- wc_nat_use %>%
+#   dplyr::select(rcp, scenario, dev_scenario, country, iso3, sector, period, live_weight = prod_mt, edible_meat = meat_mt) %>%
+#   mutate(capita = NA,
+#          edible_meat_per_capita = NA)
+# 
+# projections_national <- projections_bivalve_national %>%
+#   bind_rows(projections_finfish_national) %>%
+#   bind_rows(projections_capture_national)
+# projections_national <- data1 %>%
+#   dplyr::select(rcp, scenario, dev_scenario, country, iso3, period, live_weight = prod_mt, edible_meat = meat_mt, capita = npeople, edible_meat_per_capita = meat_kg_person)
+
+# Combine all projection data
+projection_plot_data <- projections_global %>%
+  bind_rows(projections_national) %>%
+  mutate(rcp = gsub("RCP ", "", rcp)) %>%
+  mutate(year = recode(period, "2021-2030"="2020", "2051-2060"="2050", "2091-2100"="2100") %>% as.numeric())
+
+saveRDS(projection_plot_data, paste0(data_dir, "01_04a_forecasted_seafood_supply_data_projections.Rds"))
+saveRDS(projection_plot_data, paste0(app_data_dir, "01_04a_forecasted_seafood_supply_data_projections.Rds"))
+
+# Read in historical data
+historical_global <- readRDS(here::here("data", "raw", "FAO_1950_2018_wc_aq_seafood_per_capita.Rds")) %>%
+  mutate(country = "Global", iso3 = "Global") %>%
+  dplyr::select(country, iso3, sector, year, live_weight = prod_mt, edible_meat = meat_mt, capita = npeople, edible_meat_per_capita = meat_kg_person)
+
+historical_national <- readRDS(here::here("data", "raw", "FAO_1950_2018_wc_aq_seafood_per_capita_national.Rds")) %>%
+  dplyr::select(country, iso3, sector, year, live_weight = prod_mt, edible_meat = meat_mt, capita = npeople, edible_meat_per_capita = meat_kg_person)
+
+historical_plot_data <- historical_global %>%
+  bind_rows(historical_national) %>%
+  dplyr::filter(year >= 1960)
+
+saveRDS(historical_plot_data, paste0(data_dir, "01_04a_forecasted_seafood_supply_data_historical.Rds"))
+saveRDS(historical_plot_data, paste0(app_data_dir, "01_04a_forecasted_seafood_supply_data_historical.Rds"))
+```
+
 
