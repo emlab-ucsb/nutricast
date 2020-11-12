@@ -67,142 +67,67 @@ world_points <- world %>%
 ### App data -------------------------
 ### ----------------------------------
 
-### Global and National Outlook -------------------
+### Tab 1 - Global and National Outlook -------------------
 
-# 1) Population growth
-national_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_by_country.Rds")
+# Plot 1) Population growth
+population_growth_plot_data <- readRDS("./data/processed/01_01_population_growth_plot_data.Rds")
 
-global_pop_dat <- readRDS("./data/WB_UN_1960_2100_human_population_global.Rds") %>%
-  mutate(country = "Global",
-         iso3 = "Global")
-
-pop_dat <- national_pop_dat %>%
-  bind_rows(global_pop_dat)
-
-# 2a) Nutrient Deficiencies
-national_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_cntry_sex_age_2011.Rds") %>%
-  ungroup()
-
-national_nutrient_deficiency_dat_edit <- national_nutrient_deficiency_dat %>%
-  dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy)
-
-global_nutrient_deficiency_dat <- readRDS("./data/nutr_deficiencies_by_sex_age_2011.Rds") %>%
-  ungroup() %>%
-  mutate(iso3 = "Global", country = "Global") %>%
-  dplyr::select(iso3, country, age, sex, nutrient, ndeficient, nhealthy) 
-
-# Combine data for plot and format
-nutrient_deficiency_dat <- national_nutrient_deficiency_dat_edit %>%
-  bind_rows(global_nutrient_deficiency_dat) %>%
-  filter(sex != "Children") %>% # Remove children (not symmetric)
-  gather(key="type", value="npeople", 6:7) %>%  # Gather
-  mutate(type=recode_factor(type,
-                            "ndeficient"="Deficient",
-                            "nhealthy"="Healthy"),
-         sex=factor(sex, levels=c("Women", "Men"))) %>% 
-  group_by(iso3, country, sex, age, nutrient) %>%
-  mutate(ntotal = sum(npeople, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(ppeople = (npeople/ntotal)*100) %>%
-  mutate(npeople=ifelse(sex=="Men", npeople*-1, npeople),   # Make male values negative for plotting
-         ppeople=ifelse(sex=="Men", ppeople*-1, ppeople)) %>%
-  mutate(npeople = npeople/1e6)
-
-# 2b) Nutrient Demand
-national_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_by_country.Rds") %>%
-  dplyr::select(-iso3) %>%
-  mutate(iso3 = countrycode(country, "country.name", "iso3c"))
-
-global_nutrient_demand_dat <- readRDS("./data/1960_2100_nutrient_demand_global.Rds") %>%
-  mutate(country = "Global",
-         iso3 = "Global")
-
-nutrient_demand_dat <- national_nutrient_demand_dat %>%
-  bind_rows(global_nutrient_demand_dat)
-
-nutrient_choices <- unique(nutrient_demand_dat$nutrient)
-
-# 3a) Capture and aquaculture production
-
-# Historical capture production by country (FAO)
-national_capture_production_dat <- readRDS("./data/1950_2017_fao_landings_by_country_isscaap.Rds") %>%
-  dplyr::filter(!(isscaap %in% c("Freshwater molluscs", "Miscellaneous freshwater fishes", "Freshwater crustaceans", "River eels"))) %>% # remove freshwater production
-  rename(country = country_use, iso3 = iso3_use) %>%
-  mutate(plot_group = case_when(major_group == "Pisces" ~ "Finfish",
-                                isscaap %in% c("Clams, cockles, arkshells", "Mussels", "Scallops, pectens", "Oysters") ~ "Bivalves",
-                                TRUE ~ "Other")) %>%
-  group_by(country, iso3, year, plot_group, prod_type) %>%
-  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(source = "Marine Capture")
-
-global_capture_production_dat <- national_capture_production_dat %>%
-  group_by(year, plot_group, prod_type, source) %>%
-  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(country = "Global", iso3 = "Global")
-
-# Historical aquaculture production by country (FAO)
-national_aquaculture_production_dat <- readRDS("./data/1950_2017_fao_aquaculture_data.Rds") %>%
-  dplyr::filter(environment != "Freshwater") %>% # remove freshwater production
-  mutate(plot_group = case_when(major_group == "Pisces" ~ "Finfish",
-                                order == "Bivalvia" ~ "Bivalves",
-                                TRUE ~ "Other")) %>%
-  group_by(country_orig, iso3_orig, year, plot_group) %>%
-  summarize(prod_mt = sum(quantity_mt, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(source = "Aquaculture") %>%
-  mutate(prod_type = "Landings") %>%
-  rename(country = country_orig, iso3 = iso3_orig)
- 
-global_aquaculture_production_dat <- national_aquaculture_production_dat %>%
-  group_by(year, plot_group, prod_type, source) %>%
-  summarize(prod_mt = sum(prod_mt, na.rm = T)) %>%
-  ungroup() %>%
-  mutate(country = "Global", iso3 = "Global")
-
-# Output plot dat
-production_plot_dat <- national_capture_production_dat %>%
-  bind_rows(global_capture_production_dat) %>%
-  bind_rows(national_aquaculture_production_dat) %>%
-  bind_rows(global_aquaculture_production_dat)
-
-# 3b/c) Protein and Nutrients from Seafood
-national_nutrient_from_seafood_dat <- readRDS("./data/genus_pnutrient_seafood_by_cntry_2011.Rds")
-national_diet_from_seafood_dat <- readRDS("./data/genus_pdiet_seafood_by_cntry_year.Rds")
+# Plot 2a) Nutrient Demand - Nutrient Deficiencies
+nutrient_demand_plot_1_data <- readRDS("./data/processed/01_02a_nutrient_demand_plot_data.Rds")
   
-protein_dat <- national_nutrient_from_seafood_dat %>% 
-  filter(nutrient=="Protein") %>% 
-  mutate(prop_seafood_cap = pmin(prop_seafood, 0.1))
+# Plot 2b) Nutrient Demand - Projected Nutrient Demands
+nutrient_demand_plot_2_data <- readRDS("./data/processed/01_02b_nutrient_demand_plot_data.Rds") %>%
+  arrange(nutrient)
+
+nutrient_choices <- unique(nutrient_demand_plot_2_data$nutrient)
+
+# Plot 3a) Marine Seafood as a Source of Nutrients - Fisheries and Mariculture Production
+fisheries_mariculture_production_plot_data <- readRDS("./data/processed/01_03a_fisheries_mariculture_production_plot_data.Rds")
+
+# Plot 3b) Marine Seafood as a Source of Nutrients - Protein from Seafood
+protein_from_seafood_plot_data <- readRDS("./data/processed/01_03b_protein_from_seafood_plot_data.Rds")
+
+# Plot 3c) Marine Seafood as a Source of Nutrients - Seafood Consumption
+seafood_consumption_plot_data_diet <- readRDS("./data/processed/01_03c_seafood_consumption_plot_data_diet.Rds")
+seafood_consumption_plot_data_nutrients <- readRDS("./data/processed/01_03c_seafood_consumption_plot_data_nutrients.Rds")
 
 # Get selectable countries for which we have nutrition data
-country_choices <- national_nutrient_from_seafood_dat %>%
+country_choices <- protein_from_seafood_plot_data %>%
   ungroup() %>%
   distinct(country, iso3) 
 
 widget_country_choices <- unique(country_choices$iso3)
 names(widget_country_choices) <- unique(country_choices$country)
 
+# Plot 4a) NEED
+
+# PLOT 4b) NEED 
+
 ### National Nutrition Data -------------------
 
-# # 3) Nutritional health
-national_nutritional_health_dat <- readRDS("./data/genus_nutrient_supplies_by_age_sex_2011_w_us_diet_req.Rds")
+# Plots 1a/b) Same as those from Plot 3b in the previous section
 
-nutritional_health_plot_dat <- national_nutritional_health_dat %>%
+# Plots 2a-c) Same as those from Plot 3c in the previous section
+
+# Plot 3) Nutritional Health
+nutritional_health_plot_dat <- readRDS("./data/processed/02_03_nutritional_health_plot_data.Rds") %>%
   mutate(sex=recode_factor(sex, "Children"="Children", "Females"="Women", "Males"="Men"),
          nutrient_type=recode(nutrient_type,
                               "Macronutrient"="Macro\nnutrient")) %>%
   dplyr::filter(nutrient != "Sodium")
 
-# 4) Nutrient consumption profiles
-national_nutrient_supplies_dat <- readRDS("./data/genus_nutrient_supplies_by_cntry_year.Rds") %>%
-  dplyr::filter(nutrient != "Sodium")
+# Plot 4) Nutrient Consumption Profiles
+nutrient_consumption_plot_data_country_year <- readRDS("./data/processed/02_04_nutrient_consumption_plot_data_country_year.Rds") %>%
+  arrange(nutrient)
 
-widget_nutrient_choices_national_nutrition_data <- unique(national_nutrient_supplies_dat$nutrient)
+# Widget choices nutrients
+widget_nutrient_choices_national_nutrition_data <- unique(nutrient_consumption_plot_data_country_year$nutrient)
+
+nutrient_consumption_plot_data_age_sex <- readRDS("./data/processed/02_04_nutrient_consumption_plot_data_age_sex.Rds")
 
 # DRIs data
 dri_dat <- readRDS("./data/DRIs_matched_to_genus_age_sex_groups.Rds") %>% 
-  filter(nutrient!="Protein")
+  filter(nutrient != "Protein")
 
 ### Seafood Reforms Data -------------------
 
@@ -242,7 +167,7 @@ fish_nutrition_content_plot_dat <- fish_nutrition_content_dat %>%
                          "vitamin_b6_mg"="Vit B6", 
                          "vitamin_c_mg"="Vit C", 
                          "zinc_mg"="Zinc")) %>% 
-  select(species_group, nutrient, quantity_prop) %>%   # Reduce for plotting
+  dplyr::select(species_group, nutrient, quantity_prop) %>%   # Reduce for plotting
   spread(key="nutrient", value="quantity_prop")
 
 # 2b) Fishery Reforms - edible meat production plot
@@ -323,19 +248,6 @@ nutrient_dat_pmax <- nutrient_preds_long %>%
   ungroup() %>%
   spread(key="nutrient", value="pmax_fill")
 
-### 0) Let's see if we can figure out to set up an API to link to files stored on Google Drive (should speed up app hosting significantly)
-# Ultimately it would probably be good to make this more secure... 
-# google_app <- httr::oauth_app(
-#   "google-app",
-#   key = "458956698118-dif8ifchgf0ob0pij2n4gcsql6m14e75.apps.googleusercontent.com",
-#   secret = "gtCUX5snOXD4otTCJpz0lEzo"
-# )
-# drive_auth_configure(app = google_app)
-# 
-# # Set data file path (in google drive)
-# drive_file_path <- "~Shared"
-# drive_find("RCP26")
-
 ### 1) EEZ raster
 # eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
 # eez_10km_df <- raster::as.data.frame(eez_raster_10km, xy = T)
@@ -355,53 +267,3 @@ production_future_sovereign_dat <- production_future_dat %>%
   arrange(sov1_name)
 
 country_choices <- unique(production_future_sovereign_dat$sov1_name)
-
-# ### 3) Historical aquaculture production by country (FAO)
-# production_current_dat <- readRDS("./data/1950_2017_fao_aquaculture_data.Rds") %>%
-#   arrange(country_orig) %>%
-#   dplyr::filter(environment != "Freshwater") %>% # remove freshwater to be consistant above
-#   mutate(is_finfish = ifelse(major_group == "Pisces", T, F),
-#          is_bivalve = ifelse(order == "Bivalvia", T, F)) %>%
-#   left_join(ter_sov_lookup, by = c("iso3_orig" = "ter1_iso")) %>%
-#   dplyr::filter(sov1_name %in% country_choices)
-
-# # Summarize production dat by species category
-# production_current_group_dat <- production_current_dat %>%
-#   group_by(sov1_name, sov1_iso, isscaap, year) %>%
-#   summarize(quantity_mt = sum(quantity_mt, na.rm = T)) 
-# 
-# # Summarize production dat for bivalves
-# production_current_sovereign_dat <- production_current_dat %>%
-#   dplyr::filter(is_bivalve | is_finfish) %>%
-#   mutate(group = ifelse(is_bivalve, "Bivalves", "Finfish")) %>%
-#   group_by(sov1_name, sov1_iso, year, group) %>%
-#   summarize(quantity_mt = sum(quantity_mt, na.rm = T),
-#             profits_usd = sum(value_usd_t, na.rm = T)*1000) %>%
-#   mutate(rcp = "Historical",
-#          feed_scen = NA,
-#          dev_pattern = "Historical")
-# 
-# # Add them together
-# production_all_sovereign_dat <- production_current_sovereign_dat %>%
-#   bind_rows(production_future_sovereign_dat) %>%
-#   arrange(sov1_name, year)
-
-# ### 5) Nutrition information
-# load("./data/Vaitla_etal_2018_nutrient_data.Rdata")
-# 
-# nutrient_dat_max <- nutrient_preds_long %>% 
-#   group_by(nutrient) %>%
-#   summarize(value_md_max = max(value_md, na.rm = T))
-#   
-# nutrient_dat_pmax <- nutrient_preds_long %>%
-#   left_join(nutrient_dat_max, by = "nutrient") %>%
-#   mutate(pmax_fill = (value_md/value_md_max)) %>%
-#   dplyr::filter(!is.na(pmax_fill)) %>%
-#   dplyr::select(species, nutrient, pmax_fill) %>% 
-#   mutate(nutrient=recode(nutrient, 
-#                          "Omega-3 fatty acids"="Omega-3\nfatty acids",
-#                          "Omega-6 fatty acids"="Omega-6\nfatty acids")) %>% 
-#   group_by(species, nutrient) %>%
-#   summarize(pmax_fill = median(pmax_fill)) %>%
-#   ungroup() %>%
-#   spread(key="nutrient", value="pmax_fill")
