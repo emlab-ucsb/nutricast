@@ -292,3 +292,6 @@ production_future_sovereign_dat <- production_future_dat %>%
   arrange(sov1_name)
 
 country_choices <- unique(production_future_sovereign_dat$sov1_name)
+
+# Plot 4) Mariculture Explorer
+mariculture_explorer_data <- readRDS("./data/processed/species_rasters/species_rasters_tibble.Rds")

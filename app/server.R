@@ -1053,6 +1053,16 @@ shinyServer(function(input, output, session) {
   
   
   ### Mariculture Site Explorer ---------------
+
+  ### Reactive data frame: Species which have suitable habitat for the selected country
+  observe({
+    
+    country <- input$w_seafood_reforms_country
+      
+      browser()
+    
+    
+  })
   
   ### Update scenario select input based species selected  ---------
   observe({
