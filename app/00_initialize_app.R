@@ -102,26 +102,6 @@ forecasted_seafood_supply_plot_data_historical <- readRDS("./data/processed/01_0
 forecasted_seafood_supply_plot_data_projections <- readRDS("./data/processed/01_04a_forecasted_seafood_supply_data_projections.Rds") %>%
   mutate(sector = fct_relevel(sector, "Bivalve mariculture", "Finfish mariculture", "Capture fisheries"))
 
-# ### DEAL WITH COUNTRY CHOICES ----------
-# # Get selectable countries for which we have projection data - may need to refine this list further 
-# country_choices_forecast <- forecasted_seafood_supply_plot_data_projections %>%
-#   ungroup() %>%
-#   dplyr::filter(iso3 != "Global") %>%
-#   distinct(country, iso3) %>%
-#   arrange(country) %>%
-#   dplyr::filter(!(iso3 %in% c("CHN/HKG/MAC", "MNP/GUM"))) %>%
-#   dplyr::filter(!(country %in% c("Antigua and Barbuda", "Falkland / Malvinas Islands", "Line Group", "Micronesia (Federated States of)", "Myanmar (Burma)", "Other nei", "Sao Tome and Principe", "Turks and Caicos Islands", "Ivory Coast", "Galapagos", "Canary Islands", "Faeroe", "Gilbert Islands", "Saint Kitts and Nevis", "Saint Lucia", "Republic of Mauritius", "Madeira", "Federal Republic of Somalia", "East Timor")))
-# 
-# country_choices_nutrition <- protein_from_seafood_plot_data %>%
-#   ungroup() %>%
-#   distinct(country, iso3)
-# 
-# country_choices_out <- country_choices_forecast %>%
-#   inner_join(country_choices_nutrition %>% dplyr::select(iso3), by = "iso3")
-#   
-# widget_country_choices <- unique(country_choices_out$iso3)
-# names(widget_country_choices) <- unique(country_choices_out$country)
-
 # PLOT 4b) NEED 
 
 forecasted_demand_filled_by_seafood_national <- readRDS("./data/2050_2100_national_nutr_demand_filled_by_seafood.Rds")
@@ -247,12 +227,6 @@ rcp_projections <- read_csv("./data/processed/rcp_all_dat_by_eez.csv") %>%
                           period == "2051-2060" ~ 2050,
                           period == "2091-2100" ~ 2100))
 
-# Set some widget default choices
-species_choices <- sort(unique(rcp_projections$species))
-climate_scenario_choices <- unique(rcp_projections$scenario)
-country_choices <- unique(ter_sov_lookup$sov1_iso)
-names(country_choices) <- unique(ter_sov_lookup$sov1_name)
-
 # Now for the nutrient contributions data
 load("./data/Vaitla_etal_2018_nutrient_data.Rdata")
 
@@ -272,6 +246,23 @@ nutrient_dat_pmax <- nutrient_preds_long %>%
   summarize(pmax_fill = median(pmax_fill)) %>%
   ungroup() %>%
   spread(key="nutrient", value="pmax_fill")
+
+
+### WIDGET VALUES
+
+# Set some widget default choices
+species_choices <- sort(unique(rcp_projections$species))
+climate_scenario_choices <- unique(rcp_projections$scenario)
+
+sov_iso3_to_exclude <- c("ATA", "MCO")
+sov_name_to_exlude <- c("Micronesia", "Western Sahara")
+
+country_filtering <- ter_sov_lookup %>%
+  dplyr::filter(!(sov1_iso %in% sov_iso3_to_exclude)) %>%
+  dplyr::filter(!(sov1_name %in% sov_name_to_exlude))
+
+country_choices <- unique(country_filtering$sov1_iso)
+names(country_choices) <- unique(country_filtering$sov1_name)
 
 # production_future_sovereign_dat <- production_future_dat %>%
 #   dplyr::filter(eez_type == "200NM") %>%

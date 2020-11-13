@@ -487,7 +487,8 @@ shinyServer(function(input, output, session) {
       pull(value) %>% max()
     
     max_val <- max(historical_max, projection_max) * 1.02
-    fill_pal <- c("Capture fisheries" = "#57606c", "Bivalve mariculture" = "#76B7B2", "Finfish mariculture" = "#B07AA1")    
+    fill_pal <- c("Capture fisheries" = "#57606c", "Bivalve mariculture" = "#76B7B2", "Finfish mariculture" = "#B07AA1")  
+    
     # Historical plot panel
     g1 <- ggplot(historical_dat, aes(x=year, y=get(plot_var[[1]])/plot_var[[2]], fill=sector)) +
       geom_area() +
@@ -496,7 +497,8 @@ shinyServer(function(input, output, session) {
       scale_x_continuous(lim=c(1960, 2020), breaks=seq(1960,2020,10)) +
       # Labels
       labs(x=" ", y= plot_var[[3]], title=" \nHistorical seafood production") +
-      scale_fill_manual(name="Sector", values = fill_pal[names(fill_pal) %in% unique(historical_dat$sector)]) +
+      scale_fill_manual(name="Sector", values = fill_pal,
+                        drop = F) +
       plot_theme_tab +
       theme(legend.position = c(0.15, 1.15))+
       theme(plot.margin = unit(c(3, 0.1, 0.5, 0.5), "cm"))
@@ -510,7 +512,8 @@ shinyServer(function(input, output, session) {
       # Labels
       labs(x="Climate change scenario (RCP)", y="", title="Future seafood production\nin a business-as-usual scenario") +
       geom_text(data=projection_dat_bau %>% distinct(scenario, year), mapping=aes(x=2.5, y=max_val, label=year), inherit.aes = F, size=4, fontface="bold") +
-      scale_fill_manual(name="Sector", values = fill_pal[names(fill_pal) %in% unique(historical_dat$sector)]) +
+      scale_fill_manual(name="Sector", values = fill_pal,
+                        drop = F) +
       plot_theme_tab +
       theme(legend.position = "none",
             strip.background = element_blank(),
@@ -526,7 +529,8 @@ shinyServer(function(input, output, session) {
       # Labels
       labs(x="Climate change scenario (RCP)", y="", title="Future seafood production\nin a progressive reform scenario") +
       geom_text(data=projection_dat_reform %>% distinct(scenario, year), mapping=aes(x=2.5, y=max_val, label=year), inherit.aes = F, size=4, fontface="bold") +
-      scale_fill_manual(name="Sector", values = fill_pal[names(fill_pal) %in% unique(historical_dat$sector)]) +
+      scale_fill_manual(name="Sector", values = fill_pal,
+                        drop = F) +
       plot_theme_tab +
       theme(legend.position = "none",
             strip.background = element_blank(),
@@ -554,7 +558,7 @@ shinyServer(function(input, output, session) {
     }else{
       
       plot_data <- forecasted_demand_filled_plot_dat %>% 
-        dplyr::filter(input$w_global_national_outlook_country & nutrient == input$w_future_seafood_supply_nutrient)
+        dplyr::filter(iso3 == input$w_global_national_outlook_country & nutrient == input$w_future_seafood_supply_nutrient)
       
     }
     
@@ -569,7 +573,7 @@ shinyServer(function(input, output, session) {
       # Labels
       labs(x="", y="% of demand met by marine seafood") +
       # Legend
-      scale_fill_manual(name = "Sector", values = fill_pal[names(fill_pal) %in% unique(plot_data$sector)]) +
+      scale_fill_manual(name = "Sector", values = fill_pal, drop = F) +
       plot_theme_tab +
       theme(legend.position = "top",
             legend.direction = "vertical",
@@ -612,7 +616,7 @@ shinyServer(function(input, output, session) {
       dplyr::filter(adm0_a3 == input$w_national_nutrition_data_country) %>%
       left_join(protein_from_seafood_plot_data, by=c("adm0_a3"="iso3"))
     
-    #req(nrow(selected_country_point) > 0)
+    req(nrow(selected_country_point) > 0)
     
     # Plot map
     g <- ggplot(world_data) +
@@ -643,6 +647,8 @@ shinyServer(function(input, output, session) {
       filter(iso3==input$w_national_nutrition_data_country) %>%
       pull(prop_seafood)
     
+    req(!is.na(selected_country_prop))
+
     # Plot p(protein) histogram
     g <- ggplot(protein_from_seafood_plot_data, aes(x=prop_seafood)) +
       geom_histogram(binwidth = 0.01) +
