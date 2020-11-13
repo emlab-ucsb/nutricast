@@ -279,7 +279,7 @@ shinyUI(
                 ### Global & National Outlook --- 
                 tabItem(tabName = "global-national-outlook",
                         
-                        GlobalNationalOutlook(country_choices = widget_country_choices,
+                        GlobalNationalOutlook(country_choices = country_choices,
                                               nutrient_choices = nutrient_choices)
                         
                 ),
@@ -287,7 +287,7 @@ shinyUI(
                 ### National Nutrition Data ---
                 tabItem(tabName = "national-nutrition-data",
                         
-                        NationalNutritionData(country_choices = widget_country_choices,
+                        NationalNutritionData(country_choices = country_choices,
                                               nutrient_choices = widget_nutrient_choices_national_nutrition_data)
                         
                 ),
@@ -295,7 +295,7 @@ shinyUI(
                 ### Nutrition-Sensitive Seafood Reforms ---
                 tabItem(tabName = "seafood-reforms",
                         
-                        SeafoodReforms(country_choices = widget_country_choices,
+                        SeafoodReforms(country_choices = country_choices,
                                        climate_scenario_choices = climate_scenario_choices,
                                        species_choices = species_choices)
                         
