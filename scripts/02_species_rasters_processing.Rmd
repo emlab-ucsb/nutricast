@@ -415,5 +415,10 @@ rcp_projections <- rcp_26_projections %>%
 
 write_csv(rcp_projections, paste0(data_dir, "rcp_all_dat_by_eez.csv"))
 write_csv(rcp_projections, paste0(app_data_dir, "rcp_all_dat_by_eez.csv"))
+
+species_list <- rcp_projections %>%
+  distinct(species)
+
+write_csv(species_list, paste0(app_data_dir, "species_lookup_table.csv"))
 ```
 
