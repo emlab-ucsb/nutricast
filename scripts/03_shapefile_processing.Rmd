@@ -1,0 +1,54 @@
+---
+title: "Nutricast - Shapefile processing"
+output: html_document
+---
+
+## Introduction
+
+This script modifies v10 of the EEZ shapefile for use in our mariculture explorer plot. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(sf)
+library(tidyverse)
+
+data_dir <- here::here("data", "processed", "shapefiles/")
+if (dir.exists(data_dir) == F) {
+  dir.create(data_dir, recursive = T)
+} 
+
+app_data_dir <- here::here("app", "data", "processed", "shapefiles/")
+if (dir.exists(app_data_dir) == F) {
+  dir.create(app_data_dir, recursive = T)
+} 
+```
+
+## Shapefile
+
+For simplicity, we're going to use a simplified version of the v10 Marine Regions shapefile, which has FAO regions (on the high seas) added. 
+
+```{r cars}
+# Load data
+eez_info <- read_csv(here::here("data", "eez_info_table.csv"))
+shp <- read_sf(here::here("data", "shapefiles", "eez_v10_fao_combined_simple"), layer = "eez_v10_fao_combined_simple")
+
+# Filter out FAO regions
+shp <- shp %>%
+  dplyr::filter(is.na(zone)) %>%
+  dplyr::select(eez_id = mrgid, name, type, ter1_iso3 = iso_tr1) %>%
+  left_join(eez_info %>% dplyr::select(eez_id, sovereign1_iso3), by = "eez_id") %>%
+  mutate(sovereign1_iso3 = ifelse(is.na(sovereign1_iso3), ter1_iso3, sovereign1_iso3))
+
+write_sf(shp, paste0(app_data_dir, "eez_v10_simple"), "eez_v10_simple", delete_layer = T, driver = "ESRI Shapefile")
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
