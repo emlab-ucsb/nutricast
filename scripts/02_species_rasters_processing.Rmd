@@ -171,10 +171,12 @@ ReadAllSpeciesFiles <- function(file_dir, all_file_names, all_scenario_names, sp
 I'm starting to think that I might be able to put all species rasters in one tibble... This would speed things up immensely in only having to load in one file at the beginning.. Let's try it. 
 
 ```{r}
-output_tibble <- NULL
-files_to_run <- unique_species_names[!(unique_species_names %in% c("Anguilla anguilla (1)", "Coryphaena hippurus (1)", "Dicentrarchus labrax (1)", "Pollachius pollachius (1)", "Argopecten purpuratus", "Cerastoderma edule", "Mya arenaria", "Mytilus chilensis", "Mytilus platensis", "Ostrea chilensis", "Ostrea edulis", "Pecten jacobaeus", "Pecten maximus", "Saxidomus gigantea", "Scrobicularia plana", "Thunnus orientalis", "Venerupis rhomboides"))]
+problem_species <- c("Anguilla anguilla (1)", "Coryphaena hippurus (1)", "Dicentrarchus labrax (1)", "Pollachius pollachius (1)", "Argopecten purpuratus", "Cerastoderma edule", "Mya arenaria", "Mytilus chilensis", "Mytilus platensis", "Ostrea chilensis", "Ostrea edulis", "Pecten jacobaeus", "Pecten maximus", "Saxidomus gigantea", "Scrobicularia plana", "Thunnus orientalis", "Venerupis rhomboides")
 
-for(p in 172:length(files_to_run)){
+output_tibble <- NULL
+files_to_run <- unique_species_names[!(unique_species_names %in% problem_species)]
+
+for(p in 1:length(files_to_run)){
   
   species_to_add_to_tibble <- ReadAllSpeciesFiles(file_dir, all_file_names, all_scenario_names, files_to_run[p])
   
@@ -183,5 +185,6 @@ for(p in 172:length(files_to_run)){
 }
 
 saveRDS(output_tibble, paste0(data_dir, "species_rasters_tibble.Rds"))
+saveRDS(output_tibble, paste0(app_data_dir, "species_rasters_tibble.Rds"))
 ```
 
