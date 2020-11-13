@@ -969,11 +969,8 @@ shinyServer(function(input, output, session) {
       dplyr::filter(year == 2100) %>%
       mutate(viable_area = n_points*100) %>% # number of 100 sq km cells
       dplyr::filter(viable_area > 0) %>%
-      mutate(rank = dense_rank(desc(viable_area))) %>%
-      # mutate(species = fct_reorder(species, desc(rank))) %>%
-      group_by(group, sov1_iso, scenario) %>%
-      slice_min(rank, n = 10, with_ties = F) %>%
-      ungroup()
+      mutate(rank = dense_rank(desc(viable_area)))
+      
     
   })
   
@@ -983,7 +980,10 @@ shinyServer(function(input, output, session) {
     req(input$w_seafood_reforms_country)
     req(input$w_seafood_reforms_aquaculture_climate_scenario)
     
-    plot_dat <- aquaculture_reforms_dat()
+    plot_dat <- aquaculture_reforms_dat() %>%
+      group_by(group, sov1_iso, scenario) %>%
+      slice_min(rank, n = 10, with_ties = F) %>%
+      ungroup()
 
     req(nrow(plot_dat) > 0)
     
@@ -1099,6 +1099,32 @@ shinyServer(function(input, output, session) {
                          choices = possible_species$species)
 
   })
+  
+  ### Create ractive values object to keep track of map bounding box ----
+  rv_eez_bbox <- reactiveValues(xmin = -180,
+                                xmax = 180,
+                                ymin = -90,
+                                ymax = 90,
+                                geometry = NULL)
+  
+  ## Get bounding box for plot based on country selected --------
+  observe({
+    
+    eez_map <- eez %>%
+      dplyr::filter(sov1_iso3 == input$w_seafood_reforms_country) %>%
+      group_by(sov1_iso3) %>%
+      summarize(geometry = st_union(geometry))
+    
+    bbox <- st_bbox(eez_map) %>%
+      as.vector()
+    
+    isolate(rv_eez_bbox$xmin <- bbox[1])
+    isolate(rv_eez_bbox$ymin <- bbox[2])
+    isolate(rv_eez_bbox$xmax <- bbox[3])
+    isolate(rv_eez_bbox$ymax <- bbox[4])
+    isolate(rv_eez_bbox$geometry <- eez_map)
+
+  })
 
   # Plot output
   output$mariculture_site_explorer_plot <- renderLeaflet({
@@ -1123,36 +1149,20 @@ shinyServer(function(input, output, session) {
                              na.color = "transparent")
     
     # Plot
-    leaflet('mariculture_site_explorer_plot', options = leafletOptions(minZoom = 2, maxZoom = 4, zoomControl = TRUE)) %>% 
+    leaflet('mariculture_site_explorer_plot', options = leafletOptions(minZoom = 1, maxZoom = 4, zoomControl = TRUE)) %>% 
       addProviderTiles("CartoDB.PositronNoLabels") %>% 
-      addRasterImage(plot_raster, colors = plot_pal, opacity = 0.8)
-      # addPolygons(data = rv_global_subsidies$polygons, 
-      #             fillColor = ~global_subsidies_map_pal(log10(value)),
-      #             fillOpacity = 1,
-      #             color= "white",
-      #             weight = 0.3,
-      #             highlight = highlightOptions(weight = 5,
-      #                                          color = "#666",
-      #                                          fillOpacity = 1,
-      #                                          bringToFront = FALSE),
-      #             label = rv_global_subsidies$polygons_text,
-      #             labelOptions = labelOptions(style = list("font-weight" = "normal",
-      #                                                      padding = "3px 8px"),
-      #                                         textsize = "13px",
-      #                                         direction = "auto")) %>%
-      # setView(0,20, zoom = 2)
-
-    # Plot data
-    # g <- ggplot() +
-    #   geom_sf(data = world) +
-    #   coord_sf(crs = st_crs('+proj=moll'),
-    #            expand = F) +
-    #   geom_raster(data = plot_dat, aes(x = x, y = y), fill = "red") +
-    #   labs(x = "", y = "") +
-    #   map_theme +
-    #   # scale_x_continuous(limits = c(-18086282, 18083718))+
-    #   # scale_y_continuous(limits = c(-9069952, 9070048))+
-    #   theme(axis.text = element_blank())
+      addPolygons(data = eez$geometry,
+                  fillColor = "white",
+                  fillOpacity = 0,
+                  color= "grey", 
+                  weight = 0.5) %>%
+      addPolygons(data = rv_eez_bbox$geometry$geometry,
+                  fillColor = "white",
+                  fillOpacity = 0,
+                  color= "red", 
+                  weight = 1.5) %>%
+      addRasterImage(plot_raster, colors = plot_pal, opacity = 0.8) %>%
+      fitBounds(rv_eez_bbox$xmin, rv_eez_bbox$ymin, rv_eez_bbox$xmax, rv_eez_bbox$ymax)
 
   })
 

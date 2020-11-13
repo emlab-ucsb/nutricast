@@ -65,6 +65,9 @@ world_points <- world %>%
   st_zm() %>%
   st_point_on_surface()
 
+eez <- read_sf("./data/processed/shapefiles/eez_v10_simple/", layer = "eez_v10_simple") %>%
+  rename(ter1_iso3 = ter1_s3, sov1_iso3 = svrg1_3)
+
 ### ----------------------------------
 ### App data -------------------------
 ### ----------------------------------
@@ -233,24 +236,15 @@ ter_sov_lookup <- production_future_dat %>%
   distinct(ter1_name, ter1_iso, sov1_name, sov1_iso, eez_code) %>%
   arrange(sov1_name)
 
-# Load climate projection data
-rcp_26_projections <- read_csv("./data/rcp_26_species_dat_by_eez.csv") %>%
-  mutate(scenario = "RCP 2.6")
+# Load projection summary data created from the rasters
+species_lookup <- read_csv("./data/processed/species_lookup_table.csv")
 
-rcp_45_projections <- read_csv("./data/rcp_45_species_dat_by_eez.csv") %>%
-  mutate(scenario = "RCP 4.5")
-
-rcp_60_projections <- read_csv("./data/rcp_60_species_dat_by_eez.csv") %>%
-  mutate(scenario = "RCP 6.0")
-
-rcp_85_projections <- read_csv("./data/rcp_85_species_dat_by_eez.csv") %>%
-  mutate(scenario = "RCP 8.5")
-
-rcp_projections <- rcp_26_projections %>%
-  bind_rows(rcp_45_projections) %>%
-  bind_rows(rcp_60_projections) %>%
-  bind_rows(rcp_85_projections) %>%
-  left_join(ter_sov_lookup, by = c("eez_id" = "eez_code"))
+rcp_projections <- read_csv("./data/processed/rcp_all_dat_by_eez.csv") %>%
+  left_join(species_lookup, by = "species") %>%
+  left_join(ter_sov_lookup, by = c("eez_id" = "eez_code")) %>%
+  mutate(year = case_when(period == "2021-2030" ~ 2020,
+                          period == "2051-2060" ~ 2050,
+                          period == "2091-2100" ~ 2100))
 
 # Set some widget default choices
 species_choices <- sort(unique(rcp_projections$species))
@@ -278,25 +272,14 @@ nutrient_dat_pmax <- nutrient_preds_long %>%
   ungroup() %>%
   spread(key="nutrient", value="pmax_fill")
 
-### 1) EEZ raster
-# eez_raster_10km <- raster::raster("./data/eezs_v10_raster_10km.tif")
-# eez_10km_df <- raster::as.data.frame(eez_raster_10km, xy = T)
-
-# [ADD MANUAL CORRECTIONS LATER]
-# ter_sov_manual <- data.frame(
-#   ter1_name = c("Aruba", "Bahrain", "Bosnia and Herzegovina", "Channel Islands", "China, Hong Kong SAR", "Eritrea", "Grenada", "Jordan", "Kuwait", "Mayotte", "Micronesia, Fed.States of", "Netherlands Antilles", "Palestine", "Qatar", "Serbia and Montenegro", "Slovenia", "Ukraine", "United Arab Emirates"),
-#   ter1_iso = c("ABW", "BHR", "BIH", "CI", "HKG", "ERI", ),
-#   sov1_name = c("Netherlands"),
-#   sov1_iso = c("NLD"))
-
-production_future_sovereign_dat <- production_future_dat %>%
-  dplyr::filter(eez_type == "200NM") %>%
-  group_by(sov1_name, sov1_iso, year, group, rcp, feed_scen, dev_pattern) %>%
-  summarise(quantity_mt = sum(prod_mt, na.rm = T),
-            profits_usd = sum(profits_usd, na.rm = T)) %>%
-  arrange(sov1_name)
-
-country_choices <- unique(production_future_sovereign_dat$sov1_name)
+# production_future_sovereign_dat <- production_future_dat %>%
+#   dplyr::filter(eez_type == "200NM") %>%
+#   group_by(sov1_name, sov1_iso, year, group, rcp, feed_scen, dev_pattern) %>%
+#   summarise(quantity_mt = sum(prod_mt, na.rm = T),
+#             profits_usd = sum(profits_usd, na.rm = T)) %>%
+#   arrange(sov1_name)
+# 
+# country_choices <- unique(production_future_sovereign_dat$sov1_name)
 
 # # Plot 4) Mariculture Explorer
 # mariculture_explorer_data <- readRDS("./data/processed/species_rasters/species_rasters_tibble.Rds")
