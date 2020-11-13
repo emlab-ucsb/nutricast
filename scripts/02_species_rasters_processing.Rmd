@@ -58,9 +58,7 @@ Let's start by reading in a sample file to see how the new files (from August 20
 #   na.color = "transparent")
 # 
 # leaflet() %>% addTiles() %>%
-#   addRasterImage(raster_file, colors = pal, opacity = 0.8) %>%
-#   addLegend(pal = pal, values = values(raster_file),
-#     title = "Suitability")
+#   addRasterImage(raster_file, colors = pal, opacity = 0.8)
 # 
 # # Now let's save, and reread and see how large this file is/how long it takes. 
 # saveRDS(raster_file, paste0(data_dir, "test_file.Rds"))
@@ -86,7 +84,7 @@ unique_species_names <- unique(full_species_names)
 ```
 
 ```{r}
-# Testing values
+#  Values
 file_dir <- raster_data_path
 all_file_names <- raster_files
 all_scenario_names <- unique_scenario_names
@@ -186,5 +184,236 @@ for(p in 1:length(files_to_run)){
 
 saveRDS(output_tibble, paste0(data_dir, "species_rasters_tibble.Rds"))
 saveRDS(output_tibble, paste0(app_data_dir, "species_rasters_tibble.Rds"))
+```
+
+## Create lookup files linking species mariculture projections to eezs
+
+```{r}
+### Section 1) Get EEZ codes cooresponding to each x/y position
+eez_raster <- raster::raster(here::here("data", "eezs_v10_raster_10km.tif"))
+
+eez_info <- raster::as.data.frame(eez_raster, xy=T) %>%
+  mutate(x = round(x, 0),
+         y = round(y, 0)) %>%
+  rename(eez_id = eezs_v10_raster_10km) %>%
+  mutate(x_y_id = paste0(x, "/", y)) %>%
+  dplyr::select(x_y_id, eez_id)
+
+# Now define new data directories
+data_dir <- here::here("data", "processed/")
+if (dir.exists(data_dir) == F) {
+  dir.create(data_dir, recursive = T)
+} 
+
+app_data_dir <- here::here("app", "data", "processed/")
+if (dir.exists(app_data_dir) == F) {
+  dir.create(app_data_dir, recursive = T)
+} 
+```
+
+We'll start by matching data files from RCP 2.6
+
+```{r}
+rcp26_dat_files <- list.files(path = raster_data_path,
+                              pattern = "RCP26",
+                              full.names = T)
+
+# Make blank data frame
+rcp_26_dat_all <- data.frame()
+
+for(i in 1:length(rcp26_dat_files)){
+  
+  text <- str_split(str_replace(rcp26_dat_files[i], ".Rds", ""), "_")
+  species <- paste(text[[1]][2], text[[1]][3])
+  
+  if(species %in% problem_species){
+    
+    rcp_26_dat_all <- rcp_26_dat_all
+
+  }else{
+    
+    foo <- readRDS(rcp26_dat_files[i]) %>%
+      mutate(x = round(x, 0),
+           y = round(y, 0)) %>%
+      mutate(x_y_id = paste0(x, "/", y)) %>%
+      left_join(eez_info, by = "x_y_id") %>%
+      group_by(eez_id, period, viable) %>%
+      summarize(n_points = n_distinct(x_y_id),
+              prod_mt_yr = sum(prod_mt_yr, na.rm = T),
+              revenue_usd_yr = sum(revenue_usd_yr, na.rm = T),
+              cost_usd_yr = sum(cost_usd_yr, na.rm = T),
+              profits_usd_yr = sum(profits_usd_yr, na.rm = T)) %>%
+      ungroup() %>%
+      mutate(species = species)
+  
+    rcp_26_dat_all <- rcp_26_dat_all %>%
+      bind_rows(foo)
+  }
+
+}
+
+write_csv(rcp_26_dat_all, paste0(data_dir, "rcp_26_species_dat_by_eez.csv"))
+write_csv(rcp_26_dat_all, paste0(app_data_dir, "rcp_26_species_dat_by_eez.csv"))
+
+```
+
+Now RCP 4.5
+
+```{r}
+rcp45_dat_files <- list.files(path = raster_data_path,
+                              pattern = "RCP45",
+                              full.names = T)
+
+# Make blank data frame
+rcp_45_dat_all <- data.frame()
+
+for(i in 1:length(rcp45_dat_files)){
+  
+  text <- str_split(str_replace(rcp45_dat_files[i], ".Rds", ""), "_")
+  species <- paste(text[[1]][2], text[[1]][3])
+  
+  if(species %in% problem_species){
+    
+    rcp_45_dat_all <- rcp_45_dat_all
+
+  }else{
+    
+    foo <- readRDS(rcp45_dat_files[i]) %>%
+      mutate(x = round(x, 0),
+           y = round(y, 0)) %>%
+      mutate(x_y_id = paste0(x, "/", y)) %>%
+      left_join(eez_info, by = "x_y_id") %>%
+      group_by(eez_id, period, viable) %>%
+      summarize(n_points = n_distinct(x_y_id),
+              prod_mt_yr = sum(prod_mt_yr, na.rm = T),
+              revenue_usd_yr = sum(revenue_usd_yr, na.rm = T),
+              cost_usd_yr = sum(cost_usd_yr, na.rm = T),
+              profits_usd_yr = sum(profits_usd_yr, na.rm = T)) %>%
+      ungroup() %>%
+      mutate(species = species)
+  
+    rcp_45_dat_all <- rcp_45_dat_all %>%
+      bind_rows(foo)
+  }
+
+}
+
+write_csv(rcp_45_dat_all, paste0(data_dir, "rcp_45_species_dat_by_eez.csv"))
+write_csv(rcp_45_dat_all, paste0(app_data_dir, "rcp_45_species_dat_by_eez.csv"))
+
+```
+
+Now RCP 6.0
+
+```{r}
+rcp60_dat_files <- list.files(path = raster_data_path,
+                              pattern = "RCP60",
+                              full.names = T)
+
+# Make blank data frame
+rcp_60_dat_all <- data.frame()
+
+for(i in 1:length(rcp60_dat_files)){
+  
+  text <- str_split(str_replace(rcp60_dat_files[i], ".Rds", ""), "_")
+  species <- paste(text[[1]][2], text[[1]][3])
+  
+  if(species %in% problem_species){
+    
+    rcp_60_dat_all <- rcp_60_dat_all
+
+  }else{
+    
+    foo <- readRDS(rcp60_dat_files[i]) %>%
+      mutate(x = round(x, 0),
+           y = round(y, 0)) %>%
+      mutate(x_y_id = paste0(x, "/", y)) %>%
+      left_join(eez_info, by = "x_y_id") %>%
+      group_by(eez_id, period, viable) %>%
+      summarize(n_points = n_distinct(x_y_id),
+              prod_mt_yr = sum(prod_mt_yr, na.rm = T),
+              revenue_usd_yr = sum(revenue_usd_yr, na.rm = T),
+              cost_usd_yr = sum(cost_usd_yr, na.rm = T),
+              profits_usd_yr = sum(profits_usd_yr, na.rm = T)) %>%
+      ungroup() %>%
+      mutate(species = species)
+  
+    rcp_60_dat_all <- rcp_60_dat_all %>%
+      bind_rows(foo)
+  }
+
+}
+
+write_csv(rcp_60_dat_all, paste0(data_dir, "rcp_60_species_dat_by_eez.csv"))
+write_csv(rcp_60_dat_all, paste0(app_data_dir, "rcp_60_species_dat_by_eez.csv"))
+
+```
+
+Last RCP 8.5
+
+```{r}
+rcp85_dat_files <- list.files(path = raster_data_path,
+                              pattern = "RCP85",
+                              full.names = T)
+
+# Make blank data frame
+rcp_85_dat_all <- data.frame()
+
+for(i in 1:length(rcp85_dat_files)){
+  
+  text <- str_split(str_replace(rcp85_dat_files[i], ".Rds", ""), "_")
+  species <- paste(text[[1]][2], text[[1]][3])
+  
+  if(species %in% problem_species){
+    
+    rcp_85_dat_all <- rcp_85_dat_all
+
+  }else{
+    
+    foo <- readRDS(rcp85_dat_files[i]) %>%
+      mutate(x = round(x, 0),
+           y = round(y, 0)) %>%
+      mutate(x_y_id = paste0(x, "/", y)) %>%
+      left_join(eez_info, by = "x_y_id") %>%
+      group_by(eez_id, period, viable) %>%
+      summarize(n_points = n_distinct(x_y_id),
+              prod_mt_yr = sum(prod_mt_yr, na.rm = T),
+              revenue_usd_yr = sum(revenue_usd_yr, na.rm = T),
+              cost_usd_yr = sum(cost_usd_yr, na.rm = T),
+              profits_usd_yr = sum(profits_usd_yr, na.rm = T)) %>%
+      ungroup() %>%
+      mutate(species = species)
+  
+    rcp_85_dat_all <- rcp_85_dat_all %>%
+      bind_rows(foo)
+  }
+
+}
+
+write_csv(rcp_85_dat_all, paste0(data_dir, "rcp_85_species_dat_by_eez.csv"))
+write_csv(rcp_85_dat_all, paste0(app_data_dir, "rcp_85_species_dat_by_eez.csv"))
+
+```
+
+```{r}
+rcp_26_projections <- rcp_26_dat_all %>%
+  mutate(scenario = "RCP 2.6")
+
+rcp_45_projections <- rcp_45_dat_all %>%
+  mutate(scenario = "RCP 4.5")
+
+rcp_60_projections <- rcp_60_dat_all %>%
+  mutate(scenario = "RCP 6.0")
+
+rcp_85_projections <- rcp_85_dat_all %>%
+  mutate(scenario = "RCP 8.5")
+
+rcp_projections <- rcp_26_projections %>%
+  bind_rows(rcp_45_projections) %>%
+  bind_rows(rcp_60_projections) %>%
+  bind_rows(rcp_85_projections)
+
+write_csv(rcp_projections, paste0(data_dir, "rcp_all_dat_by_eez.csv"))
+write_csv(rcp_projections, paste0(app_data_dir, "rcp_all_dat_by_eez.csv"))
 ```
 
