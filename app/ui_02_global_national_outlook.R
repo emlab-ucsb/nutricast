@@ -249,7 +249,7 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                    text$item_label[text$item_id == "future-seafood-supply-tabs-1"],
                                      
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("future_seafood_supply_plot_1", height = "500px", width = "auto"),
+                                   plotOutput("future_seafood_supply_plot_1", height = "650px", width = "auto"),
                                    
                                    # Widget
                                    column(6, offset = 6, id = "absolute-widget-panel-top-right",
@@ -267,7 +267,7 @@ GlobalNationalOutlook <- function(country_choices, nutrient_choices){
                                    text$item_label[text$item_id == "future-seafood-supply-tabs-2"],
                                    
                                    ### PLOT PLACEHOLDER
-                                   plotOutput("future_seafood_supply_plot_2", height = "500px", width = "auto")
+                                   plotOutput("future_seafood_supply_plot_2", height = "650px", width = "auto")
                            )
                     )
              ),
