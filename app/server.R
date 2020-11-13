@@ -1053,99 +1053,109 @@ shinyServer(function(input, output, session) {
   
   
   ### Mariculture Site Explorer ---------------
-
-  ### Reactive data frame: Species which have suitable habitat for the selected country
-  observe({
+  
+  ### Reactive data set based on selected country and climate scenario ---
+  site_explorer_dat <- eventReactive(input$w_seafood_reforms_site_explorer_species, {
     
-    country <- input$w_seafood_reforms_country
-      
-      browser()
+    # Load data
+    species <- str_replace(input$w_seafood_reforms_site_explorer_species, " ", "_")
+    dat_file_name <- paste0(species, ".Rds")
     
+    data <- readRDS(paste0("./data/processed/species_rasters/", dat_file_name))
     
   })
   
-  ### Update scenario select input based species selected  ---------
+  ### Update scenario select input based upon species selected and data loaded  ---------
   observe({
 
-    # Viable Species ordered
-    possible_scenarios_years <- rcp_projections %>%
-      dplyr::filter(species == input$w_seafood_reforms_site_explorer_species) %>%
-      distinct(species, scenario, year)
+    # Viable scenarios
+    scenarios <- site_explorer_dat() %>%
+      mutate(new_scenario = case_when(scenario == "RCP26" ~ "RCP 2.6",
+                                      scenario == "RCP45" ~ "RCP 4.5",
+                                      scenario == "RCP60" ~ "RCP 6.0",
+                                      scenario == "RCP85" ~ "RCP 8.5")) %>%
+      distinct(new_scenario)
     
-    scenarios <- unique(possible_scenarios_years$scenario)
     
     # Update input
     updateSelectizeInput(session,
                          "w_seafood_reforms_site_explorer_climate_scenario",
-                         choices = scenarios)
+                         choices = scenarios$new_scenario)
 
   })
 
-  ## Update species select input based on scenario selected  ---------
+  # ## Update species select input based on country selected  ---------
   observe({
 
     # Viable Species ordered
-    possible_species_years <- rcp_projections %>%
-      dplyr::filter(scenario == input$w_seafood_reforms_site_explorer_climate_scenario) %>%
-      distinct(species, scenario, year)
+    possible_species <- rcp_projections %>%
+      dplyr::filter(sov1_iso == input$w_seafood_reforms_country) %>%
+      dplyr::filter(year == 2100) %>%
+      distinct(species)
 
-    species <- unique(possible_species_years$species)
-    
     # Update input
     updateSelectizeInput(session,
                          "w_seafood_reforms_site_explorer_species",
-                         choices = species)
+                         choices = possible_species$species)
 
   })
-  
-  # ### Reactive data set based on selected country and climate scenario ---
-  # site_explorer_dat <- eventReactive(c(input$w_seafood_reforms_site_explorer_species,
-  #                                      input$w_seafood_reforms_site_explorer_climate_scenario), {
-  # 
-  # 
-  #           # plot_dat <- rcp_projections %>%
-  #           #             dplyr::filter(species == input$aqua_explorer_select_species &
-  #           #                             scenario == input$aqua_explorer_select_scenario)
-  #          # Load data
-  #          scenario <- str_replace(str_replace(input$w_seafood_reforms_site_explorer_climate_scenario, " ", ""), "[.]", "")
-  #          category <- unique(rcp_projections$group[rcp_projections$species == input$w_seafood_reforms_site_explorer_species])
-  #          species <- str_replace(input$w_seafood_reforms_site_explorer_species, " ", "_")
-  #          dat_file_name <- paste0(scenario, "_", category, "_", species, ".Rds")
-  #          
-  #          data <- readRDS(paste0("./data/raw/", dat_file_name))
-  # 
-  #          
-  # })
-  # 
-  # # Plot output
-  # output$mariculture_site_explorer_plot <- renderPlot({
-  #   
-  #   req(nrow(site_explorer_dat()) > 0)
-  # 
-  #   # Filter for year, and plot
-  #   plot_dat <- site_explorer_dat() %>%
-  #     dplyr::filter(year == 2100)
-  #   
-  #   # data_raster <- raster::rasterFromXYZ(data,
-  #   #                                      crs = "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs")
-  #   #
-  #   
-  #   # Plot data
-  #   g <- ggplot() +
-  #     geom_sf(data = world) +
-  #     coord_sf(crs = st_crs('+proj=moll'),
-  #              expand = F) +
-  #     geom_raster(data = plot_dat, aes(x = x, y = y), fill = "red") +
-  #     labs(x = "", y = "") +
-  #     map_theme +
-  #     # scale_x_continuous(limits = c(-18086282, 18083718))+
-  #     # scale_y_continuous(limits = c(-9069952, 9070048))+
-  #     theme(axis.text = element_blank())
-  #   
-  #   g
-  #   
-  # })
-  # 
+
+  # Plot output
+  output$mariculture_site_explorer_plot <- renderLeaflet({
+
+    req(nrow(site_explorer_dat()) > 0)
+    req(input$w_seafood_reforms_site_explorer_climate_scenario)
+    
+    scenario_var <- switch(input$w_seafood_reforms_site_explorer_climate_scenario,
+                           "RCP 2.6" = list("RCP26"),
+                           "RCP 4.5" = list("RCP45"),
+                           "RCP 6.0" = list("RCP60"),
+                           "RCP 8.5" = list("RCP85"))
+
+    # Filter for year, and plot
+    plot_dat <- site_explorer_dat() %>%
+      dplyr::filter(scenario == scenario_var[[1]])
+
+    plot_raster <- unlist(plot_dat$suitability)[[1]]
+    
+    # Define colors
+    plot_pal <- colorNumeric(c("green"), values(plot_raster),
+                             na.color = "transparent")
+    
+    # Plot
+    leaflet('mariculture_site_explorer_plot', options = leafletOptions(minZoom = 2, maxZoom = 4, zoomControl = TRUE)) %>% 
+      addProviderTiles("CartoDB.PositronNoLabels") %>% 
+      addRasterImage(plot_raster, colors = plot_pal, opacity = 0.8)
+      # addPolygons(data = rv_global_subsidies$polygons, 
+      #             fillColor = ~global_subsidies_map_pal(log10(value)),
+      #             fillOpacity = 1,
+      #             color= "white",
+      #             weight = 0.3,
+      #             highlight = highlightOptions(weight = 5,
+      #                                          color = "#666",
+      #                                          fillOpacity = 1,
+      #                                          bringToFront = FALSE),
+      #             label = rv_global_subsidies$polygons_text,
+      #             labelOptions = labelOptions(style = list("font-weight" = "normal",
+      #                                                      padding = "3px 8px"),
+      #                                         textsize = "13px",
+      #                                         direction = "auto")) %>%
+      # setView(0,20, zoom = 2)
+
+    # Plot data
+    # g <- ggplot() +
+    #   geom_sf(data = world) +
+    #   coord_sf(crs = st_crs('+proj=moll'),
+    #            expand = F) +
+    #   geom_raster(data = plot_dat, aes(x = x, y = y), fill = "red") +
+    #   labs(x = "", y = "") +
+    #   map_theme +
+    #   # scale_x_continuous(limits = c(-18086282, 18083718))+
+    #   # scale_y_continuous(limits = c(-9069952, 9070048))+
+    #   theme(axis.text = element_blank())
+
+  })
+
     ### ----------------------------------
     ### aqua-potential Tab ---------------
     ### ----------------------------------

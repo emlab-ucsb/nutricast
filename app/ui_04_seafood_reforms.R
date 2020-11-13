@@ -218,12 +218,12 @@ SeafoodReforms <- function(country_choices,
       ),
       
       # Content box 4: Future Seafood Supply & Nutrient Contributions
-      column(12, id = "shaded-div",
+      column(12, id = "shaded-div", style = "padding-left: 2vw;",
              
-             column(9, id = "lr-spaced-div",
+             column(9, style = "border: 2px solid #1a2d3f;",
                     
-                    # # Plot
-                    # plotOutput("mariculture_site_explorer_plot", height = "500px", width = "auto")
+                    # Plot
+                    leafletOutput("mariculture_site_explorer_plot", height = "500px", width = "auto")
                     
              ),
              

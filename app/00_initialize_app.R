@@ -230,7 +230,8 @@ production_future_dat <- production_future_bivalve_dat %>%
 
 # Create lookup table of territory names/codes and sovereign names/codes
 ter_sov_lookup <- production_future_dat %>%
-  distinct(ter1_name, ter1_iso, sov1_name, sov1_iso, eez_code)
+  distinct(ter1_name, ter1_iso, sov1_name, sov1_iso, eez_code) %>%
+  arrange(sov1_name)
 
 # Load climate projection data
 rcp_26_projections <- read_csv("./data/rcp_26_species_dat_by_eez.csv") %>%
@@ -251,9 +252,13 @@ rcp_projections <- rcp_26_projections %>%
   bind_rows(rcp_85_projections) %>%
   left_join(ter_sov_lookup, by = c("eez_id" = "eez_code"))
 
+# Set some widget default choices
 species_choices <- sort(unique(rcp_projections$species))
 climate_scenario_choices <- unique(rcp_projections$scenario)
+country_choices <- unique(ter_sov_lookup$sov1_iso)
+names(country_choices) <- unique(ter_sov_lookup$sov1_name)
 
+# Now for the nutrient contributions data
 load("./data/Vaitla_etal_2018_nutrient_data.Rdata")
 
 nutrient_dat_max <- nutrient_preds_long %>% 
@@ -293,5 +298,5 @@ production_future_sovereign_dat <- production_future_dat %>%
 
 country_choices <- unique(production_future_sovereign_dat$sov1_name)
 
-# Plot 4) Mariculture Explorer
-mariculture_explorer_data <- readRDS("./data/processed/species_rasters/species_rasters_tibble.Rds")
+# # Plot 4) Mariculture Explorer
+# mariculture_explorer_data <- readRDS("./data/processed/species_rasters/species_rasters_tibble.Rds")
