@@ -30,40 +30,40 @@ if (dir.exists(app_data_dir) == F) {
 Let's start by reading in a sample file to see how the new files (from August 2020) have changed relative to the old ones. 
 
 ```{r cars}
-# Get our files of interest... 
-raster_data_path <- "/Volumes/GoogleDrive/Shared\ drives/emlab/projects/current-projects/blue-paper-2/data/output/raw"
-raster_files <- list.files(path = raster_data_path, full.names = T, pattern = "*.Rds")
-
-# Practice extracting the data we need to extract from a single file... 
-file_name <- str_replace(raster_files[1], paste0(raster_data_path, "/"), "")
-scenario_name <- str_extract(file_name, "[^_]+")
-genus_name <- str_extract(str_replace(file_name, paste0(scenario_name, "_"), ""), "[^_]+")
-species_name <- str_replace(str_extract(str_replace(file_name, paste0(scenario_name, "_", genus_name, "_"), ""), "[^_]+"), ".Rds", "")
-full_species_name <- paste(genus_name, species_name)
-
-# Now load test file... 
-test_file <- readRDS(raster_files[1]) %>%
-  dplyr::select(x, y, viable)
-
-head(test_file)
-
-# Let's try the practice of turning it into a raster and adding to leaflet... we'll then compare to the data frame... 
-coordinates(test_file) <- ~ x + y
-gridded(test_file) <- TRUE
-crs(test_file) <- sp::CRS("+proj=moll +ellps=WGS84 +datum=WGS84 +no_defs")
-raster_file <- raster(test_file)
-
-# Now add to leaflet - seems to work pretty well. 
-pal <- colorNumeric(c("green"), values(raster_file),
-  na.color = "transparent")
-
-leaflet() %>% addTiles() %>%
-  addRasterImage(raster_file, colors = pal, opacity = 0.8) %>%
-  addLegend(pal = pal, values = values(raster_file),
-    title = "Suitability")
-
-# Now let's save, and reread and see how large this file is/how long it takes. 
-saveRDS(raster_file, paste0(data_dir, "test_file.Rds"))
+# # Get our files of interest... 
+# raster_data_path <- "/Volumes/GoogleDrive/Shared\ drives/emlab/projects/current-projects/blue-paper-2/data/output/raw"
+# raster_files <- list.files(path = raster_data_path, full.names = T, pattern = "*.Rds")
+# 
+# # Practice extracting the data we need to extract from a single file... 
+# file_name <- str_replace(raster_files[1], paste0(raster_data_path, "/"), "")
+# scenario_name <- str_extract(file_name, "[^_]+")
+# genus_name <- str_extract(str_replace(file_name, paste0(scenario_name, "_"), ""), "[^_]+")
+# species_name <- str_replace(str_extract(str_replace(file_name, paste0(scenario_name, "_", genus_name, "_"), ""), "[^_]+"), ".Rds", "")
+# full_species_name <- paste(genus_name, species_name)
+# 
+# # Now load test file... 
+# test_file <- readRDS(raster_files[1]) %>%
+#   dplyr::select(x, y, viable)
+# 
+# head(test_file)
+# 
+# # Let's try the practice of turning it into a raster and adding to leaflet... we'll then compare to the data frame... 
+# coordinates(test_file) <- ~ x + y
+# gridded(test_file) <- TRUE
+# crs(test_file) <- sp::CRS("+proj=moll +ellps=WGS84 +datum=WGS84 +no_defs")
+# raster_file <- raster(test_file)
+# 
+# # Now add to leaflet - seems to work pretty well. 
+# pal <- colorNumeric(c("green"), values(raster_file),
+#   na.color = "transparent")
+# 
+# leaflet() %>% addTiles() %>%
+#   addRasterImage(raster_file, colors = pal, opacity = 0.8) %>%
+#   addLegend(pal = pal, values = values(raster_file),
+#     title = "Suitability")
+# 
+# # Now let's save, and reread and see how large this file is/how long it takes. 
+# saveRDS(raster_file, paste0(data_dir, "test_file.Rds"))
 ```
 
 Okie, this seems to be working well... Let's see if we can now make raster stacks or bricks by species. 
@@ -90,7 +90,6 @@ unique_species_names <- unique(full_species_names)
 file_dir <- raster_data_path
 all_file_names <- raster_files
 all_scenario_names <- unique_scenario_names
-species_name <- unique_species_names[1]
 
 # Now let's set up a function for reading in all files cooresponding to a single species. 
 ReadAllSpeciesFiles <- function(file_dir, all_file_names, all_scenario_names, species_name){
@@ -150,37 +149,39 @@ ReadAllSpeciesFiles <- function(file_dir, all_file_names, all_scenario_names, sp
 ## Merge data files by species - Practice run
 
 ```{r}
-# Run function for one species and see if it works
-test_species <- ReadAllSpeciesFiles(file_dir, all_file_names, all_scenario_names, species_name)
-
-# Practice extracting plot data
-plot_dat <- test_species %>%
-  dplyr::filter(scenario == "RCP85")
-
-raster_plot <- unlist(plot_dat$suitability)[[1]]
-
-# Now add to leaflet
-pal <- colorNumeric(c("green"), values(raster_plot),
-  na.color = "transparent")
-
-leaflet() %>% addTiles() %>%
-  addRasterImage(raster_plot, colors = pal, opacity = 0.8) %>%
-  addLegend(pal = pal, values = values(raster_plot),
-    title = "Suitability")
+# # Run function for one species and see if it works
+# test_species <- ReadAllSpeciesFiles(file_dir, all_file_names, all_scenario_names, species_name)
+# 
+# # Practice extracting plot data
+# plot_dat <- test_species %>%
+#   dplyr::filter(scenario == "RCP85")
+# 
+# raster_plot <- unlist(plot_dat$suitability)[[1]]
+# 
+# # Now add to leaflet
+# pal <- colorNumeric(c("green"), values(raster_plot),
+#   na.color = "transparent")
+# 
+# leaflet() %>% addTiles() %>%
+#   addRasterImage(raster_plot, colors = pal, opacity = 0.8) %>%
+#   addLegend(pal = pal, values = values(raster_plot),
+#     title = "Suitability")
 ```
 
 I'm starting to think that I might be able to put all species rasters in one tibble... This would speed things up immensely in only having to load in one file at the beginning.. Let's try it. 
 
 ```{r}
 output_tibble <- NULL
-files_to_run <- unique_species_names[!(unique_species_names %in% c("Anguilla anguilla (1)", "Coryphaena hippurus (1)", "Dicentrarchus labrax (1)", "Pollachius pollachius (1)"))]
+files_to_run <- unique_species_names[!(unique_species_names %in% c("Anguilla anguilla (1)", "Coryphaena hippurus (1)", "Dicentrarchus labrax (1)", "Pollachius pollachius (1)", "Argopecten purpuratus", "Cerastoderma edule", "Mya arenaria", "Mytilus chilensis", "Mytilus platensis", "Ostrea chilensis", "Ostrea edulis", "Pecten jacobaeus", "Pecten maximus", "Saxidomus gigantea", "Scrobicularia plana", "Thunnus orientalis", "Venerupis rhomboides"))]
 
-for(p in 1:length(unique_species_names)){
+for(p in 172:length(files_to_run)){
   
   species_to_add_to_tibble <- ReadAllSpeciesFiles(file_dir, all_file_names, all_scenario_names, files_to_run[p])
   
   output_tibble <- output_tibble %>%
     bind_rows(species_to_add_to_tibble)
 }
+
+saveRDS(output_tibble, paste0(data_dir, "species_rasters_tibble.Rds"))
 ```
 
