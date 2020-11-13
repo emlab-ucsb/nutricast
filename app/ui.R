@@ -26,6 +26,7 @@ library(RColorBrewer) # other color scales
 library(cowplot)
 library(ggradar)
 library(raster)
+library(rgdal)
 library(rgeos)
 library(sf)
 library(rnaturalearth)
