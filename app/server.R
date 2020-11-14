@@ -238,7 +238,7 @@ shinyServer(function(input, output, session) {
     plot_variable <- switch(input$w_marine_seafood_as_source_plot_1,
                             "live weight" = list("live_weight", 1e6, "Production\n(millions of mt)"),
                             "edible meat" = list("edible_meat", 1e6, "Production\n(millions of mt)"),
-                            "edible meat per capita" = list("edible_meat_per_capita", 1, "Production\n(mt per person)"))
+                            "edible meat per capita" = list("edible_meat_per_capita", 1/1000, "Production\n(kg per person)"))
     
     g <- ggplot(plot_dat)+
       aes(x = year, y = get(plot_variable[[1]])/plot_variable[[2]], fill = plot_group, alpha = source)+
