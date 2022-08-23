@@ -24,6 +24,8 @@ library(plotly) # interactive charts
 library(viridis) # colorblind color scales
 library(RColorBrewer) # other color scales
 library(cowplot)
+# devtools::install_github("ricardo-bion/ggradar", 
+#                          dependencies = TRUE)
 library(ggradar)
 library(raster)
 library(rgdal)
