@@ -1,6 +1,6 @@
 # Nutricast
 
-<a href="https://doi.org/10.5281/zenodo.5593733"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.5593733.svg" alt="DOI"></a>
+<a href="https://zenodo.org/badge/latestdoi/281742847"><img src="https://zenodo.org/badge/281742847.svg" alt="DOI"></a>
 
 This repository contains all data and code for the Nutricast tool (https://emlab-ucsb.shinyapps.io/nutricast/) which is a web-based tool to explore forecasted nutritional gains from marine fisheries and mariculture reforms under climate change.
 
